@@ -25,12 +25,23 @@ repositories {
 }
 
 dependencies {
+    // web
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.apache.commons:commons-lang3:3.13.0'
-    implementation 'org.apache.commons:commons-collections4:4.4'
+    // persistence
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+    // lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    // test
+    testImplementation 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // else
+    implementation 'org.apache.commons:commons-lang3:3.13.0'
+    implementation 'org.apache.commons:commons-collections4:4.4'
 }
 
 checkstyle {
