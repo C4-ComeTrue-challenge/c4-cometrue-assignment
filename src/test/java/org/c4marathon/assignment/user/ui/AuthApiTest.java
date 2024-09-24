@@ -5,7 +5,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.c4marathon.assignment.AcceptanceTest;
 import org.c4marathon.assignment.user.ui.dto.request.SignUpRequest;
-import org.hamcrest.core.StringStartsWith;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -33,9 +34,14 @@ class AuthApiTest extends AcceptanceTest {
 
 			perform.andExpectAll(
 				status().isCreated(),
-				header().string("Location", new StringStartsWith("/users")),
+				header().string("Location", matcherForEndWithUuid()),
 				content().string(expectedMessage)
 			);
+		}
+
+		private Matcher<String> matcherForEndWithUuid() {
+			return Matchers.matchesRegex(
+				"^/users/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$");
 		}
 	}
 }
