@@ -1,10 +1,10 @@
-package org.c4marathon.assignment.user.ui;
+package org.c4marathon.assignment.customer.ui;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.c4marathon.assignment.AcceptanceTest;
-import org.c4marathon.assignment.user.ui.dto.request.SignUpRequest;
+import org.c4marathon.assignment.customer.ui.dto.request.SignUpRequest;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -17,18 +17,18 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-class AuthApiTest extends AcceptanceTest {
+class CustomerApiTest extends AcceptanceTest {
 	@Nested
-	@DisplayName("/sign-up")
+	@DisplayName("/customers")
 	class SignUp {
 		@Test
 		@DisplayName("[201]")
 		void shouldReturn201(@Autowired MockMvc mockMvc, @Autowired ObjectMapper objectMapper) throws Exception {
-			SignUpRequest request = new SignUpRequest("newEmail", "newPassword", "newName", "customer");
+			SignUpRequest request = new SignUpRequest("newEmail", "newPassword", "newName");
 			String expectedMessage = "";
 
 			ResultActions perform = mockMvc.perform(
-				post("/sign-up")
+				post("/customers")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(request)));
 
@@ -41,7 +41,7 @@ class AuthApiTest extends AcceptanceTest {
 
 		private Matcher<String> matcherForEndWithUuid() {
 			return Matchers.matchesRegex(
-				"^/users/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$");
+				"^/customers/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$");
 		}
 	}
 }
