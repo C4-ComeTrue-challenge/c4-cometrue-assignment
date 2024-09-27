@@ -24,9 +24,6 @@ public class Merchant {
     @Column(nullable = false, unique = true, length = 20)
     private String nickname;
 
-    @Column(nullable = false, unique = true, length = 40)
-    private String email;
-
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -34,12 +31,11 @@ public class Merchant {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    private Merchant(String nickname, String email) {
+    private Merchant(String nickname) {
         this.nickname = nickname;
-        this.email = email;
     }
 
-    public Merchant of(String nickname, String email) {
-        return new Merchant(nickname, email);
+    public Merchant of(String nickname) {
+        return new Merchant(nickname);
     }
 }

@@ -1,6 +1,7 @@
 package org.c4marathon.assignment.user.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -20,6 +21,7 @@ import static org.c4marathon.assignment.user.domain.MemberAuthority.MERCHANT;
 public class Member {
 
     @Id
+    @Getter
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "member_id")
     private Long id;
@@ -33,12 +35,11 @@ public class Member {
     @Column(nullable = false, unique = true, length = 20)
     private String nickname;
 
-    @Column(nullable = false, unique = true, length = 40)
-    private String email;
-
+    @Getter
     @Column(nullable = false)
     private String password;
 
+    @Getter
     @Enumerated(STRING)
     private MemberAuthority authority;
 
@@ -49,26 +50,22 @@ public class Member {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    private Member(Long userid, String nickname, MemberAuthority authority,
-                   String email, String password) {
+    private Member(Long userId, String nickname, MemberAuthority authority, String password) {
         if (authority == CUSTOMER) {
-            this.customerId = userid;
+            this.customerId = userId;
         } else {
-            this.merchantId = userid;
+            this.merchantId = userId;
         }
         this.nickname = nickname;
         this.authority = authority;
-        this.email = email;
         this.password = password;
     }
 
-    public Member Customer(Long userid, String nickname,
-                           String email, String password) {
-        return new Member(userid, nickname, CUSTOMER, email, password);
+    public Member Customer(Long userid, String nickname, String password) {
+        return new Member(userid, nickname, CUSTOMER, password);
     }
 
-    public Member Merchant(Long userid, String nickname,
-                           String email, String password) {
-        return new Member(userid, nickname, MERCHANT, email, password);
+    public Member Merchant(Long userid, String nickname, String password) {
+        return new Member(userid, nickname, MERCHANT, password);
     }
 }
