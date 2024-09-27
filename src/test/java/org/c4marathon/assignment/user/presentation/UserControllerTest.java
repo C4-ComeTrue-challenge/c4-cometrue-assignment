@@ -1,0 +1,93 @@
+package org.c4marathon.assignment.user.presentation;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.c4marathon.assignment.global.util.SessionConst;
+import org.c4marathon.assignment.user.domain.User;
+import org.c4marathon.assignment.user.presentation.dto.UserLoginDto;
+import org.c4marathon.assignment.user.presentation.dto.UserRegisterDto;
+import org.c4marathon.assignment.user.service.UserService;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(controllers = UserController.class)
+class UserControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
+    private UserService userService;
+
+    @Test
+    @DisplayName("회원가입 성공")
+    void register() throws Exception {
+        // given
+        UserRegisterDto registerDto = new UserRegisterDto("test@test.com", "1234", "test");
+
+
+        // when //then
+        mockMvc.perform(
+                post("/api/v1/register")
+                        .content(objectMapper.writeValueAsString(registerDto))
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isCreated());
+    }
+
+    @DisplayName("로그인 성공")
+    @Test
+    void login() throws Exception{
+        // given
+        UserLoginDto loginDto = new UserLoginDto("test@test.com", "1234");
+
+        User user = User.create("test@test.com", "1234", "test");
+        given(userService.login(any())).willReturn(user);
+
+        // when // then
+        mockMvc.perform(
+                        post("/api/v1/login")
+                                .content(objectMapper.writeValueAsString(loginDto))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(request().sessionAttribute(SessionConst.LOGIN_USER, user));
+    }
+
+    @DisplayName("로그아웃 성공")
+    @Test
+    void logoutSuccess() throws Exception {
+        // given
+        MockHttpSession session = new MockHttpSession();
+
+        User user = User.create("test@test.com", "1234", "test");
+        session.setAttribute(SessionConst.LOGIN_USER, user);
+
+        // when // then
+        mockMvc.perform(
+                post("/api/v1/logout")
+                        .session(session)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(request -> assertNull(request.getRequest().getSession(false)));
+    }
+
+}
