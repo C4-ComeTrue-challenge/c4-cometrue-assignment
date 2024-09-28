@@ -1,6 +1,8 @@
 package org.c4marathon.assignment.customer.infra.persist;
 
+import org.c4marathon.assignment.common.entity.Point;
 import org.c4marathon.assignment.customer.domain.Customer;
+import org.c4marathon.assignment.customer.domain.TestCustomerFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,7 @@ class JpaCustomerRepositoryTest {
 
 	@Test
 	void save() {
-		Customer newCustomer = new Customer(null, "newEmail", "newPassword", "newName");
+		Customer newCustomer = TestCustomerFactory.create(null, "newEmail", "newPassword", "newName", new Point());
 		Customer savedCustomer = jpaCustomerRepository.save(newCustomer);
 
 		Customer findCustomer = jpaCustomerRepository.findById(savedCustomer.getId()).orElseThrow();
