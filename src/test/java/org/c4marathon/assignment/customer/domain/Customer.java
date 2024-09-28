@@ -2,8 +2,74 @@ package org.c4marathon.assignment.customer.domain;
 
 import java.util.UUID;
 
+import org.hibernate.annotations.UuidGenerator;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+
 /**
- * <h1>구매자/판매자 별 가입시 필요정보</h1>
+ * <h1>쟁점1. Domain 엔티티와 Persistence 엔티티의 분리</h1>
+ *
+ * <h3>왜?</h3>
+ *
+ * <h5>책임 분리</h5>
+ *
+ * <p>
+ *     Domain 엔티티는 순수한 JAVA 코드로 작성해서 외부에 대한 의존성을 제거한다.
+ *     Domain 엔티티는 도메인에 변경사항이 발생하지 않는 이상 수정할 일이 없다.
+ *     즉, 도메인에 관련된 로직만 담당하기 때문에 변경 전파(Change Propagation)를 방지할 수 있다.
+ * </p>
+ *
+ * <h5>가독성</h5>
+ *
+ * <p>
+ *     Column에 대한 세부적인 설정을 할 예정인데, 도메인 로직과 JPA 관련 어노테이션이 엉켜있으면 가독성이 떨어진다.
+ * </p>
+ *
+ * <h5>인프라에 대한 도메인의 의존성 제거</h5>
+ *
+ * <p>
+ *     Domain과 Persistence 엔티티가 통합되어 있으면 JPA에서 정해진 규칙에 따라 데이터를 조회하게 된다.
+ *     즉, Domain 엔티티가 table schema(또는 DBMS)에 대해 의존하게 된다.
+ *     반면에 분리되어 있으면 의존성을 제거할 수 있다.
+ * </p>
+ *
+ * <h5>테스트하기 쉬운 코드?</h5>
+ *
+ * <p>
+ *     Domain 엔티티는 검증없이 생성되어서는 안된다.
+ *     도메인 생성시 PasswordEncoder같은 값을 암호화하는 기능이 요구될 수도 있다.
+ *     따라서 생성자 호출시 파라미터로 넘겨받는 클래스(인터페이스)와 협력하여(또는 static 메서드 호출을 통해) 엔티티를 생성을 하게 된다.
+ * </p>
+ * <p>
+ *     하지만 이렇게 만들어진 생성자는 "테스트를 위한 데이터를 생성"할 때 곤란하다.
+ *     클래스(인터페이스)를 mocking 해야하고, 이 마저도 곤란한 경우가 발생할 수 있다.
+ * </p>
+ * <p>
+ *     그런데 Domain과 Persistence 엔티티를 서로 매핑하기 위해서는 어차피 전체 생성자(또는 필드나 setter)가 public 접근제어자로 열려있어야한다.
+ *     그렇다면 mocking없이 데이터를 생성할 수 있을 것이다.
+ *     테스트 가능성은 Domain 엔티티와 Persistence 엔티티의 분리하는 이유 중 한가지로 꼽히는데 아직은 잘 모르겠다.
+ * </p>
+ *
+ * <h3>오버엔지니어링 아닌가</h3>
+ *
+ * <p>
+ *     초기 서비스는 Domain 엔티티와 Persistence 엔티티를 분리할 필요성이 떨어진다.
+ *     서비스가 확장되면서 table schema(또는 DBMS)의 변경으로 인해 이를 분리할 필요성이 생기면 처리하는 것이 좋겠다.
+ * </p>
+ *
+ * <h3>결론. 통합</h3>
+ *
+ * <br/>
+ *
+ * <h1>쟁점2. 계정 인증 방안</h1>
+ *
+ * <h3>구매자/판매자 별 가입시 필요정보</h1>
  *
  * <table>
  *     <tr>
@@ -24,11 +90,7 @@ import java.util.UUID;
  *     </tr>
  * </table>
  *
- * <br/>
- *
- * <h1>계정 인증 방안</h1>
- *
- * <h3>1. 판매자/구매자 계정을 통합하는 방안</h3>
+ * <h3>1) 판매자/구매자 계정을 통합하는 방안</h3>
  *
  * <p>
  *     사용자는 하나의 계정으로 구매 및 판매를 할 수 있다.
@@ -90,7 +152,7 @@ import java.util.UUID;
  *     회원은 다른 테이블과 연관관계를 가지기 때문에 NoSQL을 사용하기에도 무리가 있는 것 같다.
  * </p>
  *
- * <h3>2. 판매자/구매자 계정을 분리하는 방안</h3>
+ * <h3>2) 판매자/구매자 계정을 분리하는 방안</h3>
  *
  * <p>
  *     사용자는 역할에 따른 계정을 각각 생성해야 한다.(즉, 구매시에는 구매자로, 판매시에는 판매자로 로그인해야한다.)
@@ -109,14 +171,88 @@ import java.util.UUID;
  *     그렇지 않으면 인증하기 위해 판매자,구매자 테이블을 모두 조회해야하기 때문이다.
  * </p>
  *
- * <h3>결론. 판매자/구매자 계정 분리 + 상속(인터페이스)</h3>
+ * <h3>결론. 판매자/구매자 계정 분리(테이블,클래스,endpoint 모두 분리) + 상속(인터페이스)</h3>
+ *
+ * <br/>
+ *
+ * <h1>Id 생성 전략</h1>
+ *
+ * <h3>1. auto_increment</h3>
+ *
+ * <p>회원은 예측가능한 id를 피하고 싶다.</p>
+ *
+ * <h3>2. UUID</h3>
+ *
+ * <p>유니크하고 랜덤한 값으로 Id를 만들자.</p>
+ *
+ * <h5>1) v1: time-based version</h5>
+ *
+ * <p>
+ *     PK는 클러스터 인덱스가 된다(MySQL 기준).
+ *     따라서 Id가 시간순으로 생성되면 INSERT 수행시 1)데이터 및 클러스터 인덱스 페이지를 수정할 필요가 없고, 2)인덱스 페이지에 대한 cache_hit가 높아져서 Disk I/O가 덜 발생하여 성능상의 이점이 있다.
+ *     하지만 동시성을 고려하면서 Id를 생성하기 위해서는 bottle-neck이 발생한다.
+ *     여러 스레드가 동시에 UUID를 생성할 때 중복을 방지하기 위해 잠금(lock)이나 CAS(Compare And Swap) 같은 동시성 제어 메커니즘이 필요하기 때문이다.
+ * </p>
+ *
+ * <h5>2) v4: randomly or pseudo-randomly generated version</h5>
+ *
+ * <p>
+ *     Id가 랜덤하게 생성되기 때문에 INSERT 수행시 1)데이터 및 클러스터 인덱스 페이지에 수정이 필요할 수 있고, 2)인덱스 페이지에 대한 cache_hit가 낮아져서 Disk I/O가 상대적으로 빈번하게 발생한다.
+ *     하지만 (클러스터 인덱스의 변경이 필요없는) SELECT/UPDATE 수행시 위와 비교해서 차이가 거의 없다.
+ *     (cursor-based pagination이 곤란한 점은 있겠다)
+ * </p>
+ *
+ * <h3>결론. UUID v1</h3>
+ *
+ * <p>
+ *     우선 동시성 제어로 인한 Id 생성의 bottle-neck이 어느정도인지 확인이 필요하다.
+ *     다음은 로컬에서 테스트한 결과이다.
+ * </p>
+ * <table>
+ *     <tr>
+ *         <th></th>
+ *         <th>auto_increment</th>
+ *         <th>uuid v1</th>
+ *         <th>uuid v4</th>
+ *     </tr>
+ *     <tr>
+ *         <th>소요 시간(ms)</th>
+ *         <td>109</td>
+ *         <td>114</td>
+ *         <td>125</td>
+ *     </tr>
+ * </table>
+ * <p>
+ *     로컬 테스트 결과는 별 차이없는 것 같다.
+ *     UUID v4에서 v1으로 변경하는 것은 리소스가 많이 들기 때문에 우선 v1을 채택하기로 결정했다.
+ *     추후 테스트를 통해 v4로 변경할 수도 있겠다.
+ * </p>
+ *
+ * @see org.hibernate.annotations.UuidGenerator.Style
+ * @see org.hibernate.id.uuid.CustomVersionOneStrategy
+ * @see <a href="https://datatracker.ietf.org/doc/html/rfc4122">RFC 4122 - A Universally Unique IDentifier (UUID) URN Namespace</a>
+ * @see <a href="https://dev.to/mcadariu/using-uuids-as-primary-keys-3e7a">To UUID, or not to UUID, that is the primary key question</a>
  *
  */
+@Entity
+@Table(
+	name = "CUSTOMERS",
+	uniqueConstraints = {@UniqueConstraint(name = "uq_customers_email", columnNames = {"email"})}
+)
 public class Customer {
+	@Id
+	@GeneratedValue(strategy = GenerationType.UUID)
+	@UuidGenerator(style = UuidGenerator.Style.TIME)
 	private UUID id;
+	@Column(nullable = false)
 	private String email;
+	@Column(nullable = false)
 	private String password;
+	@Column(nullable = false)
 	private String name;
+
+	protected Customer() {
+	}
 
 	public Customer(UUID id, String email, String encodedPassword, String name) {
 		this.id = id;
