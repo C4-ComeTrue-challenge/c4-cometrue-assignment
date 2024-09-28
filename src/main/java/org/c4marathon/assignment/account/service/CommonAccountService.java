@@ -3,9 +3,9 @@ package org.c4marathon.assignment.account.service;
 import lombok.RequiredArgsConstructor;
 import org.c4marathon.assignment.account.domain.Account;
 import org.c4marathon.assignment.account.domain.Balance;
-import org.c4marathon.assignment.account.domain.repository.AccountQueryRepository;
+import org.c4marathon.assignment.transaction.domain.repository.TransactionQueryRepository;
 import org.c4marathon.assignment.account.domain.repository.AccountRepository;
-import org.c4marathon.assignment.account.dto.response.AccountDto;
+import org.c4marathon.assignment.account.dto.response.AccountResponse;
 import org.c4marathon.assignment.transaction.dto.TransactionDto;
 import org.c4marathon.assignment.global.exception.AccountException;
 import org.c4marathon.assignment.member.domain.MemberAuthority;
@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.ACCOUNT_NOT_FOUND;
+import static org.c4marathon.assignment.global.utils.PageUtil.SMALL_PAGE_SIZE;
 import static org.c4marathon.assignment.member.domain.MemberAuthority.CUSTOMER;
 import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
 
@@ -23,16 +24,20 @@ import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
 public class CommonAccountService {
 
     private final AccountRepository accountRepository;
-    private final AccountQueryRepository accountQueryRepository;
+    private final TransactionQueryRepository accountQueryRepository;
 
     @Transactional
-    public AccountDto showAccountInfo(MemberAuthority authority, Long memberAuthId, Long transactionCursorId) {
+    public AccountResponse showAccountInfo(MemberAuthority authority, Long memberAuthId, Long transactionCursorId) {
 
         Account account = accountRepository.findAccountByAuthorityAndMemberAuthId(authority, memberAuthId)
                                            .orElseThrow(() -> new AccountException(ACCOUNT_NOT_FOUND));
         List<TransactionDto> transactions = accountQueryRepository.getTransactions(account.getId(), transactionCursorId);
+        Boolean hasNext = transactions.size() > SMALL_PAGE_SIZE;
+        Integer size = hasNext ? SMALL_PAGE_SIZE : transactions.size();
+        Long transactionCursor = hasNext ? transactions.get(SMALL_PAGE_SIZE - 1).transactionId() : null;
 
-        return new AccountDto(account.getNickname(), account.getBalance().getBalance(), transactions);
+        return new AccountResponse(hasNext, size, transactionCursor,
+                                   account.getNickname(), account.getBalance().getBalance(), transactions);
     }
 
     @Transactional
