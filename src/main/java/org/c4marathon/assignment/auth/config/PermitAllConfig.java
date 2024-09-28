@@ -12,6 +12,8 @@ public class PermitAllConfig {
     }
 
     static {
+        permitAllMatchers.add("/merchant/members");
+        permitAllMatchers.add("/merchant/members/*");
         permitAllMatchers.add("/members");
         permitAllMatchers.add("/members/*");
         permitAllMatchers.add("/actuator");

@@ -51,7 +51,10 @@ public class AccessTokenValidatorFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return path.equals("/login") || path.equals("/members") || path.equals("/reissue");
+        return path.equals("/login")
+                || path.equals("/members")
+                || path.equals("/merchant/members")
+                || path.equals("/reissue");
     }
 
     private void createAuthenticationContext(String accessToken) {
