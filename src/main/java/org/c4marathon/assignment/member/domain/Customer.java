@@ -1,6 +1,7 @@
-package org.c4marathon.assignment.user.domain;
+package org.c4marathon.assignment.member.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -14,9 +15,10 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class Merchant {
+public class Customer {
 
     @Id
+    @Getter
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "customer_id")
     private Long id;
@@ -31,11 +33,11 @@ public class Merchant {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    private Merchant(String nickname) {
+    private Customer(String nickname) {
         this.nickname = nickname;
     }
 
-    public Merchant of(String nickname) {
-        return new Merchant(nickname);
+    public static Customer of(String nickname) {
+        return new Customer(nickname);
     }
 }
