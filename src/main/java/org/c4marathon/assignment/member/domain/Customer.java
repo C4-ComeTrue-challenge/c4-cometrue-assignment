@@ -23,6 +23,9 @@ public class Customer {
     @Column(name = "customer_id")
     private Long id;
 
+    @Column(nullable = false)
+    private Long memberId;
+
     @Column(nullable = false, unique = true, length = 20)
     private String nickname;
 
@@ -33,11 +36,12 @@ public class Customer {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    private Customer(String nickname) {
+    private Customer(Long memberId, String nickname) {
+        this.memberId = memberId;
         this.nickname = nickname;
     }
 
-    public static Customer of(String nickname) {
-        return new Customer(nickname);
+    public static Customer of(Long memberId, String nickname) {
+        return new Customer(memberId, nickname);
     }
 }

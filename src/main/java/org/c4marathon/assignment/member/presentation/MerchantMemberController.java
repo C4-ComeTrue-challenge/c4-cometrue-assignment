@@ -24,7 +24,7 @@ public class MerchantMemberController {
     private ResponseEntity<Void> createMember(
             @RequestBody CreateMemberRequest request
     ) {
-        memberFacadeService.createMerchantMemberAndAccount(request.nickname(), request.password(), MERCHANT);
+        memberFacadeService.createMerchantMemberAndAccount(request.nickname(), request.password());
         return ResponseEntity.status(CREATED).build();
     }
 }

@@ -50,22 +50,25 @@ public class Member {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    private Member(Long userId, String nickname, MemberAuthority authority, String password) {
-        if (authority.equals(CUSTOMER)) {
-            this.customerId = userId;
-        } else {
-            this.merchantId = userId;
-        }
+    private Member(String nickname, MemberAuthority authority, String password) {
         this.nickname = nickname;
         this.authority = authority;
         this.password = password;
     }
 
-    public static Member customer(Long userId, String nickname, String password) {
-        return new Member(userId, nickname, CUSTOMER, password);
+    public static Member customer(String nickname, String password) {
+        return new Member(nickname, CUSTOMER, password);
     }
 
-    public static Member merchant(Long userId, String nickname, String password) {
-        return new Member(userId, nickname, MERCHANT, password);
+    public static Member merchant(String nickname, String password) {
+        return new Member(nickname, MERCHANT, password);
+    }
+
+    public void addMerchant(Long merchantId) {
+        this.merchantId = merchantId;
+    }
+
+    public void addCustomer(Long customerId) {
+        this.customerId = customerId;
     }
 }

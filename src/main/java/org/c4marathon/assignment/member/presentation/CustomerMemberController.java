@@ -24,7 +24,7 @@ public class CustomerMemberController {
     private ResponseEntity<Void> createMember(
             @RequestBody CreateMemberRequest request
     ) {
-        memberFacadeService.createCustomerMemberAndAccount(request.nickname(), request.password(), CUSTOMER);
+        memberFacadeService.createCustomerMemberAndAccount(request.nickname(), request.password());
         return ResponseEntity.status(CREATED).build();
     }
 }
