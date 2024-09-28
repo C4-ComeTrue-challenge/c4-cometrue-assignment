@@ -21,17 +21,20 @@ public class AuthService {
         Long memberId = extractEmailFrom(refreshToken);
         Session findSession = sessionRepository.findByMemberId(memberId);
 
-        if (findSession == null)
+        if (findSession == null) {
             sessionRepository.save(new Session(refreshToken, memberId));
-        else
+        }
+        else {
             findSession.updateRefreshToken(refreshToken);
+        }
     }
 
     @Transactional
     public void blackSessionBy(Long userId) {
         Session findSession = sessionRepository.findByMemberId(userId);
-        if (findSession == null)
+        if (findSession == null) {
             return;
+        }
 
         findSession.blackSession();
     }

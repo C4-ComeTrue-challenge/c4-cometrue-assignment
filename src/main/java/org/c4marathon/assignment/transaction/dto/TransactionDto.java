@@ -1,4 +1,4 @@
-package org.c4marathon.assignment.account.dto;
+package org.c4marathon.assignment.transaction.dto;
 
 import java.time.LocalDateTime;
 

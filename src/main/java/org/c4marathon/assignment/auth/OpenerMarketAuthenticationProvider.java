@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.ACCOUNT_NOT_FOUND;
+import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.MEMBER_NOT_FOUND;
 
 @Slf4j
 @Component
@@ -31,10 +31,10 @@ public class OpenerMarketAuthenticationProvider implements AuthenticationProvide
         String nickname = authentication.getName();
         String password = authentication.getCredentials().toString();
         Member member = memberRepository.findByNickname(nickname)
-                                        .orElseThrow(() -> new AuthException(ACCOUNT_NOT_FOUND));
+                                        .orElseThrow(() -> new AuthException(MEMBER_NOT_FOUND));
 
         if (!passwordEncoder.matches(password, member.getPassword()))
-            throw new UsernameNotFoundException(ACCOUNT_NOT_FOUND.getMessage());
+            throw new UsernameNotFoundException(MEMBER_NOT_FOUND.getMessage());
 
         return new UsernamePasswordAuthenticationToken(member.getId(), password,
                 List.of(new SimpleGrantedAuthority(member.getAuthority().toString())));
