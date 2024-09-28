@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.c4marathon.assignment.global.exception.AuthException;
 import org.c4marathon.assignment.member.domain.Member;
-import org.c4marathon.assignment.member.domain.MemberAuthority;
 import org.c4marathon.assignment.member.domain.repository.CustomerRepository;
 import org.c4marathon.assignment.member.domain.repository.MemberRepository;
 import org.c4marathon.assignment.member.domain.repository.MerchantRepository;
