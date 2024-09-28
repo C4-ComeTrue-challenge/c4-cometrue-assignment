@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.NO_AUTHORITY;
 import static org.c4marathon.assignment.member.domain.MemberAuthority.CUSTOMER;
-import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
 
 @RestController
 @RequestMapping("/accounts")
