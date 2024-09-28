@@ -43,6 +43,7 @@ class SignUpSellerServiceTest {
 
 		then(signUpService.register(cmd)).isEqualTo(nextId);
 		verify(sellerRepository)
-			.save(refEq(new Seller(cmd.email(), cmd.password(), cmd.name(), cmd.licenseNumber(), passwordEncoder)));
+			.save(refEq(new Seller(cmd.email(), cmd.password(), cmd.name(), cmd.licenseNumber(), passwordEncoder),
+				"point"));
 	}
 }
