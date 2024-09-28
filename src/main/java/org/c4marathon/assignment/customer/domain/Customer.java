@@ -88,7 +88,7 @@ import jakarta.persistence.UniqueConstraint;
  *         <td>추가 정보</td>
  *         <td>N/A</td>
  *         <td>
- *             <p>대표자 명, 상호, 사업장 주소, 통신판매업신고번호, 입점 담당자 명, 정산계좌</p>
+ *             <p>사업자등록번호, 대표자 명, 상호, 사업장 주소, 통신판매업신고번호, 입점 담당자 명, 정산계좌</p>
  *         </td>
  *     </tr>
  * </table>
