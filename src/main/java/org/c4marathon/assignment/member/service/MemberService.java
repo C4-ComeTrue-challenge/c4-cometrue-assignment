@@ -25,30 +25,19 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Long registerUser(String nickname, String password, MemberAuthority memberAuthority) {
-        if (memberAuthority.equals(MERCHANT)) {
-            return registerMerchantUser(nickname, password);
-        } else {
-            return registerCustomerUser(nickname, password);
-        }
-    }
-
-    @Transactional
     protected Long registerMerchantUser(String nickname, String password) {
-        Merchant merchant = merchantRepository.save(Merchant.of(nickname));
-        Member merchantMember = Member.merchant(merchant.getId(), nickname, passwordEncoder.encode(password));
-        memberRepository.save(merchantMember);
-
-        return merchantMember.getId();
+        Member member = memberRepository.save(Member.merchant(nickname, passwordEncoder.encode(password)));
+        Merchant merchant = merchantRepository.save(Merchant.of(member.getId(), nickname));
+        member.addMerchant(merchant.getId());
+        return merchant.getId();
     }
 
     @Transactional
     protected Long registerCustomerUser(String nickname, String password) {
-        Customer customer = customerRepository.save(Customer.of(nickname));
-        Member customerMember = Member.customer(customer.getId(), nickname, passwordEncoder.encode(password));
-        memberRepository.save(customerMember);
-
-        return customerMember.getId();
+        Member member = memberRepository.save(Member.customer(nickname, passwordEncoder.encode(password)));
+        Customer customer = customerRepository.save(Customer.of(member.getId(), nickname));
+        member.addCustomer(customer.getId());
+        return customer.getId();
     }
 
 }
