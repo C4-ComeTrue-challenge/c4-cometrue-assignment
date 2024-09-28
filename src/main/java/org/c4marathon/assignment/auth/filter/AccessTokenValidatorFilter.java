@@ -8,14 +8,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.c4marathon.assignment.auth.domain.AuthTokenContext;
+import org.c4marathon.assignment.auth.util.AuthTokenContext;
 import org.c4marathon.assignment.auth.util.TokenHandler;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static org.c4marathon.assignment.auth.domain.AuthTokenContext.AUTHORITIES;
-import static org.c4marathon.assignment.auth.domain.AuthTokenContext.MEMBER_ID;
+import static org.c4marathon.assignment.auth.util.AuthTokenContext.AUTHORITIES;
+import static org.c4marathon.assignment.auth.util.AuthTokenContext.MEMBER_ID;
 import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.INVALID_REQUEST;
 import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.REQUEST_LOGIN;
 

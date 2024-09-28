@@ -48,9 +48,9 @@ public class OpenerMarketAuthenticationProvider implements AuthenticationProvide
     private Long getMemberAuthId(Member member) {
         Long id;
         if (member.getAuthority().equals(MERCHANT)) {
-            id = merchantRepository.findById(member.getId()).get().getId();
+            id = merchantRepository.findById(member.getMerchantId()).get().getId();
         } else {
-            id = customerRepository.findById(member.getId()).get().getId();
+            id = customerRepository.findById(member.getCustomerId()).get().getId();
         }
         return id;
     }

@@ -6,7 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.c4marathon.assignment.auth.domain.AuthTokenContext;
+import org.c4marathon.assignment.auth.util.AuthTokenContext;
 import org.c4marathon.assignment.auth.util.TokenHandler;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,7 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Date;
 
-import static org.c4marathon.assignment.auth.domain.AuthTokenContext.*;
+import static org.c4marathon.assignment.auth.util.AuthTokenContext.*;
 
 @RequiredArgsConstructor
 public class AuthTokenGenerateFilter extends OncePerRequestFilter {

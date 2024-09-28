@@ -58,7 +58,7 @@ public class Account {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    private Account(String nickname, Balance balance, MemberAuthority authority, Long memberAuthId) {
+    private Account(final String nickname, final Balance balance, final MemberAuthority authority, final Long memberAuthId) {
         this.nickname = nickname;
         this.balance = balance;
         this.authority = authority;

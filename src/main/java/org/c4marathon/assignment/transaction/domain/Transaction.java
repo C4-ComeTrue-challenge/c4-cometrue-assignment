@@ -54,10 +54,10 @@ public class Transaction {
     private LocalDateTime transactionDate;
 
     private Transaction(
-            Account account,
-            Long fromAccountId, String fromNickname,
-            Long toAccountId, String toNickname,
-            Long money, Balance balance) {
+            final Account account,
+            final Long fromAccountId, final String fromNickname,
+            final Long toAccountId, final String toNickname,
+            final Long money, final Balance balance) {
         this.account = account;
         this.fromAccountId = fromAccountId;
         this.fromNickname = fromNickname;

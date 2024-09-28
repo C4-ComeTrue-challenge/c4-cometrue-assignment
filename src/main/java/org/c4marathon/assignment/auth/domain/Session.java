@@ -25,7 +25,7 @@ public class Session {
     private Long memberId;
     private Boolean isBlackList;
 
-    public Session(String refreshToken, Long memberId) {
+    public Session(final String refreshToken, final Long memberId) {
         this.refreshToken = refreshToken;
         this.memberId = memberId;
         this.isBlackList = FALSE;

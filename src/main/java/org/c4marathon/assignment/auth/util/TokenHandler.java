@@ -5,7 +5,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.c4marathon.assignment.auth.domain.AuthTokenContext;
 import org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode;
 import org.c4marathon.assignment.global.exception.response.ErrorResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

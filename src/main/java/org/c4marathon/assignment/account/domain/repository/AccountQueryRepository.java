@@ -18,7 +18,6 @@ import static org.c4marathon.assignment.global.utils.PageUtil.SMALL_PAGE_SIZE;
 public class AccountQueryRepository {
 
     private final JPAQueryFactory queryFactory;
-    private final EntityManager entityManager;
 
     public List<TransactionDto> getTransactions(Long accountId, Long transactionCursorId) {
 
