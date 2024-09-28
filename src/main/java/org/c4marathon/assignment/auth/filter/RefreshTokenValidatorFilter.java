@@ -50,7 +50,7 @@ public class RefreshTokenValidatorFilter extends OncePerRequestFilter {
             isCurrentToken(findSession, refreshToken);
 
             Member findMember = memberRepository.findById(memberId)
-                                                .orElseThrow(() -> new AuthException(ACCOUNT_NOT_FOUND));
+                                                .orElseThrow(() -> new AuthException(MEMBER_NOT_FOUND));
 
             Authentication auth = generateAuthenticationBy(findMember);
             SecurityContextHolder.getContext().setAuthentication(auth);
@@ -61,7 +61,7 @@ public class RefreshTokenValidatorFilter extends OncePerRequestFilter {
             tokenHandler.handleException(response, INVALID_REQUEST);
             return;
         } catch (AuthException e) {
-            tokenHandler.handleException(response, ACCOUNT_NOT_FOUND);
+            tokenHandler.handleException(response, MEMBER_NOT_FOUND);
         }
 
         filterChain.doFilter(request, response);
@@ -79,13 +79,15 @@ public class RefreshTokenValidatorFilter extends OncePerRequestFilter {
     }
 
     private static void isCurrentToken(Session findSession, String refreshToken) {
-        if (!findSession.getRefreshToken().equals(refreshToken))
+        if (!findSession.getRefreshToken().equals(refreshToken)) {
             throw new BadCredentialsException("다시 로그인 해주세요.");
+        }
     }
 
     private static void isBlackList(Session findSession) {
-        if (findSession.getIsBlackList() == TRUE)
+        if (findSession.getIsBlackList() == TRUE) {
             throw new BadCredentialsException("다시 로그인 해주세요.");
+        }
     }
 
     private Long getMemberIdFrom(String refreshToken) {
@@ -94,13 +96,15 @@ public class RefreshTokenValidatorFilter extends OncePerRequestFilter {
     }
 
     private static void isExistRefreshToken(String refreshToken) {
-        if (refreshToken == null)
+        if (refreshToken == null) {
             throw new BadCredentialsException("다시 로그인해주세요.");
+        }
     }
 
     private static void isExistSession(Session findSession) {
-        if (findSession == null)
+        if (findSession == null) {
             throw new BadCredentialsException("다시 로그인해주세요.");
+        }
     }
 
 }

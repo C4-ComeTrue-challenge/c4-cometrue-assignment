@@ -17,18 +17,33 @@ import static org.c4marathon.assignment.global.exception.exceptioncode.Exception
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(AuthException.class)
-    public ResponseEntity<ErrorResponse> handleAuthException(final AuthException e) {
+    public ResponseEntity<ErrorResponse> handleAuthException(final AuthException exception) {
 
-        return ResponseEntity.status(e.getHttpStatus())
-                             .body(new ErrorResponse(e.getCode(), e.getMessage()));
+        return ResponseEntity.status(exception.getHttpStatus())
+                             .body(new ErrorResponse(exception.getCode(), exception.getMessage()));
+    }
+
+    @ExceptionHandler(AccountException.class)
+    public ResponseEntity<ErrorResponse> handleAccountException(final AccountException exception) {
+
+        return ResponseEntity.status(exception.getHttpStatus())
+                .body(new ErrorResponse(exception.getCode(), exception.getMessage()));
     }
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleSQLIntegrityConstraintViolationException(
-            final SQLIntegrityConstraintViolationException e
+    public ResponseEntity<ErrorResponse> handleSqlIntegrityConstraintViolationException(
+            final SQLIntegrityConstraintViolationException exception
     ) {
         ExceptionCode exceptionCode = INVALID_REQUEST;
         return ResponseEntity.status(exceptionCode.getHttpStatus())
                              .body(new ErrorResponse(exceptionCode.getCode(), exceptionCode.getMessage()));
     }
+
+    @ExceptionHandler(TransactionException.class)
+    public ResponseEntity<ErrorResponse> handleTransactionException(final TransactionException exception) {
+
+        return ResponseEntity.status(exception.getHttpStatus())
+                .body(new ErrorResponse(exception.getCode(), exception.getMessage()));
+    }
+
 }
