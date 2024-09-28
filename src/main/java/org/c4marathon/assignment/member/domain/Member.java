@@ -1,4 +1,4 @@
-package org.c4marathon.assignment.user.domain;
+package org.c4marathon.assignment.member.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,8 +12,8 @@ import java.time.LocalDateTime;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
-import static org.c4marathon.assignment.user.domain.MemberAuthority.CUSTOMER;
-import static org.c4marathon.assignment.user.domain.MemberAuthority.MERCHANT;
+import static org.c4marathon.assignment.member.domain.MemberAuthority.CUSTOMER;
+import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -61,11 +61,11 @@ public class Member {
         this.password = password;
     }
 
-    public Member Customer(Long userid, String nickname, String password) {
-        return new Member(userid, nickname, CUSTOMER, password);
+    public static Member Customer(Long userId, String nickname, String password) {
+        return new Member(userId, nickname, CUSTOMER, password);
     }
 
-    public Member Merchant(Long userid, String nickname, String password) {
-        return new Member(userid, nickname, MERCHANT, password);
+    public static Member Merchant(Long userId, String nickname, String password) {
+        return new Member(userId, nickname, MERCHANT, password);
     }
 }

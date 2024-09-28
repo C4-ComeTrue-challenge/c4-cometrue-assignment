@@ -7,6 +7,8 @@ import org.c4marathon.assignment.auth.util.TokenHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.c4marathon.assignment.auth.domain.AuthTokenContext.MEMBER_ID;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -35,7 +37,7 @@ public class AuthService {
     }
 
     private Long extractEmailFrom(String refreshToken) {
-        return Long.parseLong(tokenHandler.getClaims(refreshToken).get("username").toString());
+        return Long.parseLong(tokenHandler.getClaims(refreshToken).get(MEMBER_ID).toString());
     }
 
 }

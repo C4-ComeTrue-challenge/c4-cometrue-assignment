@@ -15,8 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Date;
 
-import static org.c4marathon.assignment.auth.domain.AuthTokenContext.ACCESS_TOKEN_EXPIRATION_TIME;
-import static org.c4marathon.assignment.auth.domain.AuthTokenContext.REFRESH_TOKEN_EXPIRATION_TIME;
+import static org.c4marathon.assignment.auth.domain.AuthTokenContext.*;
 
 @RequiredArgsConstructor
 public class AuthTokenGenerateFilter extends OncePerRequestFilter {
@@ -49,8 +48,8 @@ public class AuthTokenGenerateFilter extends OncePerRequestFilter {
 
     private String generateAccessToken(Authentication authentication) {
         return Jwts.builder()
-                .claim("memberId", authentication.getName())
-                .claim("authorities", tokenHandler.mergeAuthorities(authentication.getAuthorities()))
+                .claim(MEMBER_ID, authentication.getName())
+                .claim(AUTHORITIES, tokenHandler.mergeAuthorities(authentication.getAuthorities()))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + ACCESS_TOKEN_EXPIRATION_TIME))
                 .signWith(tokenContext.getSecretKey()).compact();
@@ -58,7 +57,7 @@ public class AuthTokenGenerateFilter extends OncePerRequestFilter {
 
     private String generateRefreshToken(Authentication authentication) {
         return Jwts.builder()
-                .claim("memberId", authentication.getName())
+                .claim(MEMBER_ID, authentication.getName())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + REFRESH_TOKEN_EXPIRATION_TIME))
                 .signWith(tokenContext.getSecretKey()).compact();

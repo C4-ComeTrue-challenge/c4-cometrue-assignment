@@ -26,6 +26,8 @@ public class AuthTokenContext {
 
     public static final long ACCESS_TOKEN_EXPIRATION_TIME = 30 * 60 * 1000;
     public static final long REFRESH_TOKEN_EXPIRATION_TIME = 24 * 60 * 60 * 1000;
+    public static final String MEMBER_ID = "memberId";
+    public static final String AUTHORITIES = "authorities";
 
     public AuthTokenContext(
             @Value("#{environment['app.secret-key']}") String secretKey,

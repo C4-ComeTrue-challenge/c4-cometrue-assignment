@@ -6,7 +6,7 @@ import org.c4marathon.assignment.auth.filter.AccessTokenValidatorFilter;
 import org.c4marathon.assignment.auth.filter.AuthTokenGenerateFilter;
 import org.c4marathon.assignment.auth.filter.RefreshTokenValidatorFilter;
 import org.c4marathon.assignment.auth.util.TokenHandler;
-import org.c4marathon.assignment.user.domain.repository.MemberRepository;
+import org.c4marathon.assignment.member.domain.repository.MemberRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;

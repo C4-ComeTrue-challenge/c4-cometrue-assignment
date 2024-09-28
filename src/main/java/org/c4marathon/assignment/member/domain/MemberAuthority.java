@@ -1,4 +1,4 @@
-package org.c4marathon.assignment.user.domain;
+package org.c4marathon.assignment.member.domain;
 
 /**
  * MERCHANT : 판매자

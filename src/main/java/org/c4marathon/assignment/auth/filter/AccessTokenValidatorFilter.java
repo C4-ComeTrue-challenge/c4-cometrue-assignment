@@ -14,6 +14,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+import static org.c4marathon.assignment.auth.domain.AuthTokenContext.AUTHORITIES;
+import static org.c4marathon.assignment.auth.domain.AuthTokenContext.MEMBER_ID;
 import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.INVALID_REQUEST;
 import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.REQUEST_LOGIN;
 
@@ -54,8 +56,8 @@ public class AccessTokenValidatorFilter extends OncePerRequestFilter {
 
     private void createAuthenticationContext(String accessToken) {
         Claims claims = tokenHandler.getClaims(accessToken);
-        String memberId = String.valueOf(claims.get("memberId"));
-        String authorities = String.valueOf(claims.get("authorities"));
+        String memberId = String.valueOf(claims.get(MEMBER_ID));
+        String authorities = String.valueOf(claims.get(AUTHORITIES));
 
         tokenHandler.createAuthenticationContext(memberId, authorities);
     }
