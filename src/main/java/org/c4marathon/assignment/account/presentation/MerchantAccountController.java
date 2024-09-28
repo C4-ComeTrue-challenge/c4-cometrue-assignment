@@ -2,21 +2,25 @@ package org.c4marathon.assignment.account.presentation;
 
 import lombok.RequiredArgsConstructor;
 import org.c4marathon.assignment.account.dto.response.AccountDto;
-import org.c4marathon.assignment.account.service.AccountService;
+import org.c4marathon.assignment.account.service.CommonAccountService;
+import org.c4marathon.assignment.global.exception.AccountException;
 import org.c4marathon.assignment.member.domain.MemberAuthority;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import static org.c4marathon.assignment.member.domain.MemberAuthority.CUSTOMER;
+import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.NO_AUTHORITY;
 import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
 
 @RestController
-@RequestMapping("/accounts")
+@RequestMapping("/merchant/accounts")
 @RequiredArgsConstructor
-public class AccountController {
+public class MerchantAccountController {
 
-    private final AccountService accountService;
+    private final CommonAccountService accountService;
 
     @GetMapping
     public ResponseEntity<AccountDto> getAccountInfo(
@@ -31,7 +35,11 @@ public class AccountController {
     }
 
     private static MemberAuthority getAuthority(Authentication authentication) {
-        return authentication.getAuthorities().toString().contains("MERCHANT") ? MERCHANT : CUSTOMER;
+        if (authentication.getAuthorities().toString().contains("MERCHANT")) {
+            return MERCHANT;
+        } else {
+            throw new AccountException(NO_AUTHORITY);
+        }
     }
 
     private static long getMemberAuthId(Authentication auth) {

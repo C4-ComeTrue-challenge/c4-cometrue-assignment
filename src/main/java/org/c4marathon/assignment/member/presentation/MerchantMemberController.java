@@ -4,19 +4,19 @@ import lombok.RequiredArgsConstructor;
 import org.c4marathon.assignment.member.domain.MemberAuthority;
 import org.c4marathon.assignment.member.dto.request.CreateMemberRequest;
 import org.c4marathon.assignment.member.service.MemberFacadeService;
-import org.c4marathon.assignment.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
-@RequestMapping("/members")
+@RequestMapping("/merchant/members")
 @RequiredArgsConstructor
-public class MemberController {
+public class MerchantMemberController {
 
     private final MemberFacadeService memberFacadeService;
 
@@ -24,7 +24,7 @@ public class MemberController {
     private ResponseEntity<Void> createMember(
             @RequestBody CreateMemberRequest request
     ) {
-        memberFacadeService.createMemberAndAccount(request.nickname(), request.password(), request.authority());
+        memberFacadeService.createMerchantMemberAndAccount(request.nickname(), request.password(), MERCHANT);
         return ResponseEntity.status(CREATED).build();
     }
 }

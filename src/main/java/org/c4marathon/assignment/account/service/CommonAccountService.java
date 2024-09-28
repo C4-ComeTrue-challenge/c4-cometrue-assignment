@@ -20,19 +20,10 @@ import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
 
 @Service
 @RequiredArgsConstructor
-public class AccountService {
+public class CommonAccountService {
 
     private final AccountRepository accountRepository;
     private final AccountQueryRepository accountQueryRepository;
-
-    @Transactional
-    public void createAccount(String nickname, Balance money, MemberAuthority authority, Long memberAuthId) {
-        if (authority.equals(MERCHANT)) {
-            createMerchantAccount(nickname, money, memberAuthId);
-        } else {
-            createCustomerAccount(nickname, money, memberAuthId);
-        }
-    }
 
     @Transactional
     public AccountDto showAccountInfo(MemberAuthority authority, Long memberAuthId, Long transactionCursorId) {
@@ -44,11 +35,13 @@ public class AccountService {
         return new AccountDto(account.getNickname(), account.getBalance().getBalance(), transactions);
     }
 
-    private void createMerchantAccount(String nickname, Balance money, Long merchantId) {
+    @Transactional
+    public void createMerchantAccount(String nickname, Balance money, Long merchantId) {
         accountRepository.save(Account.of(nickname, money, MERCHANT, merchantId));
     }
 
-    private void createCustomerAccount(String nickname, Balance money, Long customerId) {
+    @Transactional
+    public void createCustomerAccount(String nickname, Balance money, Long customerId) {
         accountRepository.save(Account.of(nickname, money, CUSTOMER, customerId));
     }
 }
