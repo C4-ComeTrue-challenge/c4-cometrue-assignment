@@ -1,7 +1,7 @@
 package org.c4marathon.assignment.auth.presentation;
 
 import lombok.RequiredArgsConstructor;
-import org.c4marathon.assignment.auth.domain.AuthTokenContext;
+import org.c4marathon.assignment.auth.util.AuthTokenContext;
 import org.c4marathon.assignment.auth.dto.TokenResponse;
 import org.c4marathon.assignment.auth.service.AuthService;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,6 @@
 package org.c4marathon.assignment.auth.config;
 
-import org.c4marathon.assignment.auth.domain.AuthTokenContext;
+import org.c4marathon.assignment.auth.util.AuthTokenContext;
 import org.c4marathon.assignment.auth.domain.repository.SessionRepository;
 import org.c4marathon.assignment.auth.filter.AccessTokenValidatorFilter;
 import org.c4marathon.assignment.auth.filter.AuthTokenGenerateFilter;

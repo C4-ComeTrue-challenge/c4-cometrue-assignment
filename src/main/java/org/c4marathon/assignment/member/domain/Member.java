@@ -26,10 +26,10 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
-    @Column
+    @Getter
     private Long merchantId;
 
-    @Column
+    @Getter
     private Long customerId;
 
     @Column(nullable = false, unique = true, length = 20)
@@ -50,7 +50,7 @@ public class Member {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    private Member(String nickname, MemberAuthority authority, String password) {
+    private Member(final String nickname, final MemberAuthority authority, final String password) {
         this.nickname = nickname;
         this.authority = authority;
         this.password = password;

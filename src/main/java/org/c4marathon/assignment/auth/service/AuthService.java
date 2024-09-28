@@ -7,7 +7,7 @@ import org.c4marathon.assignment.auth.util.TokenHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.c4marathon.assignment.auth.domain.AuthTokenContext.MEMBER_ID;
+import static org.c4marathon.assignment.auth.util.AuthTokenContext.MEMBER_ID;
 
 @Service
 @RequiredArgsConstructor

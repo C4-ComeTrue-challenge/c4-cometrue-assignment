@@ -1,4 +1,4 @@
-package org.c4marathon.assignment.auth.domain;
+package org.c4marathon.assignment.auth.util;
 
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;

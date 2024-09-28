@@ -36,7 +36,7 @@ public class Customer {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    private Customer(Long memberId, String nickname) {
+    private Customer(final Long memberId, final String nickname) {
         this.memberId = memberId;
         this.nickname = nickname;
     }
