@@ -21,6 +21,6 @@ class JpaCustomerRepositoryTest {
 		Customer savedCustomer = jpaCustomerRepository.save(newCustomer);
 
 		Customer findCustomer = jpaCustomerRepository.findById(savedCustomer.getId()).orElseThrow();
-		Assertions.assertEquals(newCustomer, findCustomer);
+		Assertions.assertEquals(savedCustomer, findCustomer);
 	}
 }

@@ -22,6 +22,6 @@ class JpaSellerRepositoryTest {
 		Seller savedSeller = jpaSellerRepository.save(newSeller);
 
 		Seller findSeller = jpaSellerRepository.findById(savedSeller.getId()).orElseThrow();
-		Assertions.assertEquals(newSeller, findSeller);
+		Assertions.assertEquals(savedSeller, findSeller);
 	}
 }
