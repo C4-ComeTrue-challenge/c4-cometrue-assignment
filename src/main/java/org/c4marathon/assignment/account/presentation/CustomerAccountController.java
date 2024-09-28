@@ -1,7 +1,7 @@
 package org.c4marathon.assignment.account.presentation;
 
 import lombok.RequiredArgsConstructor;
-import org.c4marathon.assignment.account.dto.response.AccountDto;
+import org.c4marathon.assignment.account.dto.response.AccountResponse;
 import org.c4marathon.assignment.account.service.CommonAccountService;
 import org.c4marathon.assignment.global.exception.AccountException;
 import org.c4marathon.assignment.member.domain.MemberAuthority;
@@ -20,13 +20,13 @@ public class CustomerAccountController {
     private final CommonAccountService commonAccountService;
 
     @GetMapping
-    public ResponseEntity<AccountDto> getAccountInfo(
+    public ResponseEntity<AccountResponse> getAccountInfo(
             @RequestParam(required = false) Long transactionId,
             Authentication authentication
     ) {
         Long memberAuthId = getMemberAuthId(authentication);
         MemberAuthority authority = getAuthority(authentication);
-        AccountDto accountDto = commonAccountService.showAccountInfo(authority, memberAuthId, transactionId);
+        AccountResponse accountDto = commonAccountService.showAccountInfo(authority, memberAuthId, transactionId);
 
         return ResponseEntity.ok(accountDto);
     }

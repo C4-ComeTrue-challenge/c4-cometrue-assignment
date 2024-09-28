@@ -17,6 +17,7 @@ public class AuthenticationConfig {
         authMatchers.add("/reissue");
         authMatchers.add("/accounts");
         authMatchers.add("/merchant/accounts");
+        authMatchers.add("/products");
         authMatchers.add("/merchant/products");
     }
 }
