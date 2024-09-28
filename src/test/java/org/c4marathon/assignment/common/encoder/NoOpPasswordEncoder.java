@@ -1,6 +1,5 @@
-package org.c4marathon.assignment.customer.infra.passwordencoder;
+package org.c4marathon.assignment.common.encoder;
 
-import org.c4marathon.assignment.customer.domain.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -6,8 +6,8 @@ import static org.mockito.Mockito.*;
 
 import java.util.UUID;
 
+import org.c4marathon.assignment.common.encoder.PasswordEncoder;
 import org.c4marathon.assignment.common.entity.Point;
-import org.c4marathon.assignment.customer.domain.PasswordEncoder;
 import org.c4marathon.assignment.seller.domain.Seller;
 import org.c4marathon.assignment.seller.domain.SellerRepository;
 import org.c4marathon.assignment.seller.domain.TestSellerFactory;

@@ -2,9 +2,9 @@ package org.c4marathon.assignment.customer.application;
 
 import java.util.UUID;
 
+import org.c4marathon.assignment.common.encoder.PasswordEncoder;
 import org.c4marathon.assignment.customer.domain.Customer;
 import org.c4marathon.assignment.customer.domain.CustomerRepository;
-import org.c4marathon.assignment.customer.domain.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

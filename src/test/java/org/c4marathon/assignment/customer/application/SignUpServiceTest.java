@@ -5,10 +5,10 @@ import static org.mockito.Mockito.*;
 
 import java.util.UUID;
 
+import org.c4marathon.assignment.common.encoder.PasswordEncoder;
 import org.c4marathon.assignment.common.entity.Point;
 import org.c4marathon.assignment.customer.domain.Customer;
 import org.c4marathon.assignment.customer.domain.CustomerRepository;
-import org.c4marathon.assignment.customer.domain.PasswordEncoder;
 import org.c4marathon.assignment.customer.domain.TestCustomerFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

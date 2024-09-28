@@ -2,8 +2,8 @@ package org.c4marathon.assignment.seller.domain;
 
 import java.util.UUID;
 
+import org.c4marathon.assignment.common.encoder.PasswordEncoder;
 import org.c4marathon.assignment.common.entity.Point;
-import org.c4marathon.assignment.customer.domain.PasswordEncoder;
 import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Column;
