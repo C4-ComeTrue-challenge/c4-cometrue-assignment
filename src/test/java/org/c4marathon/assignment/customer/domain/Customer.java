@@ -2,9 +2,11 @@ package org.c4marathon.assignment.customer.domain;
 
 import java.util.UUID;
 
+import org.c4marathon.assignment.common.entity.Point;
 import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -250,21 +252,25 @@ public class Customer {
 	private String password;
 	@Column(nullable = false)
 	private String name;
+	@Embedded
+	private Point point;
 
 	protected Customer() {
 	}
 
-	public Customer(UUID id, String email, String encodedPassword, String name) {
+	Customer(UUID id, String email, String encodedPassword, String name, Point point) {
 		this.id = id;
 		this.email = email;
 		this.password = encodedPassword;
 		this.name = name;
+		this.point = point;
 	}
 
 	public Customer(String email, String password, String name, PasswordEncoder passwordEncoder) {
 		this.email = email;
 		this.password = passwordEncoder.encode(password);
 		this.name = name;
+		this.point = new Point();
 	}
 
 	public UUID getId() {
