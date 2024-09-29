@@ -8,9 +8,9 @@ import org.c4marathon.assignment.user.exception.DuplicateEmailException;
 import org.c4marathon.assignment.user.exception.DuplicateNicknameException;
 import org.c4marathon.assignment.user.exception.InvalidLoginException;
 import org.c4marathon.assignment.user.exception.NotFountUserException;
-import org.c4marathon.assignment.user.service.dto.UserLoginServiceDto;
-import org.c4marathon.assignment.user.service.dto.UserRegisterServiceDto;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.c4marathon.assignment.user.presentation.dto.UserRegisterResponse;
+import org.c4marathon.assignment.user.service.dto.UserLoginServiceRequest;
+import org.c4marathon.assignment.user.service.dto.UserRegisterServiceRequest;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -18,9 +18,8 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
 
-    public void register(UserRegisterServiceDto registerDto) {
+    public UserRegisterResponse register(UserRegisterServiceRequest registerDto) {
 
         if (validateEmailDuplicate(registerDto.email())) {
             throw new DuplicateEmailException(ErrorCode.DUPLICATE_EMAIL);
@@ -32,16 +31,17 @@ public class UserService {
         User user = User.create(
                 registerDto.email(),
                 registerDto.nickname(),
-                passwordEncoder.encode(registerDto.password())
+                registerDto.password()
         );
         userRepository.save(user);
+        return new UserRegisterResponse(user.getId(), user.getEmail(), user.getNickname());
     }
 
-    public User login(UserLoginServiceDto loginDto) {
+    public User login(UserLoginServiceRequest loginDto) {
         User user = userRepository.findByEmail(loginDto.email())
                 .orElseThrow(() -> new NotFountUserException(ErrorCode.NOT_FOUND_USER));
 
-        if (!passwordEncoder.matches(loginDto.password(), user.getPassword())) {
+        if (!loginDto.password().equals(user.getPassword())) {
             throw new InvalidLoginException(ErrorCode.INVALID_LOGIN);
         }
         return user;
