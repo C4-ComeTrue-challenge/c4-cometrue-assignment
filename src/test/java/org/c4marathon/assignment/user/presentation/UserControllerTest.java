@@ -3,8 +3,8 @@ package org.c4marathon.assignment.user.presentation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.c4marathon.assignment.global.util.SessionConst;
 import org.c4marathon.assignment.user.domain.User;
-import org.c4marathon.assignment.user.presentation.dto.UserLoginDto;
-import org.c4marathon.assignment.user.presentation.dto.UserRegisterDto;
+import org.c4marathon.assignment.user.presentation.dto.UserLoginRequest;
+import org.c4marathon.assignment.user.presentation.dto.UserRegisterRequest;
 import org.c4marathon.assignment.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ class UserControllerTest {
     @DisplayName("회원가입 성공")
     void register() throws Exception {
         // given
-        UserRegisterDto registerDto = new UserRegisterDto("test@test.com", "1234", "test");
+        UserRegisterRequest registerDto = new UserRegisterRequest("test@test.com", "1234", "test");
 
 
         // when //then
@@ -55,7 +55,7 @@ class UserControllerTest {
     @Test
     void login() throws Exception{
         // given
-        UserLoginDto loginDto = new UserLoginDto("test@test.com", "1234");
+        UserLoginRequest loginDto = new UserLoginRequest("test@test.com", "1234");
 
         User user = User.create("test@test.com", "1234", "test");
         given(userService.login(any())).willReturn(user);
