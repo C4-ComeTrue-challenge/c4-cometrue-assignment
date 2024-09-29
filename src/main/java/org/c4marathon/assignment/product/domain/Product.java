@@ -37,10 +37,13 @@ public class Product {
     private String productName;
 
     @Column(nullable = false)
-    private Long price;
+    private String description;
 
     @Column(nullable = false)
-    private String description;
+    private Long price;
+
+    @Column(nullable =false)
+    private Long stock;
 
     @CreatedDate
     @Column(updatable = false)
@@ -48,20 +51,23 @@ public class Product {
 
     private Product(final Merchant merchant,
                     final String productName,
+                    final String description,
                     final Long price,
-                    final String description) {
-
+                    final Long stock
+    ) {
         this.merchant = merchant;
         this.productName = productName;
-        this.price = price;
         this.description = description;
+        this.price = price;
+        this.stock = stock;
     }
 
-    public static Product of(Merchant merchant,
-                             String productName,
-                             Long price,
-                             String description
+    public static Product of(final Merchant merchant,
+                             final String productName,
+                             final String description,
+                             final Long price,
+                             final Long stock
     ) {
-        return new Product(merchant, productName, price, description);
+        return new Product(merchant, productName, description, price, stock);
     }
 }

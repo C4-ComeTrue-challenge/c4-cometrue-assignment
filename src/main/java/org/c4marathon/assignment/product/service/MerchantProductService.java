@@ -14,8 +14,10 @@ public class MerchantProductService {
 
     public void addProduct(Merchant merchant,
                            String productName,
+                           String description,
                            Long price,
-                           String description) {
-        productRepository.save(Product.of(merchant, productName, price, description));
+                           Long stock
+    ) {
+        productRepository.save(Product.of(merchant, productName, description, price, stock));
     }
 }

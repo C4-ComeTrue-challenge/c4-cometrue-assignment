@@ -31,7 +31,12 @@ public class MerchantProductController {
     ) {
         checkMerchant(authentication);
         Merchant merchant = merchantService.findMerchantById(getMerchantId(authentication));
-        productService.addProduct(merchant, request.productName(), request.price(), request.description());
+        productService.addProduct(merchant,
+                                  request.productName(),
+                                  request.description(),
+                                  request.price(),
+                                  request.stock());
+
         return ResponseEntity.status(CREATED).build();
     }
 
