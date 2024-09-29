@@ -16,8 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TransactionCustomerService {
 
-    private AccountRepository accountRepository;
-    private TransactionRepository transactionRepository;
+    private final AccountRepository accountRepository;
+    private final TransactionRepository transactionRepository;
 
     @Transactional
     public void doTransaction(Long fromAccountId, Long toAccountId, Long money) {
