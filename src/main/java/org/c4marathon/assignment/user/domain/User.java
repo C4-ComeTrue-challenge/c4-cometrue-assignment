@@ -7,6 +7,7 @@ import org.c4marathon.assignment.global.BaseEntity;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "users")
 @Entity
 public class User extends BaseEntity {
 
