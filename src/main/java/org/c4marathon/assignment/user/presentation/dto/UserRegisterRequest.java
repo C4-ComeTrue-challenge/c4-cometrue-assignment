@@ -1,10 +1,9 @@
 package org.c4marathon.assignment.user.presentation.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import org.c4marathon.assignment.user.service.dto.UserRegisterServiceDto;
+import org.c4marathon.assignment.user.service.dto.UserRegisterServiceRequest;
 
-public record UserRegisterDto(
+public record UserRegisterRequest(
 
         @NotBlank(message = "email을 입력해주세요.")
         String email,
@@ -15,8 +14,8 @@ public record UserRegisterDto(
         @NotBlank(message = "닉네임을 입력해주세요.")
         String nickname
 ) {
-    public UserRegisterServiceDto toServiceDto() {
-        return UserRegisterServiceDto.builder()
+    public UserRegisterServiceRequest toServiceDto() {
+        return UserRegisterServiceRequest.builder()
                 .email(email)
                 .password(password)
                 .nickname(nickname)

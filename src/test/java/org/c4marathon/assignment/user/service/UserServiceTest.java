@@ -6,8 +6,9 @@ import org.c4marathon.assignment.user.exception.DuplicateEmailException;
 import org.c4marathon.assignment.user.exception.DuplicateNicknameException;
 import org.c4marathon.assignment.user.exception.InvalidLoginException;
 import org.c4marathon.assignment.user.exception.NotFountUserException;
-import org.c4marathon.assignment.user.service.dto.UserLoginServiceDto;
-import org.c4marathon.assignment.user.service.dto.UserRegisterServiceDto;
+import org.c4marathon.assignment.user.presentation.dto.UserRegisterResponse;
+import org.c4marathon.assignment.user.service.dto.UserLoginServiceRequest;
+import org.c4marathon.assignment.user.service.dto.UserRegisterServiceRequest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,13 +35,13 @@ class UserServiceTest {
     @Test
     void register() {
         // given
-        UserRegisterServiceDto registerDto = new UserRegisterServiceDto(
+        UserRegisterServiceRequest registerDto = new UserRegisterServiceRequest(
                 "test@test.com",
                 "1234",
                 "opix"
         );
         // when
-        Long register = userService.register(registerDto);
+        UserRegisterResponse register = userService.register(registerDto);
 
         // then
         assertThat(register).isNotNull();
@@ -54,7 +55,7 @@ class UserServiceTest {
         User user = User.create("test@test.com", "1234", "test");
         userRepository.save(user);
 
-        UserRegisterServiceDto registerDto = new UserRegisterServiceDto(
+        UserRegisterServiceRequest registerDto = new UserRegisterServiceRequest(
                 "test@test.com",
                 "1234",
                 "opix"
@@ -72,7 +73,7 @@ class UserServiceTest {
         User user = User.create("test@test.com", "1234", "test");
         userRepository.save(user);
 
-        UserRegisterServiceDto registerDto = new UserRegisterServiceDto(
+        UserRegisterServiceRequest registerDto = new UserRegisterServiceRequest(
                 "test1@test.com",
                 "1234",
                 "test"
@@ -90,7 +91,7 @@ class UserServiceTest {
         User user = User.create("test@test.com", "1234", "test");
         userRepository.save(user);
 
-        UserLoginServiceDto loginDto = new UserLoginServiceDto("test@test.com", "1234");
+        UserLoginServiceRequest loginDto = new UserLoginServiceRequest("test@test.com", "1234");
 
         // when
         User loginUser = userService.login(loginDto);
@@ -108,7 +109,7 @@ class UserServiceTest {
         User user = User.create("test@test.com", "1234", "test");
         userRepository.save(user);
 
-        UserLoginServiceDto loginDto = new UserLoginServiceDto("test1@test.com", "1234");
+        UserLoginServiceRequest loginDto = new UserLoginServiceRequest("test1@test.com", "1234");
 
         // when // then
         assertThatThrownBy(() -> userService.login(loginDto))
@@ -123,7 +124,7 @@ class UserServiceTest {
         User user = User.create("test@test.com", "1234", "test");
         userRepository.save(user);
 
-        UserLoginServiceDto loginDto = new UserLoginServiceDto("test@test.com", "12345");
+        UserLoginServiceRequest loginDto = new UserLoginServiceRequest("test@test.com", "12345");
 
         // when // then
         assertThatThrownBy(() -> userService.login(loginDto))
