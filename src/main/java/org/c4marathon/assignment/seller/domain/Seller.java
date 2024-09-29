@@ -2,6 +2,7 @@ package org.c4marathon.assignment.seller.domain;
 
 import java.util.UUID;
 
+import org.c4marathon.assignment.common.authentication.model.User;
 import org.c4marathon.assignment.common.encoder.PasswordEncoder;
 import org.c4marathon.assignment.common.entity.Point;
 import org.hibernate.annotations.UuidGenerator;
@@ -17,7 +18,7 @@ import jakarta.persistence.Table;
 @Table(
 	name = "SELLERS"
 )
-public class Seller {
+public class Seller implements User {
 	@Id
 	@GeneratedValue
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
@@ -55,5 +56,17 @@ public class Seller {
 
 	public UUID getId() {
 		return id;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public String getRole() {
+		return "seller";
 	}
 }

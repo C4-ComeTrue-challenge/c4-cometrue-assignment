@@ -2,6 +2,7 @@ package org.c4marathon.assignment.customer.domain;
 
 import java.util.UUID;
 
+import org.c4marathon.assignment.common.authentication.model.User;
 import org.c4marathon.assignment.common.encoder.PasswordEncoder;
 import org.c4marathon.assignment.common.entity.Point;
 import org.hibernate.annotations.UuidGenerator;
@@ -242,7 +243,7 @@ import jakarta.persistence.UniqueConstraint;
 	name = "CUSTOMERS",
 	uniqueConstraints = {@UniqueConstraint(name = "uq_customers_email", columnNames = {"email"})}
 )
-public class Customer {
+public class Customer implements User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	@UuidGenerator(style = UuidGenerator.Style.TIME)
@@ -276,5 +277,18 @@ public class Customer {
 
 	public UUID getId() {
 		return id;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	@Override
+	public String getRole() {
+		return "customer";
 	}
 }
