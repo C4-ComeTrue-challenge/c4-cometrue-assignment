@@ -12,8 +12,10 @@ import org.c4marathon.assignment.user.presentation.dto.UserRegisterResponse;
 import org.c4marathon.assignment.user.service.dto.UserLoginServiceRequest;
 import org.c4marathon.assignment.user.service.dto.UserRegisterServiceRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class UserService {
 
@@ -36,6 +38,7 @@ public class UserService {
         userRepository.save(user);
         return new UserRegisterResponse(user.getId(), user.getEmail(), user.getNickname());
     }
+
 
     public User login(UserLoginServiceRequest loginDto) {
         User user = userRepository.findByEmail(loginDto.email())
