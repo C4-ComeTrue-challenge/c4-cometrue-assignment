@@ -41,6 +41,12 @@ public class CommonAccountService {
     }
 
     @Transactional
+    public Account findAccountByAuthorityAndMemberAuthId(MemberAuthority authority, Long memberAuthId) {
+        return accountRepository.findAccountByAuthorityAndMemberAuthId(authority, memberAuthId)
+                                .orElseThrow(() -> new AccountException(ACCOUNT_NOT_FOUND));
+    }
+
+    @Transactional
     public void createMerchantAccount(String nickname, Balance money, Long merchantId) {
         accountRepository.save(Account.of(nickname, money, MERCHANT, merchantId));
     }
