@@ -1,6 +1,7 @@
 package org.c4marathon.assignment.product.presentation;
 
 import lombok.RequiredArgsConstructor;
+import org.c4marathon.assignment.product.dto.ProductPageDto;
 import org.c4marathon.assignment.product.dto.response.ProductPageResponse;
 import org.c4marathon.assignment.product.service.CustomerProductService;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class CustomerProductController {
             @RequestParam String searchKeyword,
             Authentication authentication
     ) {
-        ProductPageResponse response = customerProductService.getProducts(productCursorId, searchKeyword);
-        return ResponseEntity.ok(response);
+        ProductPageDto response = customerProductService.getProducts(productCursorId, searchKeyword);
+        return ResponseEntity.ok(new ProductPageResponse(response));
     }
 }
