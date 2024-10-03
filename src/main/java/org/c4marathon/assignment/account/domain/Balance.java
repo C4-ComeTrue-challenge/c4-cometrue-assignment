@@ -36,7 +36,7 @@ public class Balance {
         return this;
     }
 
-    public Boolean notEnoughMoney(Long money) {
-        return balance < money;
+    public Boolean hasEnoughMoney(Long money) {
+        return balance >= money;
     }
 }

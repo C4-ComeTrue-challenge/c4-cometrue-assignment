@@ -20,5 +20,6 @@ public class AuthenticationConfig {
         authMatchers.add("/products");
         authMatchers.add("/merchant/products");
         authMatchers.add("/charges");
+        authMatchers.add("/orders/buy");
     }
 }

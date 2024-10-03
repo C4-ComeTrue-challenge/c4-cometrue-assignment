@@ -1,6 +1,7 @@
 package org.c4marathon.assignment.order.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.c4marathon.assignment.member.domain.Customer;
@@ -18,7 +19,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
-public class Order {
+public class Orders {
 
     @Id
     @Getter
@@ -34,10 +35,13 @@ public class Order {
     private Product product;
 
     @Column(nullable = false)
+    private Long price;
+
+    @Column(nullable = false)
     private Long quantity;
 
     @Column(nullable = false)
-    private Long price;
+    private Long totalPrice;
 
     @Enumerated(STRING)
     private OrderState orderState;
@@ -49,29 +53,33 @@ public class Order {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    private Order(
+    @Builder
+    private Orders(
             String orderId,
             Customer customer,
             Product product,
-            Long quantity,
             Long price,
+            Long quantity,
+            Long totalPrice,
             OrderState orderState
     ) {
         this.orderId = orderId;
         this.customer = customer;
         this.product = product;
-        this.quantity = quantity;
         this.price = price;
+        this.quantity = quantity;
+        this.totalPrice = totalPrice;
         this.orderState = orderState;
     }
 
-    public static Order of(
+    public static Orders of(
             String orderId,
             Customer customer,
             Product product,
-            Long quantity,
             Long price,
+            Long quantity,
+            Long totalPrice,
             OrderState orderState) {
-        return new Order(orderId, customer, product, quantity, price, orderState);
+        return new Orders(orderId, customer, product, price, quantity, totalPrice, orderState);
     }
 }

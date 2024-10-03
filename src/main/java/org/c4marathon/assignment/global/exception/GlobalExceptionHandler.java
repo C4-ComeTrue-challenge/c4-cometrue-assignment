@@ -38,6 +38,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ErrorResponse(exception.getCode(), exception.getMessage()));
     }
 
+    @ExceptionHandler(ProductException.class)
+    public ResponseEntity<ErrorResponse> handleProductException(final ProductException exception) {
+
+        return ResponseEntity.status(exception.getHttpStatus())
+                .body(new ErrorResponse(exception.getCode(), exception.getMessage()));
+    }
+
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleSqlIntegrityConstraintViolationException() {
         ExceptionCode exceptionCode = INVALID_REQUEST;

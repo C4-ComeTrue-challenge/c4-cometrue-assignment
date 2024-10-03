@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ChargeService {
 
-    private final TransactionCustomerService transactionCustomerService;
+    private final TransactionService transactionCustomerService;
     private static final Long ADMINISTRATOR_ACCOUNT_ID = 1L;
 
     @Transactional
