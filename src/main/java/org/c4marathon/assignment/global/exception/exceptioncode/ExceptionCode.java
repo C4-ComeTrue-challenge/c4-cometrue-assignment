@@ -19,7 +19,11 @@ public enum ExceptionCode {
     BALANCE_CANNOT_NEGATIVE(BAD_REQUEST, 3001, "계좌의 금액은 0원 미만이 될 수 없습니다."),
     ACCOUNT_NOT_FOUND(NOT_FOUND, 3002, "해당 계좌를 찾을 수 없습니다."),
     ACCOUNT_BALANCE_NOT_ENOUGH(BAD_REQUEST, 3003, "송금을 하는 계좌의 잔고가 부족합니다."),
-    NO_AUTHORITY(UNAUTHORIZED, 3004, "권한이 존재하지 않습니다.");
+    NO_AUTHORITY(UNAUTHORIZED, 3004, "권한이 존재하지 않습니다."),
+
+    // 4000번 대(상품 관련) 코드
+    PRODUCT_NOT_FOUND(NOT_FOUND, 4000, "찾으려는 상품이 존재하지 않습니다."),
+    STOCK_CANNOT_NEGATIVE(BAD_REQUEST, 40001, "물건의 재고는 0개 미만이 될 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final int code;

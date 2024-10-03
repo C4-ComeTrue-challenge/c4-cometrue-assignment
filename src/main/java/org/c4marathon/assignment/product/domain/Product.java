@@ -40,11 +40,12 @@ public class Product {
     @Column(nullable = false)
     private String description;
 
+    @Getter
     @Column(nullable = false)
     private Long price;
 
-    @Column(nullable =false)
-    private Long stock;
+    @Embedded
+    private Stock stock;
 
     @CreatedDate
     @Column(updatable = false)
@@ -54,7 +55,7 @@ public class Product {
                     final String productName,
                     final String description,
                     final Long price,
-                    final Long stock
+                    final Stock stock
     ) {
         this.merchant = merchant;
         this.productName = productName;
@@ -67,8 +68,12 @@ public class Product {
                              final String productName,
                              final String description,
                              final Long price,
-                             final Long stock
+                             final Stock stock
     ) {
         return new Product(merchant, productName, description, price, stock);
+    }
+
+    public void decreaseStock(final Long quantity) {
+        stock.decreaseStock(quantity);
     }
 }

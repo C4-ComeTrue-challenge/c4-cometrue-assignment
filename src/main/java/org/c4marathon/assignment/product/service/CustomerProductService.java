@@ -1,12 +1,9 @@
 package org.c4marathon.assignment.product.service;
 
 import lombok.RequiredArgsConstructor;
-import org.c4marathon.assignment.member.domain.repository.CustomerRepository;
 import org.c4marathon.assignment.product.domain.repository.ProductQueryRepository;
-import org.c4marathon.assignment.product.domain.repository.ProductRepository;
 import org.c4marathon.assignment.product.dto.ProductDto;
 import org.c4marathon.assignment.product.dto.ProductPageDto;
-import org.c4marathon.assignment.product.dto.response.ProductPageResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +15,6 @@ import static org.c4marathon.assignment.global.utils.PageUtil.SMALL_PAGE_SIZE;
 @RequiredArgsConstructor
 public class CustomerProductService {
 
-    private final CustomerRepository customerRepository;
-    private final ProductRepository productRepository;
     private final ProductQueryRepository productQueryRepository;
 
     @Transactional(readOnly = true)
