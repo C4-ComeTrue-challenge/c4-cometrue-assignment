@@ -1,0 +1,10 @@
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+app:
+  secret-key: 13h9qqxn1e-oyn4-dn-d1ibdk1whg1hkp1hvji0dvh10div10ud1djss3iu-1ti-f11j1e-i1jx-isqss-ihqi-gi-i-
+  auth-header: Authorization

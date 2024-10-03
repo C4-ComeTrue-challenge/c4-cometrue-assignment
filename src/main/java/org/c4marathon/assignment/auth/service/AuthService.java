@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.c4marathon.assignment.auth.domain.Session;
 import org.c4marathon.assignment.auth.domain.repository.SessionRepository;
 import org.c4marathon.assignment.auth.util.TokenHandler;
+import org.c4marathon.assignment.member.domain.MemberAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,12 +18,12 @@ public class AuthService {
     private final TokenHandler tokenHandler;
 
     @Transactional
-    public void storeRefreshToken(String refreshToken) {
-        Long memberId = extractEmailFrom(refreshToken);
-        Session findSession = sessionRepository.findByMemberId(memberId);
+    public void loginAndStoreRefreshToken(MemberAuthority authority, String refreshToken) {
+        Long memberAuthId = extractEmailFrom(refreshToken);
+        Session findSession = sessionRepository.findByAuthorityAndMemberAuthId(authority, memberAuthId);
 
         if (findSession == null) {
-            sessionRepository.save(new Session(refreshToken, memberId));
+            sessionRepository.save(new Session(refreshToken, authority, memberAuthId));
         }
         else {
             findSession.updateRefreshToken(refreshToken);
@@ -30,12 +31,11 @@ public class AuthService {
     }
 
     @Transactional
-    public void blackSessionBy(Long userId) {
-        Session findSession = sessionRepository.findByMemberId(userId);
+    public void blackSessionBy(MemberAuthority authority, Long memberAuthId) {
+        Session findSession = sessionRepository.findByAuthorityAndMemberAuthId(authority, memberAuthId);
         if (findSession == null) {
             return;
         }
-
         findSession.blackSession();
     }
 
