@@ -32,6 +32,7 @@ public class Member {
     @Getter
     private Long customerId;
 
+    @Getter
     @Column(nullable = false, unique = true, length = 20)
     private String nickname;
 

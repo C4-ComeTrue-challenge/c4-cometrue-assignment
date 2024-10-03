@@ -14,6 +14,7 @@ import org.c4marathon.assignment.auth.domain.repository.SessionRepository;
 import org.c4marathon.assignment.auth.util.TokenHandler;
 import org.c4marathon.assignment.global.exception.AuthException;
 import org.c4marathon.assignment.member.domain.Member;
+import org.c4marathon.assignment.member.domain.MemberAuthority;
 import org.c4marathon.assignment.member.domain.repository.MemberRepository;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,8 +26,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 import static java.lang.Boolean.TRUE;
+import static org.c4marathon.assignment.auth.util.AuthTokenContext.AUTHORITIES;
 import static org.c4marathon.assignment.auth.util.AuthTokenContext.MEMBER_ID;
 import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.*;
+import static org.c4marathon.assignment.member.domain.MemberAuthority.*;
 
 @RequiredArgsConstructor
 public class RefreshTokenValidatorFilter extends OncePerRequestFilter {
@@ -43,13 +46,14 @@ public class RefreshTokenValidatorFilter extends OncePerRequestFilter {
             String refreshToken = request.getHeader(authTokenContext.getAuthHeader());
             isExistRefreshToken(refreshToken);
 
-            Long memberId = getMemberIdFrom(refreshToken);
-            Session findSession = sessionRepository.findByMemberId(memberId);
+            Long memberAuthId = getMemberIdFrom(refreshToken);
+            MemberAuthority authority = getMemberAuthorityFrom(refreshToken);
+            Session findSession = sessionRepository.findByAuthorityAndMemberAuthId(authority, memberAuthId);
             isExistSession(findSession);
             isBlackList(findSession);
             isCurrentToken(findSession, refreshToken);
 
-            Member findMember = memberRepository.findById(memberId)
+            Member findMember = memberRepository.findById(memberAuthId)
                                                 .orElseThrow(() -> new AuthException(MEMBER_NOT_FOUND));
 
             Authentication auth = generateAuthenticationBy(findMember);
@@ -93,6 +97,18 @@ public class RefreshTokenValidatorFilter extends OncePerRequestFilter {
     private Long getMemberIdFrom(String refreshToken) {
         Claims claims = tokenHandler.getClaims(refreshToken);
         return Long.parseLong((String)claims.get(MEMBER_ID));
+    }
+
+    private MemberAuthority getMemberAuthorityFrom(String refreshToken) {
+        Claims claims = tokenHandler.getClaims(refreshToken);
+        if (claims.get(AUTHORITIES).toString().contains("CUSTOMER")) {
+            return CUSTOMER;
+        } else if (claims.get(AUTHORITIES).toString().contains("MERCHANT")) {
+            return MERCHANT;
+        } else if (claims.get(AUTHORITIES).toString().contains("ADMINISTRATOR")) {
+            return ADMINISTRATOR;
+        }
+        return null;
     }
 
     private static void isExistRefreshToken(String refreshToken) {
