@@ -18,11 +18,13 @@ public class JpaCustomerRepository implements CustomerRepository {
 
 	@Override
 	public Customer save(Customer customer) {
-		return repository.save(customer);
+		CustomerRecord savedCustomerRecord = repository.save(customer.toRecord());
+		return savedCustomerRecord.toDomain();
 	}
 
 	@Override
 	public Optional<Customer> findById(UUID id) {
-		return repository.findById(id);
+		Optional<CustomerRecord> findCustomerRecord = repository.findById(id);
+		return findCustomerRecord.map(CustomerRecord::toDomain);
 	}
 }

@@ -2,21 +2,9 @@ package org.c4marathon.assignment.customer.domain;
 
 import java.util.UUID;
 
-import org.c4marathon.assignment.common.authentication.model.User;
-import org.c4marathon.assignment.common.authentication.model.principal.LoginCustomer;
-import org.c4marathon.assignment.common.authentication.model.principal.Principal;
 import org.c4marathon.assignment.common.encoder.PasswordEncoder;
 import org.c4marathon.assignment.common.entity.Point;
-import org.hibernate.annotations.UuidGenerator;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import org.c4marathon.assignment.customer.infra.persist.CustomerRecord;
 
 /**
  * <h1>쟁점1. 계정 인증 방안</h1>
@@ -246,29 +234,14 @@ import jakarta.persistence.UniqueConstraint;
  * @see <a href="https://dev.to/mcadariu/using-uuids-as-primary-keys-3e7a">To UUID, or not to UUID, that is the primary key question</a>
  *
  */
-@Entity
-@Table(
-	name = "CUSTOMERS",
-	uniqueConstraints = {@UniqueConstraint(name = "uq_customers_email", columnNames = {"email"})}
-)
-public class Customer implements User {
-	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	@UuidGenerator(style = UuidGenerator.Style.TIME)
+public class Customer {
 	private UUID id;
-	@Column(nullable = false)
 	private String email;
-	@Column(nullable = false)
 	private String password;
-	@Column(nullable = false)
 	private String name;
-	@Embedded
 	private Point point;
 
-	protected Customer() {
-	}
-
-	Customer(UUID id, String email, String encodedPassword, String name, Point point) {
+	public Customer(UUID id, String email, String encodedPassword, String name, Point point) {
 		this.id = id;
 		this.email = email;
 		this.password = encodedPassword;
@@ -287,18 +260,7 @@ public class Customer implements User {
 		return id;
 	}
 
-	@Override
-	public boolean authenticate(String email, String password, PasswordEncoder passwordEncoder) {
-		return this.email.equals(email) && passwordEncoder.matches(password, this.password);
-	}
-
-	@Override
-	public Principal getPrincipal() {
-		return new LoginCustomer(id);
-	}
-
-	@Override
-	public String getRole() {
-		return "customer";
+	public CustomerRecord toRecord() {
+		return new CustomerRecord(id, email, password, name, point);
 	}
 }
