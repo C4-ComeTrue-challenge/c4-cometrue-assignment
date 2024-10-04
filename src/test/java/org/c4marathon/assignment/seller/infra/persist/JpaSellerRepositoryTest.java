@@ -1,8 +1,9 @@
 package org.c4marathon.assignment.seller.infra.persist;
 
+import java.lang.reflect.Field;
+
 import org.c4marathon.assignment.common.entity.Point;
 import org.c4marathon.assignment.seller.domain.Seller;
-import org.c4marathon.assignment.seller.domain.TestSellerFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,23 @@ class JpaSellerRepositoryTest {
 	private JpaSellerRepository jpaSellerRepository;
 
 	@Test
-	void save() {
-		Seller newSeller = TestSellerFactory.create(
-			null, "newEmail", "newPassword", "newName", "newLicenseNumber", new Point());
+	void save() throws IllegalAccessException {
+		Seller newSeller = new Seller(null, "newEmail", "newPassword", "newName", "newLicenseNumber", new Point());
 		Seller savedSeller = jpaSellerRepository.save(newSeller);
 
 		Seller findSeller = jpaSellerRepository.findById(savedSeller.getId()).orElseThrow();
-		Assertions.assertEquals(savedSeller, findSeller);
+		assertRefEquals(savedSeller, findSeller);
+	}
+
+	private void assertRefEquals(Seller expected, Seller actual) throws IllegalAccessException {
+		Field[] fields = Seller.class.getDeclaredFields();
+		for (Field field : fields) {
+			field.setAccessible(true);
+
+			Object value1 = field.get(expected);
+			Object value2 = field.get(actual);
+
+			Assertions.assertEquals(value1, value2);
+		}
 	}
 }

@@ -10,7 +10,6 @@ import org.c4marathon.assignment.common.encoder.PasswordEncoder;
 import org.c4marathon.assignment.common.entity.Point;
 import org.c4marathon.assignment.seller.domain.Seller;
 import org.c4marathon.assignment.seller.domain.SellerRepository;
-import org.c4marathon.assignment.seller.domain.TestSellerFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,9 +36,8 @@ class SignUpSellerServiceTest {
 		when(passwordEncoder.encode(cmd.password())).thenReturn("{noop}" + cmd.password());
 		when(sellerRepository.save(
 			refEq(new Seller(cmd.email(), cmd.password(), cmd.name(), cmd.licenseNumber(), passwordEncoder), "point")))
-			.thenReturn(
-				TestSellerFactory.create(
-					nextId, cmd.email(), "{noop}" + cmd.password(), cmd.name(), cmd.licenseNumber(), new Point()));
+			.thenReturn(new Seller(nextId, cmd.email(), "{noop}" + cmd.password(), cmd.name(), cmd.licenseNumber(),
+				new Point()));
 
 		then(signUpService.register(cmd)).isEqualTo(nextId);
 		verify(sellerRepository)
