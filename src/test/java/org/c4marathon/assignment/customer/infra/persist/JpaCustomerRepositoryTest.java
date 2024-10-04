@@ -1,8 +1,9 @@
 package org.c4marathon.assignment.customer.infra.persist;
 
+import java.lang.reflect.Field;
+
 import org.c4marathon.assignment.common.entity.Point;
 import org.c4marathon.assignment.customer.domain.Customer;
-import org.c4marathon.assignment.customer.domain.TestCustomerFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,23 @@ class JpaCustomerRepositoryTest {
 	private JpaCustomerRepository jpaCustomerRepository;
 
 	@Test
-	void save() {
-		Customer newCustomer = TestCustomerFactory.create(null, "newEmail", "newPassword", "newName", new Point());
+	void save() throws IllegalAccessException {
+		Customer newCustomer = new Customer(null, "newEmail", "newPassword", "newName", new Point());
 		Customer savedCustomer = jpaCustomerRepository.save(newCustomer);
 
 		Customer findCustomer = jpaCustomerRepository.findById(savedCustomer.getId()).orElseThrow();
-		Assertions.assertEquals(savedCustomer, findCustomer);
+		assertRefEquals(savedCustomer, findCustomer);
+	}
+
+	private void assertRefEquals(Customer expected, Customer actual) throws IllegalAccessException {
+		Field[] fields = Customer.class.getDeclaredFields();
+		for (Field field : fields) {
+			field.setAccessible(true);
+
+			Object value1 = field.get(expected);
+			Object value2 = field.get(actual);
+
+			Assertions.assertEquals(value1, value2);
+		}
 	}
 }
