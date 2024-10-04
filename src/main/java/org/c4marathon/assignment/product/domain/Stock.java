@@ -1,12 +1,13 @@
 package org.c4marathon.assignment.product.domain;
 
+import static lombok.AccessLevel.PROTECTED;
+import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.STOCK_CANNOT_NEGATIVE;
+
+import org.c4marathon.assignment.global.exception.ProductException;
+
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.c4marathon.assignment.global.exception.ProductException;
-
-import static lombok.AccessLevel.PROTECTED;
-import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.STOCK_CANNOT_NEGATIVE;
 
 @Embeddable
 @NoArgsConstructor(access = PROTECTED)

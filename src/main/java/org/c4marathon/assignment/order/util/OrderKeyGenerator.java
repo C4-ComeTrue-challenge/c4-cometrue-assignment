@@ -1,9 +1,9 @@
 package org.c4marathon.assignment.order.util;
 
+import java.time.LocalDateTime;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 
 @Component
 public class OrderKeyGenerator {

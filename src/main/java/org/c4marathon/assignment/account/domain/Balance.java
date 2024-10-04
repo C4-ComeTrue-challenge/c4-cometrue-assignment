@@ -1,13 +1,14 @@
 package org.c4marathon.assignment.account.domain;
 
-import jakarta.persistence.Embeddable;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.c4marathon.assignment.global.exception.AccountException;
-
 import static lombok.AccessLevel.PROTECTED;
 import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.ACCOUNT_BALANCE_NOT_ENOUGH;
 import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.BALANCE_CANNOT_NEGATIVE;
+
+import org.c4marathon.assignment.global.exception.AccountException;
+
+import jakarta.persistence.Embeddable;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Embeddable
 @NoArgsConstructor(access = PROTECTED)

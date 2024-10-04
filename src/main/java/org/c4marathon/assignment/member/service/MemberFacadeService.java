@@ -1,10 +1,11 @@
 package org.c4marathon.assignment.member.service;
 
-import lombok.RequiredArgsConstructor;
 import org.c4marathon.assignment.account.domain.Balance;
 import org.c4marathon.assignment.account.service.CommonAccountService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

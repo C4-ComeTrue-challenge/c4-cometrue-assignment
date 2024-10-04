@@ -1,11 +1,12 @@
 package org.c4marathon.assignment.order.presentation;
 
-import lombok.RequiredArgsConstructor;
+import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.NO_AUTHORITY;
+import static org.springframework.http.HttpStatus.CREATED;
+
 import org.c4marathon.assignment.global.exception.AuthException;
 import org.c4marathon.assignment.order.dto.OrderDto;
 import org.c4marathon.assignment.order.dto.request.OrderRequest;
 import org.c4marathon.assignment.order.service.OrderFacadeService;
-import org.c4marathon.assignment.order.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,8 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.NO_AUTHORITY;
-import static org.springframework.http.HttpStatus.CREATED;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/orders/buy")
@@ -39,8 +39,9 @@ public class OrderController {
     }
 
     private void validateCustomer(Authentication authentication) {
-        if(!authentication.getAuthorities().toString().contains("CUSTOMER"))
+        if (!authentication.getAuthorities().toString().contains("CUSTOMER")) {
             throw new AuthException(NO_AUTHORITY);
+        }
     }
 
     private Long getCustomerId(Authentication authentication) {

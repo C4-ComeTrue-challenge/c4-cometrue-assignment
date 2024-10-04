@@ -1,7 +1,10 @@
 package org.c4marathon.assignment.auth;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.MEMBER_NOT_FOUND;
+import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
+
+import java.util.List;
+
 import org.c4marathon.assignment.global.exception.AuthException;
 import org.c4marathon.assignment.member.domain.Member;
 import org.c4marathon.assignment.member.domain.repository.CustomerRepository;
@@ -16,10 +19,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.MEMBER_NOT_FOUND;
-import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
 
 @Slf4j
 @Component
@@ -56,8 +58,9 @@ public class OpenerMarketAuthenticationProvider implements AuthenticationProvide
     }
 
     private void isPasswordMatch(String password, Member member) {
-        if (!passwordEncoder.matches(password, member.getPassword()))
+        if (!passwordEncoder.matches(password, member.getPassword())) {
             throw new UsernameNotFoundException(MEMBER_NOT_FOUND.getMessage());
+        }
     }
 
     @Override

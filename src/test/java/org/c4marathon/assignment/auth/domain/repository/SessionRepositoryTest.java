@@ -1,8 +1,9 @@
 package org.c4marathon.assignment.auth.domain.repository;
 
+import static org.c4marathon.assignment.member.domain.MemberAuthority.CUSTOMER;
+
 import org.c4marathon.assignment.auth.domain.Session;
 import org.c4marathon.assignment.member.domain.Member;
-import org.c4marathon.assignment.member.domain.MemberAuthority;
 import org.c4marathon.assignment.member.domain.repository.MemberRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -10,8 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.c4marathon.assignment.member.domain.MemberAuthority.CUSTOMER;
 
 @SpringBootTest
 class SessionRepositoryTest {

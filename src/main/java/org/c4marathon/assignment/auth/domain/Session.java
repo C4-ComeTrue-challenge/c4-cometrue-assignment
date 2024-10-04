@@ -1,16 +1,20 @@
 package org.c4marathon.assignment.auth.domain;
 
-import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.c4marathon.assignment.member.domain.MemberAuthority;
-
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static lombok.AccessLevel.PROTECTED;
+
+import org.c4marathon.assignment.member.domain.MemberAuthority;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Getter

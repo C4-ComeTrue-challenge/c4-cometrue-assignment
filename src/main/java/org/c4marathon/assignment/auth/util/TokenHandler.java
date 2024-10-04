@@ -1,10 +1,12 @@
 package org.c4marathon.assignment.auth.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import static org.springframework.security.core.authority.AuthorityUtils.commaSeparatedStringToAuthorityList;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode;
 import org.c4marathon.assignment.global.exception.response.ErrorResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,12 +15,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.springframework.security.core.authority.AuthorityUtils.commaSeparatedStringToAuthorityList;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor

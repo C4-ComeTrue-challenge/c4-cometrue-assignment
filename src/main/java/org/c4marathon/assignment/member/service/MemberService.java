@@ -1,7 +1,5 @@
 package org.c4marathon.assignment.member.service;
 
-import lombok.RequiredArgsConstructor;
-
 import org.c4marathon.assignment.member.domain.Customer;
 import org.c4marathon.assignment.member.domain.Member;
 import org.c4marathon.assignment.member.domain.Merchant;
@@ -11,6 +9,8 @@ import org.c4marathon.assignment.member.domain.repository.MerchantRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

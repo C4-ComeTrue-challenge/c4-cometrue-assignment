@@ -1,5 +1,9 @@
 package org.c4marathon.assignment.member.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.c4marathon.assignment.member.domain.MemberAuthority.CUSTOMER;
+import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
+
 import org.c4marathon.assignment.member.domain.Customer;
 import org.c4marathon.assignment.member.domain.Member;
 import org.c4marathon.assignment.member.domain.Merchant;
@@ -12,10 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.c4marathon.assignment.member.domain.MemberAuthority.CUSTOMER;
-import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
 
 @SpringBootTest
 class MemberServiceTest {
@@ -40,7 +40,7 @@ class MemberServiceTest {
 
     @DisplayName("구매자가 등록된다.")
     @Test
-    void 구매자_등록_테스트() {
+    void customerRegisterTest() {
         // given // when
         memberService.registerCustomerUser("구매자", "123456");
 
@@ -48,21 +48,17 @@ class MemberServiceTest {
         Member findMember = memberRepository.findByNickname("구매자").get();
         Customer findCustomer = customerRepository.findByMemberId(findMember.getId()).get();
 
-         assertThat(findMember)
+        assertThat(findMember)
                 .extracting("nickname", "authority")
-                .containsExactly(
-                        "구매자", CUSTOMER
-                );
-         assertThat(findCustomer)
-                 .extracting("memberId", "nickname")
-                 .containsExactly(
-                         findMember.getId(), "구매자"
-                 );
+                .containsExactly("구매자", CUSTOMER);
+        assertThat(findCustomer)
+                .extracting("memberId", "nickname")
+                .containsExactly(findMember.getId(), "구매자");
     }
 
     @DisplayName("판매자가 등록된다.")
     @Test
-    void 판매자_등록_테스트() {
+    void merchantRegisterTest() {
         // given // when
         memberService.registerMerchantUser("판매자", "123456");
 
@@ -72,13 +68,10 @@ class MemberServiceTest {
 
         assertThat(findMember)
                 .extracting("nickname", "authority")
-                .containsExactly(
-                        "판매자", MERCHANT
-                );
+                .containsExactly("판매자", MERCHANT);
+
         assertThat(findMerchant)
                 .extracting("memberId", "nickname")
-                .containsExactly(
-                        findMember.getId(), "판매자"
-                );
+                .containsExactly(findMember.getId(), "판매자");
     }
 }

@@ -1,16 +1,16 @@
 package org.c4marathon.assignment.auth.filter;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.security.SignatureException;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import org.c4marathon.assignment.auth.util.AuthTokenContext;
+import static java.lang.Boolean.TRUE;
+import static org.c4marathon.assignment.auth.util.AuthTokenContext.AUTHORITIES;
+import static org.c4marathon.assignment.auth.util.AuthTokenContext.MEMBER_ID;
+import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.*;
+import static org.c4marathon.assignment.member.domain.MemberAuthority.*;
+
+import java.io.IOException;
+
 import org.c4marathon.assignment.auth.domain.Session;
 import org.c4marathon.assignment.auth.domain.repository.SessionRepository;
+import org.c4marathon.assignment.auth.util.AuthTokenContext;
 import org.c4marathon.assignment.auth.util.TokenHandler;
 import org.c4marathon.assignment.global.exception.AuthException;
 import org.c4marathon.assignment.member.domain.Member;
@@ -23,13 +23,14 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
-
-import static java.lang.Boolean.TRUE;
-import static org.c4marathon.assignment.auth.util.AuthTokenContext.AUTHORITIES;
-import static org.c4marathon.assignment.auth.util.AuthTokenContext.MEMBER_ID;
-import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.*;
-import static org.c4marathon.assignment.member.domain.MemberAuthority.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class RefreshTokenValidatorFilter extends OncePerRequestFilter {

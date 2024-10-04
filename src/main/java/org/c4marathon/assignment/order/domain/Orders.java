@@ -1,20 +1,27 @@
 package org.c4marathon.assignment.order.domain;
 
-import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.FetchType.*;
+import static lombok.AccessLevel.PROTECTED;
+
+import java.time.LocalDateTime;
+
 import org.c4marathon.assignment.member.domain.Customer;
 import org.c4marathon.assignment.product.domain.Product;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
-
-import static jakarta.persistence.EnumType.STRING;
-import static jakarta.persistence.FetchType.*;
-import static lombok.AccessLevel.PROTECTED;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)

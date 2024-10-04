@@ -1,6 +1,7 @@
 package org.c4marathon.assignment.auth.service;
 
-import lombok.RequiredArgsConstructor;
+import static org.c4marathon.assignment.auth.util.AuthTokenContext.MEMBER_ID;
+
 import org.c4marathon.assignment.auth.domain.Session;
 import org.c4marathon.assignment.auth.domain.repository.SessionRepository;
 import org.c4marathon.assignment.auth.util.TokenHandler;
@@ -8,7 +9,7 @@ import org.c4marathon.assignment.member.domain.MemberAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.c4marathon.assignment.auth.util.AuthTokenContext.MEMBER_ID;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -24,8 +25,7 @@ public class AuthService {
 
         if (findSession == null) {
             sessionRepository.save(new Session(refreshToken, authority, memberAuthId));
-        }
-        else {
+        } else {
             findSession.updateRefreshToken(refreshToken);
         }
     }
