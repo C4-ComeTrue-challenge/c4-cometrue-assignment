@@ -1,6 +1,7 @@
 package org.c4marathon.assignment.user.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.c4marathon.assignment.ControllerTestSupport;
 import org.c4marathon.assignment.global.util.SessionConst;
 import org.c4marathon.assignment.user.domain.User;
 import org.c4marathon.assignment.user.presentation.dto.UserLoginRequest;
@@ -22,17 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = UserController.class)
-class UserControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockBean
-    private UserService userService;
+class UserControllerTest extends ControllerTestSupport {
 
     @Test
     @DisplayName("회원가입 성공")
