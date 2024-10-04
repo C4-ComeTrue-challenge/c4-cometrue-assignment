@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  *     1) endpoint를 분리할지 2) 공유하되, 파라미터로 type(판매자/구매자)을 받을지 결정해야 한다.
  * </p>
  *
- * @see org.c4marathon.assignment.customer.domain.User
+ * @see org.c4marathon.assignment.customer.domain.Customer
  */
 public interface CustomerApi {
 	@PostMapping("/customers")
