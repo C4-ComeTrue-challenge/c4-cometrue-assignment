@@ -1,4 +1,4 @@
-package org.c4marathon.assignment.common.authentication.model;
+package org.c4marathon.assignment.common.authentication.model.principal;
 
 public class AnonymousPrincipal implements Principal {
 	@Override
