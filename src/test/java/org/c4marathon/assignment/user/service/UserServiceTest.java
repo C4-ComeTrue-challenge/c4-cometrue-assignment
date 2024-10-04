@@ -1,5 +1,6 @@
 package org.c4marathon.assignment.user.service;
 
+import org.c4marathon.assignment.IntegrationTestSupport;
 import org.c4marathon.assignment.user.domain.User;
 import org.c4marathon.assignment.user.domain.repository.UserRepository;
 import org.c4marathon.assignment.user.exception.DuplicateEmailException;
@@ -18,8 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
-class UserServiceTest {
+class UserServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private UserService userService;

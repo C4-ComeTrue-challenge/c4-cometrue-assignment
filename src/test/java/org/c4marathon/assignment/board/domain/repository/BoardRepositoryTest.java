@@ -1,5 +1,6 @@
 package org.c4marathon.assignment.board.domain.repository;
 
+import org.c4marathon.assignment.IntegrationTestSupport;
 import org.c4marathon.assignment.board.domain.Board;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,8 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-class BoardRepositoryTest {
+class BoardRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private BoardRepository boardRepository;

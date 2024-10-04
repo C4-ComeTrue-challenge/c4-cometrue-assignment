@@ -1,6 +1,7 @@
 package org.c4marathon.assignment.board.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.c4marathon.assignment.ControllerTestSupport;
 import org.c4marathon.assignment.board.presentation.dto.BoardCreateRequest;
 import org.c4marathon.assignment.board.presentation.dto.BoardResponse;
 import org.c4marathon.assignment.board.presentation.dto.BoardUpdateRequest;
@@ -21,17 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = BoardController.class)
-class BoardControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockBean
-    private BoardService boardService;
+class BoardControllerTest extends ControllerTestSupport {
 
     @DisplayName("게시판 생성한다.")
     @Test

@@ -1,5 +1,6 @@
 package org.c4marathon.assignment.board.service;
 
+import org.c4marathon.assignment.IntegrationTestSupport;
 import org.c4marathon.assignment.board.domain.Board;
 import org.c4marathon.assignment.board.domain.repository.BoardRepository;
 import org.c4marathon.assignment.board.presentation.dto.BoardResponse;
@@ -10,14 +11,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
-@SpringBootTest
-class BoardServiceTest {
+class BoardServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private BoardService boardService;

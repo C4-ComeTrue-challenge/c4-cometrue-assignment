@@ -1,6 +1,7 @@
 package org.c4marathon.assignment.user.domain.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.c4marathon.assignment.IntegrationTestSupport;
 import org.c4marathon.assignment.user.domain.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,9 +15,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ActiveProfiles("test")
-@SpringBootTest
-class UserRepositoryTest {
+
+class UserRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
     private UserRepository userRepository;
