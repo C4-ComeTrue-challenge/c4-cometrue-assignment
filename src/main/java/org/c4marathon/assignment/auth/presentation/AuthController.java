@@ -1,9 +1,11 @@
 package org.c4marathon.assignment.auth.presentation;
 
-import lombok.RequiredArgsConstructor;
-import org.c4marathon.assignment.auth.util.AuthTokenContext;
+import static org.c4marathon.assignment.member.domain.MemberAuthority.CUSTOMER;
+import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
+
 import org.c4marathon.assignment.auth.dto.TokenResponse;
 import org.c4marathon.assignment.auth.service.AuthService;
+import org.c4marathon.assignment.auth.util.AuthTokenContext;
 import org.c4marathon.assignment.member.domain.MemberAuthority;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -12,8 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static org.c4marathon.assignment.member.domain.MemberAuthority.CUSTOMER;
-import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor

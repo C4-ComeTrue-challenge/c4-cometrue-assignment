@@ -1,6 +1,8 @@
 package org.c4marathon.assignment.product.presentation;
 
-import lombok.RequiredArgsConstructor;
+import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.NO_AUTHORITY;
+import static org.springframework.http.HttpStatus.CREATED;
+
 import org.c4marathon.assignment.global.exception.AuthException;
 import org.c4marathon.assignment.member.domain.Merchant;
 import org.c4marathon.assignment.member.service.MerchantService;
@@ -13,8 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.NO_AUTHORITY;
-import static org.springframework.http.HttpStatus.CREATED;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/merchant/products")

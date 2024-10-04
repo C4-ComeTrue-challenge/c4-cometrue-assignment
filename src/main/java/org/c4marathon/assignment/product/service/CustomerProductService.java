@@ -1,15 +1,16 @@
 package org.c4marathon.assignment.product.service;
 
-import lombok.RequiredArgsConstructor;
+import static org.c4marathon.assignment.global.utils.PageUtil.SMALL_PAGE_SIZE;
+
+import java.util.List;
+
 import org.c4marathon.assignment.product.domain.repository.ProductQueryRepository;
 import org.c4marathon.assignment.product.dto.ProductDto;
 import org.c4marathon.assignment.product.dto.ProductPageDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-import static org.c4marathon.assignment.global.utils.PageUtil.SMALL_PAGE_SIZE;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

@@ -1,17 +1,19 @@
 package org.c4marathon.assignment.product.domain.repository;
 
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
-import org.c4marathon.assignment.product.dto.ProductDto;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
-
 import static org.c4marathon.assignment.global.utils.PageUtil.SMALL_PAGE_SIZE;
 import static org.c4marathon.assignment.product.domain.QProduct.product;
 import static org.c4marathon.assignment.transaction.domain.QTransaction.transaction;
+
+import java.util.List;
+
+import org.c4marathon.assignment.product.dto.ProductDto;
+import org.springframework.stereotype.Repository;
+
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
+import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor

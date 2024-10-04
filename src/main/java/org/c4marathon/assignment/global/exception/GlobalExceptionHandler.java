@@ -1,6 +1,9 @@
 package org.c4marathon.assignment.global.exception;
 
-import lombok.extern.slf4j.Slf4j;
+import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.INVALID_REQUEST;
+
+import java.sql.SQLIntegrityConstraintViolationException;
+
 import org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode;
 import org.c4marathon.assignment.global.exception.response.ErrorResponse;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -9,9 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.sql.SQLIntegrityConstraintViolationException;
-
-import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.INVALID_REQUEST;
+import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
 @Slf4j

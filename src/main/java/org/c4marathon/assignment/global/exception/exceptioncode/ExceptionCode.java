@@ -1,10 +1,11 @@
 package org.c4marathon.assignment.global.exception.exceptioncode;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import static org.springframework.http.HttpStatus.*;
+
 import org.springframework.http.HttpStatus;
 
-import static org.springframework.http.HttpStatus.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter

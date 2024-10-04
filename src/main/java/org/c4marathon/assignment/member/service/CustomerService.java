@@ -1,12 +1,13 @@
 package org.c4marathon.assignment.member.service;
 
-import lombok.RequiredArgsConstructor;
+import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.MEMBER_NOT_FOUND;
+
 import org.c4marathon.assignment.global.exception.AuthException;
 import org.c4marathon.assignment.member.domain.Customer;
 import org.c4marathon.assignment.member.domain.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 
-import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.MEMBER_NOT_FOUND;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

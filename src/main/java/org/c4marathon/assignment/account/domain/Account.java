@@ -1,22 +1,32 @@
 package org.c4marathon.assignment.account.domain;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.c4marathon.assignment.member.domain.MemberAuthority;
 import org.c4marathon.assignment.transaction.domain.Transaction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static jakarta.persistence.EnumType.STRING;
-import static jakarta.persistence.FetchType.LAZY;
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
@@ -48,7 +58,7 @@ public class Account {
     @Column(name = "member_auth_id", nullable = false)
     private Long memberAuthId;
 
-    @OneToMany(mappedBy = "account",fetch = LAZY)
+    @OneToMany(mappedBy = "account", fetch = LAZY)
     private List<Transaction> transactions = new ArrayList<>();
 
     @CreatedDate
@@ -58,7 +68,10 @@ public class Account {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    private Account(final String nickname, final Balance balance, final MemberAuthority authority, final Long memberAuthId) {
+    private Account(final String nickname,
+                    final Balance balance,
+                    final MemberAuthority authority,
+                    final Long memberAuthId) {
         this.nickname = nickname;
         this.balance = balance;
         this.authority = authority;

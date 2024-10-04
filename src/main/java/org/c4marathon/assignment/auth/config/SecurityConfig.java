@@ -1,10 +1,12 @@
 package org.c4marathon.assignment.auth.config;
 
-import org.c4marathon.assignment.auth.util.AuthTokenContext;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 import org.c4marathon.assignment.auth.domain.repository.SessionRepository;
 import org.c4marathon.assignment.auth.filter.AccessTokenValidatorFilter;
 import org.c4marathon.assignment.auth.filter.AuthTokenGenerateFilter;
 import org.c4marathon.assignment.auth.filter.RefreshTokenValidatorFilter;
+import org.c4marathon.assignment.auth.util.AuthTokenContext;
 import org.c4marathon.assignment.auth.util.TokenHandler;
 import org.c4marathon.assignment.member.domain.repository.MemberRepository;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
 public class SecurityConfig {

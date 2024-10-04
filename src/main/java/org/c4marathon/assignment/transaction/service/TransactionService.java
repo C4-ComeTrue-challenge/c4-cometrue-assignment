@@ -1,21 +1,21 @@
 package org.c4marathon.assignment.transaction.service;
 
-import lombok.RequiredArgsConstructor;
-import org.c4marathon.assignment.account.domain.Account;
-import org.c4marathon.assignment.account.domain.Balance;
-import org.c4marathon.assignment.transaction.domain.Transaction;
-import org.c4marathon.assignment.account.domain.repository.AccountRepository;
-import org.c4marathon.assignment.transaction.domain.repository.TransactionRepository;
-import org.c4marathon.assignment.global.exception.AccountException;
-import org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-
 import static org.c4marathon.assignment.member.domain.MemberAuthority.CUSTOMER;
 import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
 
+import java.math.BigDecimal;
+
+import org.c4marathon.assignment.account.domain.Account;
+import org.c4marathon.assignment.account.domain.Balance;
+import org.c4marathon.assignment.account.domain.repository.AccountRepository;
+import org.c4marathon.assignment.global.exception.AccountException;
+import org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode;
+import org.c4marathon.assignment.transaction.domain.Transaction;
+import org.c4marathon.assignment.transaction.domain.repository.TransactionRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -28,10 +28,10 @@ public class TransactionService {
 
     @Transactional
     public void doTransaction(Long fromAccountId, Long toAccountId, Long money) {
-        Account fromAccount = accountRepository.findById(fromAccountId)
-                                               .orElseThrow(() -> new AccountException(ExceptionCode.ACCOUNT_NOT_FOUND));
-        Account toAccount = accountRepository.findById(toAccountId)
-                                               .orElseThrow(() -> new AccountException(ExceptionCode.ACCOUNT_NOT_FOUND));
+        Account fromAccount = accountRepository.findById(fromAccountId).orElseThrow(()
+                                                            -> new AccountException(ExceptionCode.ACCOUNT_NOT_FOUND));
+        Account toAccount = accountRepository.findById(toAccountId).orElseThrow(()
+                                                            -> new AccountException(ExceptionCode.ACCOUNT_NOT_FOUND));
 
         Balance fromBalance = fromAccount.getBalance().withdraw(money);
         Balance toBalance = toAccount.getBalance().deposit(money);

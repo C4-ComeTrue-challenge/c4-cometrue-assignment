@@ -1,6 +1,9 @@
 package org.c4marathon.assignment.order.service;
 
-import lombok.RequiredArgsConstructor;
+import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.MEMBER_NOT_FOUND;
+import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.PRODUCT_NOT_FOUND;
+import static org.c4marathon.assignment.order.domain.OrderState.PENDING;
+
 import org.c4marathon.assignment.global.exception.AuthException;
 import org.c4marathon.assignment.global.exception.ProductException;
 import org.c4marathon.assignment.member.domain.Customer;
@@ -13,9 +16,7 @@ import org.c4marathon.assignment.product.domain.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.MEMBER_NOT_FOUND;
-import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.PRODUCT_NOT_FOUND;
-import static org.c4marathon.assignment.order.domain.OrderState.PENDING;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

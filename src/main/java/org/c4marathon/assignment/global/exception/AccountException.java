@@ -1,8 +1,9 @@
 package org.c4marathon.assignment.global.exception;
 
-import lombok.Getter;
 import org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode;
 import org.springframework.http.HttpStatus;
+
+import lombok.Getter;
 
 @Getter
 public class AccountException extends RuntimeException {

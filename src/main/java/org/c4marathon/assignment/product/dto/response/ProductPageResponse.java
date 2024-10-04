@@ -1,9 +1,9 @@
 package org.c4marathon.assignment.product.dto.response;
 
+import java.util.List;
+
 import org.c4marathon.assignment.product.dto.ProductDto;
 import org.c4marathon.assignment.product.dto.ProductPageDto;
-
-import java.util.List;
 
 public record ProductPageResponse(
         String searchKeyword,
@@ -13,7 +13,7 @@ public record ProductPageResponse(
         List<ProductDto> products
 ) {
     public ProductPageResponse(ProductPageDto dto) {
-           this(dto.searchKeyword(),
+        this(dto.searchKeyword(),
                 dto.size(),
                 dto.hasNext(),
                 dto.productCursorId(),

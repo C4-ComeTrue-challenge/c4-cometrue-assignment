@@ -1,8 +1,8 @@
 package org.c4marathon.assignment.account.dto.response;
 
-import org.c4marathon.assignment.transaction.dto.TransactionDto;
-
 import java.util.List;
+
+import org.c4marathon.assignment.transaction.dto.TransactionDto;
 
 public record AccountResponse(
         Boolean hasNext,

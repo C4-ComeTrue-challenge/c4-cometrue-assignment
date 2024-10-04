@@ -1,6 +1,5 @@
 package org.c4marathon.assignment.product.presentation;
 
-import lombok.RequiredArgsConstructor;
 import org.c4marathon.assignment.product.dto.ProductPageDto;
 import org.c4marathon.assignment.product.dto.response.ProductPageResponse;
 import org.c4marathon.assignment.product.service.CustomerProductService;
@@ -10,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/products")
