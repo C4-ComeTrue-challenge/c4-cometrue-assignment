@@ -2,42 +2,19 @@ package org.c4marathon.assignment.seller.domain;
 
 import java.util.UUID;
 
-import org.c4marathon.assignment.common.authentication.model.User;
 import org.c4marathon.assignment.common.encoder.PasswordEncoder;
 import org.c4marathon.assignment.common.entity.Point;
-import org.hibernate.annotations.UuidGenerator;
+import org.c4marathon.assignment.seller.infra.persist.SellerRecord;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(
-	name = "SELLERS"
-)
-public class Seller implements User {
-	@Id
-	@GeneratedValue
-	@UuidGenerator(style = UuidGenerator.Style.TIME)
+public class Seller {
 	private UUID id;
-	@Column(nullable = false)
 	private String email;
-	@Column(nullable = false)
 	private String password;
-	@Column(nullable = false)
 	private String name;
-	@Column(nullable = false)
 	private String licenseNumber;
-	@Embedded
 	private Point point;
 
-	protected Seller() {
-	}
-
-	Seller(UUID id, String email, String encodedPassword, String name, String licenseNumber, Point point) {
+	public Seller(UUID id, String email, String encodedPassword, String name, String licenseNumber, Point point) {
 		this.id = id;
 		this.email = email;
 		this.password = encodedPassword;
@@ -58,15 +35,7 @@ public class Seller implements User {
 		return id;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public String getRole() {
-		return "seller";
+	public SellerRecord toRecord() {
+		return new SellerRecord(id, email, password, name, licenseNumber, point);
 	}
 }

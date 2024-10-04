@@ -18,11 +18,13 @@ public class JpaSellerRepository implements SellerRepository {
 
 	@Override
 	public Seller save(Seller seller) {
-		return repository.save(seller);
+		SellerRecord savedSellerRecord = repository.save(seller.toRecord());
+		return savedSellerRecord.toDomain();
 	}
 
 	@Override
 	public Optional<Seller> findById(UUID id) {
-		return repository.findById(id);
+		Optional<SellerRecord> findSellerRecord = repository.findById(id);
+		return findSellerRecord.map(SellerRecord::toDomain);
 	}
 }
