@@ -5,8 +5,10 @@ import org.c4marathon.assignment.common.authentication.model.principal.LoginSell
 import org.c4marathon.assignment.product.ui.dto.request.RegisterProductRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 public interface ProductApi {
 	@PostMapping("/products")
-	ResponseEntity<?> postRegister(@AuthenticationPrincipal LoginSeller loginSeller, RegisterProductRequest request);
+	ResponseEntity<?> postRegister(@AuthenticationPrincipal LoginSeller loginSeller,
+								   @RequestBody RegisterProductRequest request);
 }
