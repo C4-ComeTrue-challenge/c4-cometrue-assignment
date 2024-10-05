@@ -23,10 +23,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequest ->
                         authorizeRequest
                                 .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher("/api/user/**")
+                                        AntPathRequestMatcher.antMatcher("/api/auth/**")
                                 ).permitAll()
                                 .requestMatchers(
-                                        AntPathRequestMatcher.antMatcher("/api/board/**")
+                                        AntPathRequestMatcher.antMatcher("/api/check/**")
                                 ).permitAll()
 
                 )
