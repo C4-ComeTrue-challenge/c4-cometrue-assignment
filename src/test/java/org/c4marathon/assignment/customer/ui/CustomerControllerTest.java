@@ -26,7 +26,7 @@ class CustomerControllerTest {
 	SignUpService signUpService;
 
 	@Nested
-	@DisplayName("/customers")
+	@DisplayName("POST /customers")
 	class SignUp {
 		@Test
 		@DisplayName("[201]")
