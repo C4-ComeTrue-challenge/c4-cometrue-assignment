@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 class SellerApiTest extends AcceptanceTest {
 	@Nested
-	@DisplayName("/sellers")
+	@DisplayName("POST /sellers")
 	class SignUp {
 		@Test
 		@DisplayName("[201]")
