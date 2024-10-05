@@ -1,13 +1,13 @@
 package org.c4marathon.assignment.user.domain.service;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.c4marathon.assignment.global.annotation.DomainService;
 import org.c4marathon.assignment.user.domain.User;
 import org.c4marathon.assignment.user.domain.repository.UserRepository;
 import org.c4marathon.assignment.user.exception.NotFoundUserException;
 
 @DomainService
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class UserGetService {
 
     private final UserRepository userRepository;

@@ -1,9 +1,6 @@
 package org.c4marathon.assignment.user.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,10 +29,10 @@ public class User extends BaseTimeEntity {
     private String password;
 
     @Builder
-    public User(String email, String password, String nickname) {
+    public User(String nickname, String email, String password) {
+        this.nickname = nickname;
         this.email = email;
         this.password = password;
-        this.nickname = nickname;
     }
 
 }
