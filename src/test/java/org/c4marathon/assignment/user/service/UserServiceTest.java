@@ -1,29 +1,27 @@
 package org.c4marathon.assignment.user.service;
 
+import org.c4marathon.assignment.global.exception.ErrorCode;
 import org.c4marathon.assignment.user.domain.User;
-import org.c4marathon.assignment.user.domain.repository.UserRepository;
 import org.c4marathon.assignment.user.domain.service.UserGetService;
 import org.c4marathon.assignment.user.domain.service.UserSaveService;
-import org.c4marathon.assignment.user.dto.EmailCheckResponse;
-import org.c4marathon.assignment.user.dto.LoginRequest;
-import org.c4marathon.assignment.user.dto.NicknameCheckResponse;
-import org.c4marathon.assignment.user.dto.SignupRequest;
+import org.c4marathon.assignment.user.dto.*;
 import org.c4marathon.assignment.user.exception.DuplicatedEmailException;
 import org.c4marathon.assignment.user.exception.DuplicatedNicknameException;
 import org.c4marathon.assignment.user.exception.NotFoundUserException;
 import org.c4marathon.assignment.user.exception.WrongPasswordException;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.c4marathon.assignment.global.exception.ErrorCode.*;
 
 @SpringBootTest
+@Transactional
 class UserServiceTest {
 
     @Autowired
@@ -36,15 +34,8 @@ class UserServiceTest {
     private UserService userService;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private BCryptPasswordEncoder encoder;
 
-    @AfterEach
-    void tearDown() {
-        userRepository.deleteAllInBatch();
-    }
 
     @DisplayName("회원가입이 성공적으로 처리된다.")
     @Test
@@ -53,26 +44,27 @@ class UserServiceTest {
         SignupRequest request = new SignupRequest("test@test.com", "password", "testNickname");
 
         // When
-        userService.signup(request);
+        SignupResponse response = userService.signup(request);
 
         // Then
-        User savedUser = userGetService.getByEmail("test@test.com");
-        assertThat(savedUser).isNotNull();
+        assertThat(response).isNotNull();
+        User savedUser = userGetService.getById(response.userId());
         assertThat(savedUser.getEmail()).isEqualTo("test@test.com");
-        assertThat(savedUser.getNickname()).isEqualTo("testNickname");
     }
 
     @DisplayName("이미 존재하는 이메일로 회원가입 시 예외가 발생한다.")
     @Test
     void signupWithDuplicateEmail() {
         // Given
-        userSaveService.save(User.builder()
-                .email("test@test.com")
-                .password(encoder.encode("password"))
-                .nickname("nickname")
-                .build());
+        userSaveService.save(new User(
+                "test@test.com",
+                encoder.encode("password"),
+                "nickname"));
 
-        SignupRequest request = new SignupRequest("test@test.com", "password", "testNickname");
+        SignupRequest request = new SignupRequest(
+                "test@test.com",
+                "password",
+                "testNickname");
 
         // When & Then
         assertThatThrownBy(() -> userService.signup(request))
@@ -84,13 +76,15 @@ class UserServiceTest {
     @Test
     void signupWithDuplicateNickname() {
         // Given
-        userSaveService.save(User.builder()
-                .email("test@test.com")
-                .password(encoder.encode("password"))
-                .nickname("testNickname")
-                .build());
+        userSaveService.save(new User(
+                "test@test.com",
+                encoder.encode("password"),
+                "testNickname"));
 
-        SignupRequest request = new SignupRequest("new@test.com", "password", "testNickname");
+        SignupRequest request = new SignupRequest(
+                "new@test.com",
+                "password",
+                "testNickname");
 
         // When & Then
         assertThatThrownBy(() -> userService.signup(request))
@@ -102,13 +96,14 @@ class UserServiceTest {
     @Test
     void loginSuccess() {
         // Given
-        userSaveService.save(User.builder()
-                .email("test@test.com")
-                .password(encoder.encode("password"))
-                .nickname("testNickname")
-                .build());
+        userSaveService.save(new User(
+                "test@test.com",
+                encoder.encode("password"),
+                "testNickname"));
 
-        LoginRequest request = new LoginRequest("test@test.com", "password");
+        LoginRequest request = new LoginRequest(
+                "test@test.com",
+                "password");
 
         // When
         User loginUser = userService.login(request);
@@ -122,29 +117,27 @@ class UserServiceTest {
     @Test
     void loginWithWrongPassword() {
         // Given
-        userSaveService.save(User.builder()
-                .email("test@test.com")
-                .password(encoder.encode("password"))
-                .nickname("testNickname")
-                .build());
+        userSaveService.save(new User(
+                "test@test.com",
+                encoder.encode("password"),
+                "testNickname"));
 
         LoginRequest request = new LoginRequest("test@test.com", "wrongPassword");
 
         // When & Then
         assertThatThrownBy(() -> userService.login(request))
                 .isInstanceOf(WrongPasswordException.class)
-                .hasMessageContaining(WRONG_PASSWORD_ERROR.getMessage());
+                .hasMessageContaining(ErrorCode.WRONG_PASSWORD_ERROR.getMessage());
     }
 
     @DisplayName("이메일 중복 여부를 확인한다.")
     @Test
     void checkEmail() {
         // Given
-        userSaveService.save(User.builder()
-                .email("test@test.com")
-                .password(encoder.encode("password"))
-                .nickname("nickname")
-                .build());
+        userSaveService.save(new User(
+                "test@test.com",
+                encoder.encode("password"),
+                "nickname"));
 
         // When
         EmailCheckResponse response = userService.checkEmail("test@test.com");
@@ -157,11 +150,10 @@ class UserServiceTest {
     @Test
     void checkNickname() {
         // Given
-        userSaveService.save(User.builder()
-                .email("test@test.com")
-                .password(encoder.encode("password"))
-                .nickname("testNickname")
-                .build());
+        userSaveService.save(new User(
+                "test@test.com",
+                encoder.encode("password"),
+                "testNickname"));
 
         // When
         NicknameCheckResponse response = userService.checkNickname("testNickname");
@@ -174,11 +166,10 @@ class UserServiceTest {
     @Test
     void deleteUserSuccess() {
         // Given
-        User user = userSaveService.save(User.builder()
-                .email("test2@test.com")
-                .password(encoder.encode("password"))
-                .nickname("testNickname")
-                .build());
+        User user = userSaveService.save(new User(
+                "test@test.com",
+                encoder.encode("password"),
+                "testNickname"));
 
         // When
         userService.deleteUser(user.getEmail());
