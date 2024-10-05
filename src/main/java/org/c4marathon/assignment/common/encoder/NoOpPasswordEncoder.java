@@ -1,5 +1,7 @@
 package org.c4marathon.assignment.common.encoder;
 
+import java.util.Objects;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -10,5 +12,10 @@ public class NoOpPasswordEncoder implements PasswordEncoder {
 			return null;
 		}
 		return "{noop}" + password;
+	}
+
+	@Override
+	public boolean matches(String password, String encodedPassword) {
+		return Objects.equals(password, encodedPassword);
 	}
 }
