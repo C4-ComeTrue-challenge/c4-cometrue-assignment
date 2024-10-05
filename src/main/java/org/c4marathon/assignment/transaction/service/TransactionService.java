@@ -33,8 +33,10 @@ public class TransactionService {
         Account toAccount = accountRepository.findById(toAccountId).orElseThrow(()
                                                             -> new AccountException(ExceptionCode.ACCOUNT_NOT_FOUND));
 
-        Balance fromBalance = fromAccount.getBalance().withdraw(money);
-        Balance toBalance = toAccount.getBalance().deposit(money);
+        Balance fromBalance = fromAccount.getBalance();
+        fromBalance.withdraw(money);
+        Balance toBalance = toAccount.getBalance();
+        toBalance.deposit(money);
 
         Transaction fromTransaction = Transaction.of(fromAccount, fromAccountId, fromAccount.getNickname(),
                                                       toAccountId, toAccount.getNickname(),
@@ -57,9 +59,12 @@ public class TransactionService {
                 .orElseThrow(() -> new AccountException(ExceptionCode.ACCOUNT_NOT_FOUND));
 
         Long commissionPrice = commissionPrice(money);
-        Balance fromBalance = fromAccount.getBalance().withdraw(money);
-        Balance toBalance = toAccount.getBalance().deposit(money - commissionPrice);
-        Balance operatorBalance = operatorAccount.getBalance().deposit(commissionPrice);
+        Balance fromBalance = fromAccount.getBalance();
+        fromBalance.withdraw(money);
+        Balance toBalance = toAccount.getBalance();
+        toBalance.deposit(money - commissionPrice);
+        Balance operatorBalance = operatorAccount.getBalance();
+        operatorBalance.deposit(commissionPrice);
 
         Transaction fromTransaction = Transaction.of(fromAccount, customerId, fromAccount.getNickname(),
                 merchantId, toAccount.getNickname(),
