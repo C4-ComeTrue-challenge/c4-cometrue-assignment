@@ -10,15 +10,20 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(NicknameAlreadyExistsException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<String> handleUnauthorizedException(NicknameAlreadyExistsException ex) {
         return new ResponseEntity<>(ex.getMessage(),  HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(LoginFailedException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+//    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<String> handleUnauthorizedException(LoginFailedException ex) {
         return new ResponseEntity<>(ex.getMessage(),  HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity<String> handlePostNotFoundException(PostNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)
