@@ -24,17 +24,15 @@ public class Balance {
         this.balance = balance;
     }
 
-    public Balance withdraw(Long amount) {
+    public void withdraw(Long amount) {
         if (balance - amount < 0) {
             throw new AccountException(ACCOUNT_BALANCE_NOT_ENOUGH);
         }
         balance -= amount;
-        return this;
     }
 
-    public Balance deposit(Long amount) {
+    public void deposit(Long amount) {
         balance += amount;
-        return this;
     }
 
     public Boolean hasEnoughMoney(Long money) {
