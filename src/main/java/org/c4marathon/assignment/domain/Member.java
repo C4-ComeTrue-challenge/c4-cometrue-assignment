@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = "nickname")})
@@ -25,6 +27,10 @@ public class Member {
 
     @Column(nullable = false, unique = true)
     private String nickname;
+
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> posts;
 
     @Builder
     public Member(String email, String password, String nickname) {
