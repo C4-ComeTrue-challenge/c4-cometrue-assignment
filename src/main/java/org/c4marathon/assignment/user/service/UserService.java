@@ -23,10 +23,10 @@ public class UserService {
     private final UserDeleteService deleteService;
     private final BCryptPasswordEncoder encoder;
 
-    public SignupResponse signup(SignupRequest request) {
+    public void signup(SignupRequest request) {
         validateSignupRequest(request);
         User user = createUser(request);
-        return new SignupResponse(saveService.save(user).getId());
+        saveService.save(user);
     }
 
     public User login(LoginRequest request) {
