@@ -44,12 +44,13 @@ class UserServiceTest {
         SignupRequest request = new SignupRequest("test@test.com", "password", "testNickname");
 
         // When
-        SignupResponse response = userService.signup(request);
+        userService.signup(request);
 
         // Then
-        assertThat(response).isNotNull();
-        User savedUser = userGetService.getById(response.userId());
+        User savedUser = userGetService.getByEmail("test@test.com");
+        assertThat(savedUser).isNotNull();
         assertThat(savedUser.getEmail()).isEqualTo("test@test.com");
+        assertThat(savedUser.getNickname()).isEqualTo("testNickname");
     }
 
     @DisplayName("이미 존재하는 이메일로 회원가입 시 예외가 발생한다.")
