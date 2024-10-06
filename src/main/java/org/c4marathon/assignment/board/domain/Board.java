@@ -40,18 +40,16 @@ public class Board extends BaseTimeEntity {
         return this.user != null;
     }
 
-    public Board(String title,String content, String writerName, String password) {
-        this.title=title;
+    @Builder
+    public Board(String title, String content, String writerName, String password, User user) {
+        this.title = title;
         this.content = content;
         this.writerName = writerName;
         this.password = password;
-    }
-
-
-    public Board(String title, String content, User user) {
-        this.title=title;
-        this.content = content;
         this.user = user;
-        this.writerName = user.getNickname();
+
+        if (user != null) {
+            this.writerName = user.getNickname();
+        }
     }
 }
