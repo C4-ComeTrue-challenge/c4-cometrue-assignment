@@ -22,5 +22,6 @@ public class BoardGetService {
     public Board getById(Long id) {
         return boardRepository.findById(id)
                 .orElseThrow(() -> new NotFoundBoardException());
+
     }
 }
