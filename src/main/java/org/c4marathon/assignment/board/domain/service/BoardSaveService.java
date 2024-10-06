@@ -13,6 +13,5 @@ public class BoardSaveService {
 
     public Board save(Board board) {
         return boardRepository.save(board);
-
     }
 }
