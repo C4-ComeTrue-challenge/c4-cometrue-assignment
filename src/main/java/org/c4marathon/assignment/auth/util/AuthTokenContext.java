@@ -25,8 +25,8 @@ public class AuthTokenContext {
     private final String authHeader;
     private final SecretKey secretKey;
 
-    public static final long ACCESS_TOKEN_EXPIRATION_TIME = 30 * 60 * 1000;
-    public static final long REFRESH_TOKEN_EXPIRATION_TIME = 24 * 60 * 60 * 1000;
+    public static final long ACCESS_TOKEN_EXPIRATION_TIME = 30L * 60L * 1000L;
+    public static final long REFRESH_TOKEN_EXPIRATION_TIME = 24L * 60L * 60L * 1000L;
     public static final String MEMBER_ID = "memberId";
     public static final String AUTHORITIES = "authorities";
 
