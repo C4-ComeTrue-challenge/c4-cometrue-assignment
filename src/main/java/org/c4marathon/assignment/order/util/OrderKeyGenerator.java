@@ -1,15 +1,15 @@
 package org.c4marathon.assignment.order.util;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Component;
 
 @Component
 public class OrderKeyGenerator {
 
     public String generateOrderKey(Long memberId) {
-        String id = RandomStringUtils.randomAlphanumeric(30);
+        String id = UUID.randomUUID().toString().substring(0, 30);
         id += memberId;
         id += ".";
         id += LocalDateTime.now().getYear();
