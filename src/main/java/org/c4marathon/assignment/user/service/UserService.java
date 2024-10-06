@@ -5,14 +5,16 @@ import org.c4marathon.assignment.user.domain.User;
 import org.c4marathon.assignment.user.domain.service.UserDeleteService;
 import org.c4marathon.assignment.user.domain.service.UserGetService;
 import org.c4marathon.assignment.user.domain.service.UserSaveService;
-import org.c4marathon.assignment.user.dto.*;
+import org.c4marathon.assignment.user.dto.EmailCheckResponse;
+import org.c4marathon.assignment.user.dto.LoginRequest;
+import org.c4marathon.assignment.user.dto.NicknameCheckResponse;
+import org.c4marathon.assignment.user.dto.SignupRequest;
 import org.c4marathon.assignment.user.exception.DuplicatedEmailException;
 import org.c4marathon.assignment.user.exception.DuplicatedNicknameException;
 import org.c4marathon.assignment.user.exception.WrongPasswordException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import static org.c4marathon.assignment.user.service.mapper.UserMapper.toUser;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,28 +25,33 @@ public class UserService {
     private final UserDeleteService deleteService;
     private final BCryptPasswordEncoder encoder;
 
+    @Transactional
     public void signup(SignupRequest request) {
         validateSignupRequest(request);
-        User user = createUser(request);
+        User user = toUser(request);
         saveService.save(user);
     }
 
+    @Transactional(readOnly = true)
     public User login(LoginRequest request) {
         User user = getService.getByEmail(request.email());
         validatePassword(request.password(), user.getPassword());
         return user;
     }
 
+    @Transactional(readOnly = true)
     public EmailCheckResponse checkEmail(String email) {
         boolean exists = getService.existByEmail(email);
         return new EmailCheckResponse(exists);
     }
 
+    @Transactional(readOnly = true)
     public NicknameCheckResponse checkNickname(String nickname) {
         boolean exists = getService.existByNickname(nickname);
         return new NicknameCheckResponse(exists);
     }
 
+    @Transactional
     public void deleteUser(String email) {
         User user = getService.getByEmail(email);
         deleteService.deleteUser(user);
@@ -59,8 +66,8 @@ public class UserService {
         }
     }
 
-    private User createUser(SignupRequest request) {
-        return toUser(
+    private User toUser(SignupRequest request) {
+        return new User(
                 request.email(),
                 encoder.encode(request.password()),
                 request.nickname()
