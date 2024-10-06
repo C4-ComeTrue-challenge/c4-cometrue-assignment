@@ -1,23 +1,23 @@
 package org.c4marathon.assignment.user.service;
 
-import org.c4marathon.assignment.global.exception.ErrorCode;
 import org.c4marathon.assignment.user.domain.User;
 import org.c4marathon.assignment.user.domain.repository.UserRepository;
 import org.c4marathon.assignment.user.domain.service.UserGetService;
 import org.c4marathon.assignment.user.domain.service.UserSaveService;
-import org.c4marathon.assignment.user.dto.*;
+import org.c4marathon.assignment.user.dto.EmailCheckResponse;
+import org.c4marathon.assignment.user.dto.LoginRequest;
+import org.c4marathon.assignment.user.dto.NicknameCheckResponse;
+import org.c4marathon.assignment.user.dto.SignupRequest;
 import org.c4marathon.assignment.user.exception.DuplicatedEmailException;
 import org.c4marathon.assignment.user.exception.DuplicatedNicknameException;
 import org.c4marathon.assignment.user.exception.NotFoundUserException;
 import org.c4marathon.assignment.user.exception.WrongPasswordException;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -41,11 +41,11 @@ class UserServiceTest {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
-
     @AfterEach
-    void tearDown(){
+    void tearDown() {
         userRepository.deleteAllInBatch();
     }
+
     @DisplayName("회원가입이 성공적으로 처리된다.")
     @Test
     void signupSuccess() {
@@ -66,15 +66,13 @@ class UserServiceTest {
     @Test
     void signupWithDuplicateEmail() {
         // Given
-        userSaveService.save(new User(
-                "test@test.com",
-                encoder.encode("password"),
-                "nickname"));
+        userSaveService.save(User.builder()
+                .email("test@test.com")
+                .password(encoder.encode("password"))
+                .nickname("nickname")
+                .build());
 
-        SignupRequest request = new SignupRequest(
-                "test@test.com",
-                "password",
-                "testNickname");
+        SignupRequest request = new SignupRequest("test@test.com", "password", "testNickname");
 
         // When & Then
         assertThatThrownBy(() -> userService.signup(request))
@@ -86,15 +84,13 @@ class UserServiceTest {
     @Test
     void signupWithDuplicateNickname() {
         // Given
-        userSaveService.save(new User(
-                "test@test.com",
-                encoder.encode("password"),
-                "testNickname"));
+        userSaveService.save(User.builder()
+                .email("test@test.com")
+                .password(encoder.encode("password"))
+                .nickname("testNickname")
+                .build());
 
-        SignupRequest request = new SignupRequest(
-                "new@test.com",
-                "password",
-                "testNickname");
+        SignupRequest request = new SignupRequest("new@test.com", "password", "testNickname");
 
         // When & Then
         assertThatThrownBy(() -> userService.signup(request))
@@ -106,14 +102,13 @@ class UserServiceTest {
     @Test
     void loginSuccess() {
         // Given
-        userSaveService.save(new User(
-                "test@test.com",
-                encoder.encode("password"),
-                "testNickname"));
+        userSaveService.save(User.builder()
+                .email("test@test.com")
+                .password(encoder.encode("password"))
+                .nickname("testNickname")
+                .build());
 
-        LoginRequest request = new LoginRequest(
-                "test@test.com",
-                "password");
+        LoginRequest request = new LoginRequest("test@test.com", "password");
 
         // When
         User loginUser = userService.login(request);
@@ -127,27 +122,29 @@ class UserServiceTest {
     @Test
     void loginWithWrongPassword() {
         // Given
-        userSaveService.save(new User(
-                "test@test.com",
-                encoder.encode("password"),
-                "testNickname"));
+        userSaveService.save(User.builder()
+                .email("test@test.com")
+                .password(encoder.encode("password"))
+                .nickname("testNickname")
+                .build());
 
         LoginRequest request = new LoginRequest("test@test.com", "wrongPassword");
 
         // When & Then
         assertThatThrownBy(() -> userService.login(request))
                 .isInstanceOf(WrongPasswordException.class)
-                .hasMessageContaining(ErrorCode.WRONG_PASSWORD_ERROR.getMessage());
+                .hasMessageContaining(WRONG_PASSWORD_ERROR.getMessage());
     }
 
     @DisplayName("이메일 중복 여부를 확인한다.")
     @Test
     void checkEmail() {
         // Given
-        userSaveService.save(new User(
-                "test@test.com",
-                encoder.encode("password"),
-                "nickname"));
+        userSaveService.save(User.builder()
+                .email("test@test.com")
+                .password(encoder.encode("password"))
+                .nickname("nickname")
+                .build());
 
         // When
         EmailCheckResponse response = userService.checkEmail("test@test.com");
@@ -160,10 +157,11 @@ class UserServiceTest {
     @Test
     void checkNickname() {
         // Given
-        userSaveService.save(new User(
-                "test@test.com",
-                encoder.encode("password"),
-                "testNickname"));
+        userSaveService.save(User.builder()
+                .email("test@test.com")
+                .password(encoder.encode("password"))
+                .nickname("testNickname")
+                .build());
 
         // When
         NicknameCheckResponse response = userService.checkNickname("testNickname");
@@ -176,10 +174,11 @@ class UserServiceTest {
     @Test
     void deleteUserSuccess() {
         // Given
-        User user = userSaveService.save(new User(
-                "test2@test.com",
-                encoder.encode("password"),
-                "testNickname"));
+        User user = userSaveService.save(User.builder()
+                .email("test2@test.com")
+                .password(encoder.encode("password"))
+                .nickname("testNickname")
+                .build());
 
         // When
         userService.deleteUser(user.getEmail());
