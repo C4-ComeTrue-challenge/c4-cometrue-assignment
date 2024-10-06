@@ -1,12 +1,12 @@
 package org.c4marathon.assignment.user.domain.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.c4marathon.assignment.global.annotation.DomainService;
 import org.c4marathon.assignment.user.domain.User;
 import org.c4marathon.assignment.user.domain.repository.UserRepository;
 
 @DomainService
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserDeleteService {
 
     private final UserRepository userRepository;
