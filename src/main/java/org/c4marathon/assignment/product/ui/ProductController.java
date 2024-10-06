@@ -3,6 +3,7 @@ package org.c4marathon.assignment.product.ui;
 import java.net.URI;
 import java.util.UUID;
 
+import org.c4marathon.assignment.common.authentication.model.principal.LoginCustomer;
 import org.c4marathon.assignment.common.authentication.model.principal.LoginSeller;
 import org.c4marathon.assignment.product.application.RegisterProductService;
 import org.c4marathon.assignment.product.ui.dto.request.RegisterProductRequest;
@@ -23,5 +24,10 @@ public class ProductController implements ProductApi {
 			request.name(), request.description(), request.price(), request.stock());
 		Long id = registerProductService.register(command);
 		return ResponseEntity.created(URI.create("/products/" + id)).build();
+	}
+
+	@Override
+	public ResponseEntity<?> postOrder(Long productId, LoginCustomer loginCustomer) {
+		return null;
 	}
 }
