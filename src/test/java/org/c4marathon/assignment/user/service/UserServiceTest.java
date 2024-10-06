@@ -2,6 +2,7 @@ package org.c4marathon.assignment.user.service;
 
 import org.c4marathon.assignment.global.exception.ErrorCode;
 import org.c4marathon.assignment.user.domain.User;
+import org.c4marathon.assignment.user.domain.repository.UserRepository;
 import org.c4marathon.assignment.user.domain.service.UserGetService;
 import org.c4marathon.assignment.user.domain.service.UserSaveService;
 import org.c4marathon.assignment.user.dto.*;
@@ -9,6 +10,8 @@ import org.c4marathon.assignment.user.exception.DuplicatedEmailException;
 import org.c4marathon.assignment.user.exception.DuplicatedNicknameException;
 import org.c4marathon.assignment.user.exception.NotFoundUserException;
 import org.c4marathon.assignment.user.exception.WrongPasswordException;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.c4marathon.assignment.global.exception.ErrorCode.*;
 
 @SpringBootTest
-@Transactional
 class UserServiceTest {
 
     @Autowired
@@ -34,9 +36,16 @@ class UserServiceTest {
     private UserService userService;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private BCryptPasswordEncoder encoder;
 
 
+    @AfterEach
+    void tearDown(){
+        userRepository.deleteAllInBatch();
+    }
     @DisplayName("회원가입이 성공적으로 처리된다.")
     @Test
     void signupSuccess() {
@@ -168,7 +177,7 @@ class UserServiceTest {
     void deleteUserSuccess() {
         // Given
         User user = userSaveService.save(new User(
-                "test@test.com",
+                "test2@test.com",
                 encoder.encode("password"),
                 "testNickname"));
 
