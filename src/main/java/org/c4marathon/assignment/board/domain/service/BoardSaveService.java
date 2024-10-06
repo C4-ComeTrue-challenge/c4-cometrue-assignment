@@ -10,7 +10,7 @@ import org.c4marathon.assignment.global.annotation.DomainService;
 public class BoardSaveService {
 
     private final BoardRepository boardRepository;
-    
+
     public Board save(Board board) {
         return boardRepository.save(board);
 
