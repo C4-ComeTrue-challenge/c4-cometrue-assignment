@@ -51,5 +51,6 @@ public class Board extends BaseTimeEntity {
         if (user != null) {
             this.writerName = user.getNickname();
         }
+
     }
 }
