@@ -67,11 +67,11 @@ public class UserService {
     }
 
     private User toUser(SignupRequest request) {
-        return new User(
-                request.email(),
-                encoder.encode(request.password()),
-                request.nickname()
-        );
+        return User.builder()
+                .email(request.email())
+                .password(encoder.encode(request.password()))
+                .nickname(request.nickname())
+                .build();
     }
 
     private void validatePassword(String rawPassword, String encodedPassword) {

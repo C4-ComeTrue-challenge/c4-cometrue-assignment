@@ -23,15 +23,15 @@ public class BoardService {
     private final BCryptPasswordEncoder encoder;
 
     @Transactional
-    public void createBoardAsUser(BoardCreateRequest request, User user) {
+    public long createBoardAsUser(BoardCreateRequest request, User user) {
         Board board = toBoard(request, user);
-        boardSaveService.save(board);
+        return boardSaveService.save(board).getId();
     }
 
     @Transactional
-    public void createBoardAsGuest(BoardCreateRequest request) {
+    public long createBoardAsGuest(BoardCreateRequest request) {
         Board board = toBoard(request);
-        boardSaveService.save(board);
+        return boardSaveService.save(board).getId();
     }
 
     @Transactional(readOnly = true)
@@ -46,20 +46,20 @@ public class BoardService {
     }
 
     private Board toBoard(BoardCreateRequest request, User user) {
-        return new Board(
-                request.title(),
-                request.content(),
-                user
-        );
+        return Board.builder()
+                .title(request.title())
+                .content(request.content())
+                .user(user)
+                .build();
     }
 
     private Board toBoard(BoardCreateRequest request) {
-        return new Board(
-                request.title(),
-                request.content(),
-                request.writerName(),
-                encoder.encode(request.password())
-        );
+        return Board.builder()
+                .title(request.title())
+                .content(request.content())
+                .writerName(request.writerName())
+                .password(encoder.encode(request.password()))
+                .build();
     }
 
     private BoardGetOneResponse toDto(Board board) {
