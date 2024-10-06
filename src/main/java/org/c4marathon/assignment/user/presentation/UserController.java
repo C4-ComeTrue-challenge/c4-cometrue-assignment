@@ -22,21 +22,21 @@ public class UserController {
     private final SessionConfig sessionConfig;
 
     @PostMapping("/signup")
-    public ResponseEntity<SignupResponse> signup(
+    public ResponseEntity<Void> signup(
             @Valid @RequestBody SignupRequest request
     ) {
-        SignupResponse response = userService.signup(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        userService.signup(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(
+    public ResponseEntity<Void> login(
             @Valid @RequestBody LoginRequest request,
             HttpServletRequest httpServletRequest
     ) {
         User user = userService.login(request);
         sessionConfig.createSession(httpServletRequest, user);
-        return ResponseEntity.ok(new LoginResponse(user.getId()));
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/logout")
