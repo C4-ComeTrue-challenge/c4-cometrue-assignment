@@ -16,6 +16,6 @@ public class NoOpPasswordEncoder implements PasswordEncoder {
 
 	@Override
 	public boolean matches(String password, String encodedPassword) {
-		return Objects.equals(password, encodedPassword);
+		return Objects.equals(encode(password), encodedPassword);
 	}
 }
