@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = "nickname")})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+public class Member extends BaseTimeEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
