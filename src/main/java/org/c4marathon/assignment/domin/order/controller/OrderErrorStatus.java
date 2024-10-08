@@ -1,5 +1,6 @@
-package org.c4marathon.assignment.domin.item.controller;
+package org.c4marathon.assignment.domin.order.controller;
 
+import ch.qos.logback.core.status.ErrorStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.c4marathon.assignment.global.payload.BaseStatus;
@@ -8,10 +9,10 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum ItemErrorStatus implements BaseStatus {
+public enum OrderErrorStatus implements BaseStatus {
 
-    INVALID_REGISTER(HttpStatus.FORBIDDEN, "Item_4031", "상품을 등록할 권한이 없습니다"),
-    ITEM_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "Item_4031", "존재하지 않는 상품 정보입니다"),;
+    INVALID_CREAT_ORDER(HttpStatus.UNAUTHORIZED, "Order_4001", "상품의 수량이 부족합니다"),
+    REJECT_PAYMENT(HttpStatus.UNAUTHORIZED, "Order_4030", "캐시가 부족합니다"),;
 
 
     private final HttpStatus httpStatus;

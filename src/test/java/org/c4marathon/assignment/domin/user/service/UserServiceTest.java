@@ -93,7 +93,7 @@ class UserServiceTest {
 
             // When & Then
             GeneralException exception = assertThrows(GeneralException.class, () -> userService.login(loginRequestDTO));
-            assertEquals(UserErrorStatus.User_INFO_NOT_FOUND, exception.getCode());
+            assertEquals(UserErrorStatus.USER_INFO_NOT_FOUND, exception.getCode());
         }
 
     }
