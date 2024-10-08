@@ -4,6 +4,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.Data;
 import lombok.Getter;
 import org.c4marathon.assignment.domin.user.annotation.ExistEmail;
@@ -42,5 +43,11 @@ public class UserRequestDTO {
 
         @NotBlank
         private String password;
+    }
+
+    @Data
+    public static class CacheChargeRequestDTO {
+        @Positive
+        private Integer amount;
     }
 }

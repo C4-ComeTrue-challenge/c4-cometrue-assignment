@@ -35,6 +35,9 @@ public class UserController {
         return ApiPayload.onSuccess(CommonSuccessStatus.CREATED, null);
     }
 
+    /**
+     * 로그인
+     */
     @PostMapping("/login")
     public ApiPayload<?> login(@RequestBody loginRequestDTO loginRequestDTO, HttpSession httpSession) {
         User user = userService.login(loginRequestDTO);
@@ -42,10 +45,23 @@ public class UserController {
         return ApiPayload.onSuccess(CommonSuccessStatus.OK, null);
     }
 
+    /**
+     * 로그아웃
+     */
     @PostMapping("/logout")
     public ApiPayload<?> logout(HttpSession httpSession) {
         User user = (User) httpSession.getAttribute("user");
         httpSession.removeAttribute("user");
+        return ApiPayload.onSuccess(CommonSuccessStatus.OK, null);
+    }
+
+    /**
+     * 캐시 충전
+     */
+    @PostMapping("/charge")
+    public ApiPayload<?> cacheCharge(@RequestBody CacheChargeRequestDTO chargeRequestDTO, HttpSession httpSession) {
+        User user = (User) httpSession.getAttribute("user");
+        userService.cacheCharge(chargeRequestDTO, user);
         return ApiPayload.onSuccess(CommonSuccessStatus.OK, null);
     }
 
