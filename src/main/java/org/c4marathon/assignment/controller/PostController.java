@@ -8,6 +8,10 @@ import org.c4marathon.assignment.domain.request.PostRequest;
 import org.c4marathon.assignment.domain.response.PostDetailResponse;
 import org.c4marathon.assignment.domain.response.PostResponse;
 import org.c4marathon.assignment.service.PostService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,8 +37,9 @@ public class PostController {
 
     // 게시글 전체 조회
     @GetMapping
-    public ResponseEntity<?> getAllPosts() {
-        List<PostResponse> posts = postService.getAllPosts();
+    public ResponseEntity<?> getAllPosts(@PageableDefault(size = 5, sort = "postId",
+            direction = Sort.Direction.DESC) Pageable pageable, HttpSession session) {
+        Page<PostResponse> posts = postService.getAllPosts(pageable);
         return ResponseEntity.ok(posts);
     }
 

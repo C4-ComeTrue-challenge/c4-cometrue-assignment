@@ -7,6 +7,8 @@ import org.c4marathon.assignment.domain.request.PostRequest;
 import org.c4marathon.assignment.domain.response.PostResponse;
 import org.c4marathon.assignment.repository.MemberRepository;
 import org.c4marathon.assignment.repository.PostRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,10 +30,9 @@ public class PostService {
         postRepository.save(post);
     }
 
-    // 게시글 전체 조회 (PostResponse로 변환)
-    public List<PostResponse> getAllPosts() {
-        return postRepository.findAll().stream()
-                .map(PostResponse::new)
-                .collect(Collectors.toList());
+    // 게시글 전체 조회
+    public Page<PostResponse> getAllPosts(Pageable pageable) {
+        return postRepository.findAll(pageable).map(PostResponse::new);
+
     }
 }
