@@ -46,7 +46,7 @@ public class OrderController {
     /**
      * 구매 확정
      */
-    @PostMapping("/confirm")
+    @PostMapping("/confirm/{orderId}")
     public ApiPayload<?> confirmOrder(@PathVariable("orderId") @Positive(message = "양수만 가능합니다") Long orderId, HttpSession httpSession) {
         User user = (User) httpSession.getAttribute("user");
 
