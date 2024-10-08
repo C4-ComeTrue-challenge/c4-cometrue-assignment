@@ -29,4 +29,9 @@ public class MemberController {
         session.setAttribute("member", member);  // 세션에 사용자 정보 저장
         return ResponseEntity.ok("로그인에 성공하였습니다.");
     }
+
+    // todo: 회원정보 수정
+
+    // todo: 회원탈퇴
+
 }

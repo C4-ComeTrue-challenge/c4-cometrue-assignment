@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.c4marathon.assignment.domain.Member;
 import org.c4marathon.assignment.domain.Post;
 import org.c4marathon.assignment.domain.request.PostRequest;
-import org.c4marathon.assignment.domain.response.PostDetailResponse;
 import org.c4marathon.assignment.domain.response.PostResponse;
-import org.c4marathon.assignment.exception.PostNotFoundException;
 import org.c4marathon.assignment.repository.MemberRepository;
 import org.c4marathon.assignment.repository.PostRepository;
 import org.springframework.stereotype.Service;
@@ -21,20 +19,19 @@ public class PostService {
     private final MemberRepository memberRepository;
 
     // 게시글 작성
-    public Post createPost(PostRequest postRequest,Member member) {
-
+    public void createPost(PostRequest postRequest, Member member) {
         Post post = Post.builder()
                 .title(postRequest.getTitle())
                 .content(postRequest.getContent())
                 .member(member)  // 회원과 연관관계 설정
                 .build();
-        return postRepository.save(post);
+        postRepository.save(post);
     }
 
     // 게시글 전체 조회 (PostResponse로 변환)
     public List<PostResponse> getAllPosts() {
         return postRepository.findAll().stream()
-                .map(post -> new PostResponse(post.getTitle(), post.getMember().getNickname()))
+                .map(PostResponse::new)
                 .collect(Collectors.toList());
     }
 }
