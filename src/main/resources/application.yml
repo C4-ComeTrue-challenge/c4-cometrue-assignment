@@ -1,0 +1,15 @@
+spring:
+  host: 'http://localhost:8080/'
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/openmarket?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: dldngus1!
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        highlight_sql: true
