@@ -30,6 +30,11 @@ public class MemberController {
         return ResponseEntity.ok("로그인에 성공하였습니다.");
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpSession session) {
+        session.invalidate();  // 세션 무효화 (로그아웃 처리)
+        return ResponseEntity.ok("로그아웃에 성공하였습니다.");
+    }
     // todo: 회원정보 수정
 
     // todo: 회원탈퇴
