@@ -5,20 +5,15 @@ import org.c4marathon.assignment.domain.Member;
 import org.c4marathon.assignment.domain.Post;
 import org.c4marathon.assignment.domain.request.PostRequest;
 import org.c4marathon.assignment.domain.response.PostResponse;
-import org.c4marathon.assignment.repository.MemberRepository;
 import org.c4marathon.assignment.repository.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-    private final MemberRepository memberRepository;
 
     // 게시글 작성
     public void createPost(PostRequest postRequest, Member member) {
@@ -33,6 +28,5 @@ public class PostService {
     // 게시글 전체 조회
     public Page<PostResponse> getAllPosts(Pageable pageable) {
         return postRepository.findAll(pageable).map(PostResponse::new);
-
     }
 }
