@@ -1,6 +1,7 @@
 package org.c4marathon.assignment.domain.response;
 
 import lombok.Data;
+import org.c4marathon.assignment.domain.Post;
 
 @Data
 public class PostDetailResponse {
@@ -8,11 +9,9 @@ public class PostDetailResponse {
     private String content;
     private String nickname;
 
-    public PostDetailResponse(String title, String content, String nickname) {
-        this.title = title;
-        this.content = content;
-        this.nickname = nickname;
+    public PostDetailResponse(Post post) {
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.nickname = post.getMember().getNickname();
     }
-
-
 }

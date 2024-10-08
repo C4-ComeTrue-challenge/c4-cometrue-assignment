@@ -40,8 +40,7 @@ public class PostController {
 
     // 게시글 단일 조회
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPostById(@PathVariable Long id) {
-        PostDetailResponse post = postService.getPostById(id);
-        return ResponseEntity.ok(post);
+    public ResponseEntity<?> getPostById(@PathVariable("id") Post post) {
+        return ResponseEntity.ok(new PostDetailResponse(post));
     }
 }
