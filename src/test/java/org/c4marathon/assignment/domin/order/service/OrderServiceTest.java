@@ -52,7 +52,6 @@ class OrderServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-
         user = User.builder()
                 .id(1L)
                 .cache(10000)
@@ -62,6 +61,7 @@ class OrderServiceTest {
                 .id(1L)
                 .price(1000)
                 .stock(10)
+                .user(user)
                 .build();
 
         orderItem = OrderItem.builder()
@@ -266,6 +266,54 @@ class OrderServiceTest {
             verify(userRepository).findByIdWithPessimisticLock(1L);
             verify(orderRepository).findByIdWithPessimisticLock(1L);
             verify(itemRepository).findByIdWithPessimisticLock(1L);
+        }
+    }
+
+    @Nested
+    class 구매_확정_테스트 {
+        @Test
+        void 성공_판매자캐시업데이트() {
+            // given
+            when(userRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.of(user));
+            when(orderRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.of(order));
+
+            // when
+            assertDoesNotThrow(() -> orderService.confirmOrder(1L));
+
+            // then
+            verify(userRepository).findByIdWithPessimisticLock(1L);
+            verify(orderRepository).findByIdWithPessimisticLock(1L);
+            assertAll(
+                    () -> assertEquals(11900, user.getCache()), // 10000 + 2000 * 0.95
+                    () -> assertEquals(Status.구매_확정, order.getOrderStatus())
+            );
+
+        }
+
+        @Test
+        void 실패_주문_없음() {
+            // given
+            when(userRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.of(user));
+            when(orderRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.empty());
+
+            // when
+            GeneralException exception = assertThrows(GeneralException.class, () -> orderService.confirmOrder(1L));
+
+            // then
+            assertEquals(OrderErrorStatus.NOT_FOUND_ORDER, exception.getCode());
+        }
+
+        @Test
+        void 실패_판매자_없음() {
+            // given
+            when(userRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.empty());
+            when(orderRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.of(order));
+
+            // when
+            GeneralException exception = assertThrows(GeneralException.class, () -> orderService.confirmOrder(1L));
+
+            // then
+            assertEquals(UserErrorStatus.USER_INFO_NOT_FOUND, exception.getCode());
         }
     }
 }
