@@ -9,7 +9,9 @@ import java.util.List;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class User extends BaseEntity {
 
     @Id
@@ -34,21 +36,8 @@ public class User extends BaseEntity {
 
     private String bank;
 
-    @Builder
-    public User(String email, String password, String name, Role role, String account, String bank) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.role = role;
-        this.cache = 0;
-        this.point = 0;
-        this.account = account;
-        this.bank = bank;
+    public void decreaseCache(int totalPrice) {
+        this.cache -= totalPrice;
     }
 
-    @Builder
-    public User(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
 }

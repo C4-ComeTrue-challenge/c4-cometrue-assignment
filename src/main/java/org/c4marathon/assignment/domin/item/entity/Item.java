@@ -1,15 +1,16 @@
 package org.c4marathon.assignment.domin.item.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.c4marathon.assignment.domin.order.controller.OrderErrorStatus;
 import org.c4marathon.assignment.domin.user.entity.User;
 import org.c4marathon.assignment.global.common.domain.BaseEntity;
+import org.c4marathon.assignment.global.exception.GeneralException;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Item extends BaseEntity {
 
@@ -30,12 +31,7 @@ public class Item extends BaseEntity {
 
     private String description;
 
-    @Builder
-    public Item(User user, String name, Integer price, Integer stock, String description) {
-        this.user = user;
-        this.name = name;
-        this.price = price;
-        this.stock = stock;
-        this.description = description;
+    public void decreaseStock(int quantity) {
+        this.stock -= quantity;
     }
 }

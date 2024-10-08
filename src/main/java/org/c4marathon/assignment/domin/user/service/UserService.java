@@ -32,6 +32,6 @@ public class UserService {
 
     public User login(UserRequestDTO.loginRequestDTO loginRequestDTO) {
         return userRepository.findByEmailAndPassword(loginRequestDTO.getEmail(), loginRequestDTO.getPassword())
-                .orElseThrow(() -> new GeneralException(UserErrorStatus.User_INFO_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(UserErrorStatus.USER_INFO_NOT_FOUND));
     }
 }
