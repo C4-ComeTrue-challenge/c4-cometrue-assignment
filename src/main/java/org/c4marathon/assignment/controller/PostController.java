@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/posts")
@@ -22,16 +23,12 @@ public class PostController {
     // 게시글 작성 (회원 정보를 세션에서 가져옴)
     @PostMapping("/write")
     public ResponseEntity<?> createPost(@RequestBody PostRequest postRequest, HttpSession session) {
-        // 세션에서 로그인된 사용자 정보 확인
-        Member member = (Member) session.getAttribute("member");
-        if (member == null) {
-            return ResponseEntity.status(401).body(null); // 로그인된 사용자가 없을 경우 401 Unauthorized 반환
-        }
-
-        // 게시글 작성
-        Post post = postService.createPost(postRequest, member);
-
-        return ResponseEntity.ok(post);
+        return Optional.ofNullable((Member) session.getAttribute("member"))
+                .map(member -> {
+                    postService.createPost(postRequest, member);
+                    return ResponseEntity.ok("게시글 작성 성공");
+                })
+                .orElseGet(() -> ResponseEntity.status(401).body("로그인이 필요합니다."));
     }
 
     // 게시글 전체 조회
