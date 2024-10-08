@@ -29,6 +29,11 @@ class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
+    private User user;
+    private UserRequestDTO.CacheChargeRequestDTO chargeRequestDTO;
+
+
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -96,5 +101,19 @@ class UserServiceTest {
             assertEquals(UserErrorStatus.USER_INFO_NOT_FOUND, exception.getCode());
         }
 
+    }
+
+    @Nested
+    class 캐시_충전_테스트 {
+        @Test
+        void 캐시_충전_성공() {
+            user = mock(User.class);
+            chargeRequestDTO = new UserRequestDTO.CacheChargeRequestDTO();
+            chargeRequestDTO.setAmount(5000);
+
+            userService.cacheCharge(chargeRequestDTO, user);
+
+            verify(user, times(1)).updateCache(chargeRequestDTO.getAmount());
+        }
     }
 }
