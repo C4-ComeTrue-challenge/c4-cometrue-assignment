@@ -42,4 +42,15 @@ public class OrderController {
         orderService.refundOrder(orderId, user.getId());
         return ApiPayload.onSuccess(CommonSuccessStatus.OK, null);
     }
+
+    /**
+     * 구매 확정
+     */
+    @PostMapping("/confirm")
+    public ApiPayload<?> confirmOrder(@PathVariable("orderId") @Positive(message = "양수만 가능합니다") Long orderId, HttpSession httpSession) {
+        User user = (User) httpSession.getAttribute("user");
+
+        orderService.confirmOrder(orderId);
+        return ApiPayload.onSuccess(CommonSuccessStatus.OK, null);
+    }
 }

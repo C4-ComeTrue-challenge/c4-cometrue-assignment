@@ -1,6 +1,7 @@
 package org.c4marathon.assignment.domin.order.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.c4marathon.assignment.domin.item.controller.ItemErrorStatus;
 import org.c4marathon.assignment.domin.item.entity.Item;
 import org.c4marathon.assignment.domin.item.repository.ItemRepository;
@@ -17,12 +18,15 @@ import org.c4marathon.assignment.global.exception.GeneralException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
     private final OrderRepository orderRepository;
     private final ItemRepository itemRepository;
@@ -96,6 +100,31 @@ public class OrderService {
 
         order.updateStatus(Status.취소);
         user.increaseCache(order.getTotalOrderPrice());
+    }
+
+    @Transactional
+    public void confirmOrder(Long orderId) {
+        Order order = orderRepository.findByIdWithPessimisticLock(orderId)
+                .orElseThrow(() -> new GeneralException(OrderErrorStatus.NOT_FOUND_ORDER));
+
+        // 판매자 캐시 업데이트
+        Map<Long, Integer> sellerCacheUpdateMap = new HashMap<>();
+        order.getOrderItems().forEach(orderItem -> {
+            Item item = orderItem.getItem();
+            Long sellerId = item.getUser().getId();
+            int cacheToUpdate = (int) (orderItem.getOrderPrice() * orderItem.getOrderQuantity() * 0.95);
+
+            sellerCacheUpdateMap.put(sellerId, sellerCacheUpdateMap.getOrDefault(sellerId, 0) + cacheToUpdate);
+        });
+
+        // 모든 판매자에 대해 비관적 락으로 캐시 업데이트
+        for (Map.Entry<Long, Integer> entry : sellerCacheUpdateMap.entrySet()) {
+            User seller = userRepository.findByIdWithPessimisticLock(entry.getKey())
+                    .orElseThrow(() -> new GeneralException(UserErrorStatus.USER_INFO_NOT_FOUND));
+            seller.updateCache(entry.getValue());
+        }
+
+        order.updateStatus(Status.구매_확정);
     }
 }
 
