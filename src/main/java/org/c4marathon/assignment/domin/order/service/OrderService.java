@@ -71,5 +71,31 @@ public class OrderService {
 
         orderRepository.save(order);
     }
+
+    @Transactional
+    public void refundOrder(Long orderId, Long userId) {
+        User user = userRepository.findByIdWithPessimisticLock(userId)
+                .orElseThrow(() -> new GeneralException(UserErrorStatus.USER_INFO_NOT_FOUND));
+
+        Order order = orderRepository.findByIdWithPessimisticLock(orderId)
+                .orElseThrow(() -> new GeneralException(OrderErrorStatus.NOT_FOUND_ORDER));
+
+        if (order.getOrderStatus() != Status.주문_완료) {
+            throw new GeneralException(OrderErrorStatus.INVALID_ORDER_STATUS);
+        }
+
+        if (!order.getUser().getId().equals(userId)) {
+            throw new GeneralException(OrderErrorStatus.UNAUTHORIZED_ACCESS);
+        }
+
+        order.getOrderItems().forEach(orderItem -> {
+            Item item = itemRepository.findByIdWithPessimisticLock(orderItem.getItem().getId())
+                    .orElseThrow(() -> new GeneralException(ItemErrorStatus.ITEM_INFO_NOT_FOUND));
+            item.increaseStock(orderItem.getOrderQuantity());
+        });
+
+        order.updateStatus(Status.취소);
+        user.increaseCache(order.getTotalOrderPrice());
+    }
 }
 

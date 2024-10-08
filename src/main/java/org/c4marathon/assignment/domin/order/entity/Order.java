@@ -1,10 +1,7 @@
 package org.c4marathon.assignment.domin.order.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.c4marathon.assignment.domin.user.entity.User;
 import org.c4marathon.assignment.global.common.domain.BaseEntity;
 
@@ -13,6 +10,8 @@ import java.util.List;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order extends BaseEntity {
     @Id
@@ -32,11 +31,7 @@ public class Order extends BaseEntity {
 
     private Integer totalOrderPrice;
 
-    @Builder
-    public Order(User user, List<OrderItem> orderItems, Status orderStatus, Integer totalOrderPrice) {
-        this.user = user;
-        this.orderItems = orderItems;
-        this.orderStatus = orderStatus;
-        this.totalOrderPrice = totalOrderPrice;
+    public void updateStatus(Status newStatus) {
+        this.orderStatus = newStatus;
     }
 }

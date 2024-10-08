@@ -12,7 +12,12 @@ import org.springframework.http.HttpStatus;
 public enum OrderErrorStatus implements BaseStatus {
 
     INVALID_CREAT_ORDER(HttpStatus.UNAUTHORIZED, "Order_4001", "상품의 수량이 부족합니다"),
-    REJECT_PAYMENT(HttpStatus.UNAUTHORIZED, "Order_4030", "캐시가 부족합니다"),;
+
+    REJECT_PAYMENT(HttpStatus.UNAUTHORIZED, "Order_4030", "캐시가 부족합니다"),
+    INVALID_ORDER_STATUS(HttpStatus.UNAUTHORIZED, "Order_4031", "이미 배송한 상품입니다"),
+    UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "Order_4031", "환불할 권한이 없습니다"),
+
+    NOT_FOUND_ORDER(HttpStatus.NOT_FOUND, "Order_4040", "주문을 찾을 수 없습니다"),;
 
 
     private final HttpStatus httpStatus;
