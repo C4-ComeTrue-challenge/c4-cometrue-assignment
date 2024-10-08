@@ -13,7 +13,9 @@ public enum UserErrorStatus implements BaseStatus {
     EXIST_EMAIL(HttpStatus.CONFLICT, "User_4001", "이미 존재하는 이메일입니다"),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "User_4002", "비밀번호가 일치하지 않습니다"),
 
-    USER_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "User_4040", "존재하지 않는 회원 정보입니다"),;
+    USER_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "User_4040", "존재하지 않는 회원 정보입니다"),
+
+    CONCURRENCY_FAILURE(HttpStatus.CONFLICT, "User_4090", "동시성 문제로 인해 요청을 처리할 수 없습니다");
 
     private final HttpStatus httpStatus;
     private final String code;

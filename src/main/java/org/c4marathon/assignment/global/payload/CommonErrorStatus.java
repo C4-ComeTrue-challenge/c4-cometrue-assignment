@@ -16,6 +16,7 @@ public enum CommonErrorStatus implements BaseStatus {
     NOT_FOUND(HttpStatus.NOT_FOUND, "COMMON_404", "찾을 수 없음"),
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON_405", "허용되지 않은 메소드"),
     CONFLICT(HttpStatus.CONFLICT, "COMMON_409", "충돌"),
+    CONCURRENCY_FAILURE(HttpStatus.CONFLICT, "COMMON_4091", "동시성 문제로 인해 요청을 처리할 수 없습니다");
     ;
 
     private final HttpStatus httpStatus;

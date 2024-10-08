@@ -44,4 +44,8 @@ public class User extends BaseEntity {
         this.cache += totalPrice;
     }
 
+    public void updateCache(int amount) {
+        this.cache += amount;
+    }
+
 }
