@@ -20,7 +20,6 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
 
-
     // 게시글 작성
     public Post createPost(PostRequest postRequest,Member member) {
 
@@ -37,12 +36,5 @@ public class PostService {
         return postRepository.findAll().stream()
                 .map(post -> new PostResponse(post.getTitle(), post.getMember().getNickname()))
                 .collect(Collectors.toList());
-    }
-
-    // 게시글 단일 조회 (PostDetailResponse로 변환)
-    public PostDetailResponse getPostById(Long id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFoundException( + id + "번 게시글을 찾을 수 없습니다"));
-        return new PostDetailResponse(post.getTitle(), post.getContent(), post.getMember().getNickname());
     }
 }
