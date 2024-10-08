@@ -6,6 +6,8 @@ import org.c4marathon.assignment.domin.item.repository.ItemRepository;
 import org.c4marathon.assignment.domin.order.controller.OrderErrorStatus;
 import org.c4marathon.assignment.domin.order.dto.OrderRequestDTO;
 import org.c4marathon.assignment.domin.order.entity.Order;
+import org.c4marathon.assignment.domin.order.entity.OrderItem;
+import org.c4marathon.assignment.domin.order.entity.Status;
 import org.c4marathon.assignment.domin.order.repository.OrderRepository;
 import org.c4marathon.assignment.domin.user.controller.UserErrorStatus;
 import org.c4marathon.assignment.domin.user.entity.User;
@@ -43,6 +45,8 @@ class OrderServiceTest {
 
     private User user;
     private Item item;
+    private Order order;
+    private OrderItem orderItem;
     private OrderRequestDTO.CreateOrderDTO createOrderDTO;
 
     @BeforeEach
@@ -60,6 +64,20 @@ class OrderServiceTest {
                 .stock(10)
                 .build();
 
+        orderItem = OrderItem.builder()
+                .item(item)
+                .orderPrice(1000)
+                .orderQuantity(2)
+                .build();
+
+        order = Order.builder()
+                .id(1L)
+                .user(user)
+                .orderItems(Arrays.asList(orderItem))
+                .orderStatus(Status.주문_완료)
+                .totalOrderPrice(2000)
+                .build();
+
         OrderRequestDTO.OrderItemDTO orderItemDTO = new OrderRequestDTO.OrderItemDTO();
         orderItemDTO.setItemId(1L);
         orderItemDTO.setQuantity(2);
@@ -69,7 +87,7 @@ class OrderServiceTest {
     }
 
     @Nested
-    class CreateOrderTests {
+    class 상품_주문_테스트 {
         @Test
         void 주문_성공() {
             when(userRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.of(user));
@@ -173,6 +191,81 @@ class OrderServiceTest {
                     () -> assertEquals(4, item2.getStock()),
                     () -> assertEquals(7500, user.getCache())
             );
+        }
+    }
+
+    @Nested
+    class 상품_환불_테스트 {
+        @Test
+        void 환불_성공() {
+            when(userRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.of(user));
+            when(orderRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.of(order));
+            when(itemRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.of(item));
+
+            assertDoesNotThrow(() -> orderService.refundOrder(1L, 1L));
+
+            assertEquals(Status.취소, order.getOrderStatus());
+            assertEquals(12000, user.getCache());
+            assertEquals(12, item.getStock());
+            verify(userRepository).findByIdWithPessimisticLock(1L);
+            verify(orderRepository).findByIdWithPessimisticLock(1L);
+            verify(itemRepository).findByIdWithPessimisticLock(1L);
+        }
+
+        @Test
+        void 환불_실패_사용자_없음() {
+            when(userRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.empty());
+
+            assertThrows(GeneralException.class, () -> orderService.refundOrder(1L, 1L));
+            verify(userRepository).findByIdWithPessimisticLock(1L);
+            verify(orderRepository, never()).findByIdWithPessimisticLock(anyLong());
+        }
+
+        @Test
+        void 환불_실패_주문_없음() {
+            when(userRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.of(user));
+            when(orderRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.empty());
+
+            assertThrows(GeneralException.class, () -> orderService.refundOrder(1L, 1L));
+            verify(userRepository).findByIdWithPessimisticLock(1L);
+            verify(orderRepository).findByIdWithPessimisticLock(1L);
+            verify(itemRepository, never()).findByIdWithPessimisticLock(anyLong());
+        }
+
+        @Test
+        void 환불_실패_잘못된_주문_상태() {
+            order.updateStatus(Status.취소);
+            when(userRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.of(user));
+            when(orderRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.of(order));
+
+            assertThrows(GeneralException.class, () -> orderService.refundOrder(1L, 1L));
+            verify(userRepository).findByIdWithPessimisticLock(1L);
+            verify(orderRepository).findByIdWithPessimisticLock(1L);
+            verify(itemRepository, never()).findByIdWithPessimisticLock(anyLong());
+        }
+
+        @Test
+        void 환불_실패_권한_없음() {
+            User otherUser = User.builder().id(2L).build();
+            when(userRepository.findByIdWithPessimisticLock(2L)).thenReturn(Optional.of(otherUser));
+            when(orderRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.of(order));
+
+            assertThrows(GeneralException.class, () -> orderService.refundOrder(1L, 2L));
+            verify(userRepository).findByIdWithPessimisticLock(2L);
+            verify(orderRepository).findByIdWithPessimisticLock(1L);
+            verify(itemRepository, never()).findByIdWithPessimisticLock(anyLong());
+        }
+
+        @Test
+        void 환불_실패_상품_없음() {
+            when(userRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.of(user));
+            when(orderRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.of(order));
+            when(itemRepository.findByIdWithPessimisticLock(1L)).thenReturn(Optional.empty());
+
+            assertThrows(GeneralException.class, () -> orderService.refundOrder(1L, 1L));
+            verify(userRepository).findByIdWithPessimisticLock(1L);
+            verify(orderRepository).findByIdWithPessimisticLock(1L);
+            verify(itemRepository).findByIdWithPessimisticLock(1L);
         }
     }
 }
