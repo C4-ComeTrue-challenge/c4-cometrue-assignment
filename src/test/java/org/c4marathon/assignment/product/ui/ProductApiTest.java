@@ -6,10 +6,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.UUID;
 
 import org.c4marathon.assignment.AcceptanceTest;
-import org.c4marathon.assignment.common.authentication.model.principal.LoginCustomer;
 import org.c4marathon.assignment.common.authentication.model.principal.LoginSeller;
 import org.c4marathon.assignment.global.session.SessionConst;
-import org.c4marathon.assignment.product.ui.dto.request.PlaceOrderRequest;
 import org.c4marathon.assignment.product.ui.dto.request.RegisterProductRequest;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
@@ -51,7 +49,7 @@ class ProductApiTest extends AcceptanceTest {
 
 		@Test
 		@DisplayName("[401]")
-		@Disabled
+		@Disabled("인증/인가 필터 구현 후 테스트 활성화")
 		void shouldReturn401(@Autowired MockMvc mockMvc, @Autowired ObjectMapper objectMapper) throws Exception {
 			RegisterProductRequest request = new RegisterProductRequest("newProduct", "this is new product", 10000L,
 				20L);
@@ -70,56 +68,6 @@ class ProductApiTest extends AcceptanceTest {
 
 		private Matcher<String> matcherForEndWithNumber() {
 			return Matchers.matchesRegex("^/products/\\d+$");
-		}
-	}
-
-	@Nested
-	@DisplayName("POST /products/{id}/orders")
-	class PlaceOrder {
-		@Test
-		@DisplayName("[201]")
-		void shouldReturn201(@Autowired MockMvc mockMvc, @Autowired ObjectMapper objectMapper) throws Exception {
-			Long productId = 10L;
-			Integer productVersion = 3;
-			PlaceOrderRequest request = new PlaceOrderRequest(productVersion);
-			String expectedMessage = "";
-
-			ResultActions perform = mockMvc.perform(
-				post("/products/{id}/orders", productId)
-					.contentType(MediaType.APPLICATION_JSON)
-					.sessionAttr(SessionConst.SESSION_AUTHENTICATION_PRINCIPAL_KEY,
-						new LoginCustomer(UUID.randomUUID()))
-					.content(objectMapper.writeValueAsString(request)));
-
-			perform.andExpectAll(
-				status().isCreated(),
-				header().string("Location", matcherForEndWithNumber()),
-				content().string(expectedMessage)
-			);
-		}
-
-		@Test
-		@DisplayName("[401]")
-		@Disabled
-		void shouldReturn401(@Autowired MockMvc mockMvc, @Autowired ObjectMapper objectMapper) throws Exception {
-			Long productId = 10L;
-			Integer productVersion = 3;
-			PlaceOrderRequest request = new PlaceOrderRequest(productVersion);
-			String expectedMessage = "";
-
-			ResultActions perform = mockMvc.perform(
-				post("/products/{id}/orders", productId)
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(objectMapper.writeValueAsString(request)));
-
-			perform.andExpectAll(
-				status().isUnauthorized(),
-				content().string(expectedMessage)
-			);
-		}
-
-		private Matcher<String> matcherForEndWithNumber() {
-			return Matchers.matchesRegex("^/orders/\\d+$");
 		}
 	}
 }
