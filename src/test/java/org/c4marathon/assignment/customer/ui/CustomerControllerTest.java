@@ -37,7 +37,7 @@ class CustomerControllerTest {
 			String expectedMessage = "";
 
 			when(signUpService.register(
-				eq(new SignUpService.Command(request.email(), request.password(), request.name()))))
+				new SignUpService.Command(request.email(), request.password(), request.name())))
 				.thenReturn(nextId);
 
 			ResultActions perform = mockMvc.perform(
@@ -51,7 +51,7 @@ class CustomerControllerTest {
 				content().string(expectedMessage)
 			);
 			verify(signUpService).register(
-				eq(new SignUpService.Command(request.email(), request.password(), request.name())));
+				new SignUpService.Command(request.email(), request.password(), request.name()));
 		}
 	}
 }

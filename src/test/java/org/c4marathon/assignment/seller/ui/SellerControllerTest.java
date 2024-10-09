@@ -37,8 +37,8 @@ class SellerControllerTest {
 			String expectedMessage = "";
 
 			when(signUpSellerService.register(
-				eq(new SignUpSellerService.Command(request.email(), request.password(), request.name(),
-					request.licenseNumber()))))
+				new SignUpSellerService.Command(request.email(), request.password(), request.name(),
+					request.licenseNumber())))
 				.thenReturn(nextId);
 
 			ResultActions perform = mockMvc.perform(
@@ -52,8 +52,8 @@ class SellerControllerTest {
 				content().string(expectedMessage)
 			);
 			verify(signUpSellerService).register(
-				eq(new SignUpSellerService.Command(request.email(), request.password(), request.name(),
-					request.licenseNumber())));
+				new SignUpSellerService.Command(request.email(), request.password(), request.name(),
+					request.licenseNumber()));
 		}
 	}
 }

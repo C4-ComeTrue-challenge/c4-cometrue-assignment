@@ -1,6 +1,5 @@
 package org.c4marathon.assignment.product.ui;
 
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -42,8 +41,8 @@ class ProductControllerTest {
 			String expectedMessage = "";
 
 			when(registerProductService.register(
-				eq(new RegisterProductService.Command(sellerId, request.name(), request.description(), request.price(),
-					request.stock()))))
+				new RegisterProductService.Command(sellerId, request.name(), request.description(), request.price(),
+					request.stock())))
 				.thenReturn(nextProductId);
 
 			ResultActions perform = mockMvc.perform(
@@ -58,8 +57,8 @@ class ProductControllerTest {
 				content().string(expectedMessage)
 			);
 			verify(registerProductService).register(
-				eq(new RegisterProductService.Command(sellerId, request.name(), request.description(),
-					request.price(), request.stock())));
+				new RegisterProductService.Command(sellerId, request.name(), request.description(), request.price(),
+					request.stock()));
 		}
 	}
 }
