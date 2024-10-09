@@ -52,7 +52,7 @@ public class SignInService {
 			}
 
 			@Override
-			public Collection<?> getAuthorities() {
+			public Collection<String> getAuthorities() {
 				return List.of();
 			}
 
