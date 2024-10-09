@@ -24,8 +24,11 @@ public class SessionAuthenticationPrincipalArgumentResolver implements HandlerMe
 	@Override
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 								  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-		boolean errorOnInvalidType = findMethodAnnotation(AuthenticationPrincipal.class, parameter)
-			.errorOnInvalidType();
+		AuthenticationPrincipal annotation = findMethodAnnotation(AuthenticationPrincipal.class, parameter);
+		if (annotation == null) {
+			return null;
+		}
+		boolean errorOnInvalidType = annotation.errorOnInvalidType();
 		HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
 		HttpSession session = request.getSession(false);
 		if (session == null) {
