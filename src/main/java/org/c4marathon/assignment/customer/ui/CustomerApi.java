@@ -1,5 +1,6 @@
 package org.c4marathon.assignment.customer.ui;
 
+import org.c4marathon.assignment.common.api.ApiResponse;
 import org.c4marathon.assignment.customer.ui.dto.request.SignUpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,5 +25,5 @@ import org.springframework.web.bind.annotation.RequestBody;
  */
 public interface CustomerApi {
 	@PostMapping("/customers")
-	ResponseEntity<?> postSignUp(@RequestBody SignUpRequest request);
+	ResponseEntity<ApiResponse<Void>> postSignUp(@RequestBody SignUpRequest request);
 }

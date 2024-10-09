@@ -3,6 +3,7 @@ package org.c4marathon.assignment.seller.ui;
 import java.net.URI;
 import java.util.UUID;
 
+import org.c4marathon.assignment.common.api.ApiResponse;
 import org.c4marathon.assignment.seller.application.SignUpSellerService;
 import org.c4marathon.assignment.seller.ui.dto.request.SignUpRequest;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class SellerController implements SellerApi {
 	}
 
 	@Override
-	public ResponseEntity<?> postSignUp(SignUpRequest request) {
+	public ResponseEntity<ApiResponse<Void>> postSignUp(SignUpRequest request) {
 		SignUpSellerService.Command command = new SignUpSellerService.Command(request.email(), request.password(),
 			request.name(), request.licenseNumber());
 		UUID id = signUpSellerService.register(command);

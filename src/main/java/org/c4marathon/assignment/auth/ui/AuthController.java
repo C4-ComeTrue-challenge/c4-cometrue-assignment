@@ -3,6 +3,7 @@ package org.c4marathon.assignment.auth.ui;
 import org.c4marathon.assignment.auth.application.SignInService;
 import org.c4marathon.assignment.auth.domain.vo.UserType;
 import org.c4marathon.assignment.auth.ui.dto.request.SignInRequest;
+import org.c4marathon.assignment.common.api.ApiResponse;
 import org.c4marathon.assignment.common.authentication.model.Authentication;
 import org.c4marathon.assignment.global.session.SessionConst;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class AuthController implements AuthApi {
 	}
 
 	@Override
-	public ResponseEntity<?> postSignInCustomer(SignInRequest request) {
+	public ResponseEntity<ApiResponse<Void>> postSignInCustomer(SignInRequest request) {
 		SignInService.Command command = new SignInService.Command(request.email(), request.password(),
 			UserType.CUSTOMER);
 		Authentication authentication = signInService.signIn(command);
@@ -30,7 +31,7 @@ public class AuthController implements AuthApi {
 	}
 
 	@Override
-	public ResponseEntity<?> postSignInSeller(SignInRequest request) {
+	public ResponseEntity<ApiResponse<Void>> postSignInSeller(SignInRequest request) {
 		SignInService.Command command = new SignInService.Command(request.email(), request.password(),
 			UserType.SELLER);
 		Authentication authentication = signInService.signIn(command);

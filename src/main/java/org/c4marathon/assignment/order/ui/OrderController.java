@@ -2,6 +2,7 @@ package org.c4marathon.assignment.order.ui;
 
 import java.util.UUID;
 
+import org.c4marathon.assignment.common.api.ApiResponse;
 import org.c4marathon.assignment.common.authentication.model.principal.LoginCustomer;
 import org.c4marathon.assignment.order.application.AddToCartService;
 import org.c4marathon.assignment.order.ui.dto.request.AddToCartRequest;
@@ -17,7 +18,7 @@ public class OrderController implements OrderApi {
 	}
 
 	@Override
-	public ResponseEntity<?> postAddToCart(AddToCartRequest request, LoginCustomer loginCustomer) {
+	public ResponseEntity<ApiResponse<Void>> postAddToCart(AddToCartRequest request, LoginCustomer loginCustomer) {
 		AddToCartService.Command command = new AddToCartService.Command((UUID)loginCustomer.getId(),
 			request.productId(), request.quantity(), request.version());
 		addToCartService.add(command);
