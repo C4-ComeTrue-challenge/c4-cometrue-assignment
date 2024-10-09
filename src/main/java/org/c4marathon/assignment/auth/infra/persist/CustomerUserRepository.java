@@ -38,7 +38,6 @@ public class CustomerUserRepository implements UserRepository {
 			long high = bf.getLong();
 			long low = bf.getLong();
 			UUID id = new UUID(high, low);
-			System.out.println(id);
 			return new User(id, rs.getString("email"), rs.getString("password"), UserType.CUSTOMER);
 		};
 	}
