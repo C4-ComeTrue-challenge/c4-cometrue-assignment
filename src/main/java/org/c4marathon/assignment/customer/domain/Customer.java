@@ -58,7 +58,9 @@ import org.c4marathon.assignment.customer.infra.persist.CustomerRecord;
  * <p>
  *     후자의 경우 엄밀하게 말하면 도메인이 분리되었다고 할 수 없지만, 판매자/구매자를 구분짓지 않고 User로 통합하여 기능을 구현할 수 있기 때문에 인증/인가 서비스 코드의 복잡도를 줄일 수 있겠다.
  *     (인증/인가과 같이) 판매자/구매자 구분없는 기능(또는 이중적인 지위를 가지는 기능)이 많으면 이 방법이 더 좋겠다.
- *     하지만 1) 이 경우 User 테이블에 null값을 허용해야 하는 문제가 발생하고, 2) 커머스에서는 대부분의 기능이 판매자/구매자가 구분되어 있으며, 각각은 그에 따른 역할을 수행하기 때문에 이들을 User로 통합하게 되면 도메인 코드가 복잡해지고, 실수할 여지가 생긴다.
+ *     하지만
+ *     1) 이 경우 User 테이블에 null값을 허용해야 하는 문제가 발생하고,
+ *     2) 커머스에서는 대부분의 기능이 판매자/구매자가 구분되어 있으며, 각각은 그에 따른 역할을 수행하기 때문에 이들을 User로 통합하게 되면 도메인 코드가 복잡해지고, 실수할 여지가 생긴다.
  *     (예를 들어, 구매자가 구매자로부터 상품을 구매할 수도 있지 않을까?)
  * </p>
  * <p>
@@ -189,7 +191,9 @@ import org.c4marathon.assignment.customer.infra.persist.CustomerRecord;
  *
  * <p>
  *     PK는 클러스터 인덱스가 된다(MySQL 기준).
- *     따라서 Id가 시간순으로 생성되면 INSERT 수행시 1)데이터 및 클러스터 인덱스 페이지를 수정할 필요가 없고, 2)인덱스 페이지에 대한 cache_hit가 높아져서 Disk I/O가 덜 발생하여 성능상의 이점이 있다.
+ *     따라서 Id가 시간순으로 생성되면 INSERT 수행시
+ *     1)데이터 및 클러스터 인덱스 페이지를 수정할 필요가 없고,
+ *     2)인덱스 페이지에 대한 cache_hit가 높아져서 Disk I/O가 덜 발생하여 성능상의 이점이 있다.
  *     하지만 동시성을 고려하면서 Id를 생성하기 위해서는 bottle-neck이 발생한다.
  *     여러 스레드가 동시에 UUID를 생성할 때 중복을 방지하기 위해 잠금(lock)이나 CAS(Compare And Swap) 같은 동시성 제어 메커니즘이 필요하기 때문이다.
  * </p>
@@ -197,7 +201,9 @@ import org.c4marathon.assignment.customer.infra.persist.CustomerRecord;
  * <h5>2) v4: randomly or pseudo-randomly generated version</h5>
  *
  * <p>
- *     Id가 랜덤하게 생성되기 때문에 INSERT 수행시 1)데이터 및 클러스터 인덱스 페이지에 수정이 필요할 수 있고, 2)인덱스 페이지에 대한 cache_hit가 낮아져서 Disk I/O가 상대적으로 빈번하게 발생한다.
+ *     Id가 랜덤하게 생성되기 때문에 INSERT 수행시
+ *     1)데이터 및 클러스터 인덱스 페이지에 수정이 필요할 수 있고,
+ *     2)인덱스 페이지에 대한 cache_hit가 낮아져서 Disk I/O가 상대적으로 빈번하게 발생한다.
  *     하지만 (클러스터 인덱스의 변경이 필요없는) SELECT/UPDATE 수행시 위와 비교해서 차이가 거의 없다.
  *     (cursor-based pagination이 곤란한 점은 있겠다)
  * </p>
