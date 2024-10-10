@@ -14,7 +14,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -52,7 +51,7 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void registerByDuplicateEmail() {
         // given
-        User user = User.create("test@test.com", "1234", "test");
+        User user = User.of("test@test.com", "1234", "test");
         userRepository.save(user);
 
         UserRegisterServiceRequest registerDto = new UserRegisterServiceRequest(
@@ -70,7 +69,7 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void registerByDuplicateNickname() {
         // given
-        User user = User.create("test@test.com", "1234", "test");
+        User user = User.of("test@test.com", "1234", "test");
         userRepository.save(user);
 
         UserRegisterServiceRequest registerDto = new UserRegisterServiceRequest(
@@ -88,7 +87,7 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void login() {
         // given
-        User user = User.create("test@test.com", "1234", "test");
+        User user = User.of("test@test.com", "1234", "test");
         userRepository.save(user);
 
         UserLoginServiceRequest loginDto = new UserLoginServiceRequest("test@test.com", "1234");
@@ -106,7 +105,7 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void loginWithNonExistentEmail() {
         // given
-        User user = User.create("test@test.com", "1234", "test");
+        User user = User.of("test@test.com", "1234", "test");
         userRepository.save(user);
 
         UserLoginServiceRequest loginDto = new UserLoginServiceRequest("test1@test.com", "1234");
@@ -121,7 +120,7 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void loginWithIncorrectPassword() {
         // given
-        User user = User.create("test@test.com", "1234", "test");
+        User user = User.of("test@test.com", "1234", "test");
         userRepository.save(user);
 
         UserLoginServiceRequest loginDto = new UserLoginServiceRequest("test@test.com", "12345");

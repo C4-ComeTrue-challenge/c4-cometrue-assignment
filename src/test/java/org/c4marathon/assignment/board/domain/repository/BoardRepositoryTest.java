@@ -6,10 +6,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class BoardRepositoryTest extends IntegrationTestSupport {
 
@@ -25,7 +23,7 @@ class BoardRepositoryTest extends IntegrationTestSupport {
     @Test
     void existsBoardName() throws Exception {
         // given
-        Board board = Board.create("test");
+        Board board = Board.of("test");
         boardRepository.save(board);
 
         // when

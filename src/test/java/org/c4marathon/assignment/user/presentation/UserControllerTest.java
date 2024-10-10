@@ -1,20 +1,14 @@
 package org.c4marathon.assignment.user.presentation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.c4marathon.assignment.ControllerTestSupport;
 import org.c4marathon.assignment.global.util.SessionConst;
 import org.c4marathon.assignment.user.domain.User;
 import org.c4marathon.assignment.user.presentation.dto.UserLoginRequest;
 import org.c4marathon.assignment.user.presentation.dto.UserRegisterRequest;
-import org.c4marathon.assignment.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,7 +42,7 @@ class UserControllerTest extends ControllerTestSupport {
         // given
         UserLoginRequest loginDto = new UserLoginRequest("test@test.com", "1234");
 
-        User user = User.create("test@test.com", "1234", "test");
+        User user = User.of("test@test.com", "1234", "test");
         given(userService.login(any())).willReturn(user);
 
         // when // then
@@ -68,7 +62,7 @@ class UserControllerTest extends ControllerTestSupport {
         // given
         MockHttpSession session = new MockHttpSession();
 
-        User user = User.create("test@test.com", "1234", "test");
+        User user = User.of("test@test.com", "1234", "test");
         session.setAttribute(SessionConst.LOGIN_USER, user);
 
         // when // then

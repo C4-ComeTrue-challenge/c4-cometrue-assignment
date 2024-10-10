@@ -33,7 +33,7 @@ public class User extends BaseEntity {
         this.nickname = nickname;
     }
 
-    public static User create(String email, String password, String nickname) {
+    public static User of(String email, String password, String nickname) {
         return User.builder()
                 .email(email)
                 .password(password)
