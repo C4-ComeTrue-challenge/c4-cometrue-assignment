@@ -56,6 +56,17 @@ jacocoTestReport {
         xml.required = true
     }
     dependsOn test
+
+    afterEvaluate {
+        classDirectories.setFrom(
+                files(classDirectories.files.collect {
+                    fileTree(dir: it, include: [
+                            '**/controller/**',  // controller 패키지만 포함
+                            '**/service/**'      // service 패키지만 포함
+                    ])
+                })
+        )
+    }
 }
 
 sonar {
