@@ -49,6 +49,17 @@ checkstyle {
 jacocoTestReport {
     reports {
         xml.required = true
+        html.required = true
+    }
+    afterEvaluate {
+        classDirectories.setFrom(
+                files(classDirectories.files.collect {
+                    fileTree(dir: it, include: [
+                            '**/controller/**',  // controller 패키지만 포함
+                            '**/service/**'      // service 패키지만 포함
+                    ])
+                })
+        )
     }
     dependsOn test
 }
