@@ -9,6 +9,7 @@ import org.c4marathon.assignment.domin.order.service.OrderService;
 import org.c4marathon.assignment.domin.user.entity.User;
 import org.c4marathon.assignment.global.payload.ApiPayload;
 import org.c4marathon.assignment.global.payload.CommonSuccessStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ public class OrderController {
      * 주문 생성
      */
     @PostMapping("/create")
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiPayload<?> createOrder(@RequestBody CreateOrderDTO createOrderDTO, HttpSession httpSession) {
         User user = (User) httpSession.getAttribute("user");
 
