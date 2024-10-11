@@ -15,7 +15,13 @@ public enum ErrorCode {
 
     //Board
     DUPLICATE_NAME(400, "중복된 게시판 이름 입니다."),
-    NOT_FOUND_BOARD(404, "조회된 게시판이 없습니다.");
+    NOT_FOUND_BOARD(404, "조회된 게시판이 없습니다."),
+
+    //Image
+    NOT_FOUND_IMAGE(404, "조회된 이미지가 없습니다."),
+    DB_SAVE_FAILED(500, "DB 저장 중 오류가 발생했습니다."),
+    S3_DELETE_FAILED(500, "S3에서 이미지 삭제 중 오류가 발생했습니다.");
+
 
     private final int status;
     private final String message;
