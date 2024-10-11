@@ -30,7 +30,7 @@ public class UserService {
             throw new DuplicateNicknameException(ErrorCode.DUPLICATE_NICKNAME);
         }
 
-        User user = User.create(
+        User user = User.of(
                 registerDto.email(),
                 registerDto.nickname(),
                 registerDto.password()
