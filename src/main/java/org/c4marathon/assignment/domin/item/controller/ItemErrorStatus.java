@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ItemErrorStatus implements BaseStatus {
 
-    INVALID_REGISTER(HttpStatus.FORBIDDEN, "Item_4031", "상품을 등록할 권한이 없습니다"),
+    INVALID_REGISTER(HttpStatus.BAD_REQUEST, "Item_4001", "상품을 등록할 권한이 없습니다"),
     ITEM_INFO_NOT_FOUND(HttpStatus.NOT_FOUND, "Item_4031", "존재하지 않는 상품 정보입니다"),;
 
 
