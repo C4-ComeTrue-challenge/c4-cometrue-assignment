@@ -2,19 +2,13 @@ package org.c4marathon.assignment.domin.user.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.c4marathon.assignment.domin.user.dto.UserRequestDTO;
 import org.c4marathon.assignment.domin.user.entity.User;
-import org.c4marathon.assignment.domin.user.repository.UserRepository;
 import org.c4marathon.assignment.domin.user.service.UserService;
 import org.c4marathon.assignment.global.payload.ApiPayload;
 import org.c4marathon.assignment.global.payload.CommonSuccessStatus;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.c4marathon.assignment.domin.user.dto.UserRequestDTO.*;
 
@@ -30,6 +24,7 @@ public class UserController {
      * 회원가입
      */
     @PostMapping("/signup")
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiPayload<?> signup(@RequestBody signupRequestDTO signupRequestDTO) {
         userService.signup(signupRequestDTO);
         return ApiPayload.onSuccess(CommonSuccessStatus.CREATED, null);
