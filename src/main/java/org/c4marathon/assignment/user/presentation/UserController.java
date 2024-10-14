@@ -37,7 +37,7 @@ public class UserController {
         User loginUser = userService.login(loginDto.toServiceDto());
 
         HttpSession session = request.getSession(true);
-        session.setAttribute(SessionConst.LOGIN_USER, loginUser);
+        session.setAttribute(SessionConst.LOGIN_USER, loginUser.getId());
 
         return ResponseEntity.ok().build();
     }
