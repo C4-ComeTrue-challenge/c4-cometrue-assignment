@@ -2,7 +2,7 @@ package org.c4marathon.assignment.board.service;
 
 import org.c4marathon.assignment.IntegrationTestSupport;
 import org.c4marathon.assignment.board.domain.Board;
-import org.c4marathon.assignment.board.domain.repository.BoardRepository;
+import org.c4marathon.assignment.board.domain.repository.BoardJpaRepository;
 import org.c4marathon.assignment.board.presentation.dto.BoardResponse;
 import org.c4marathon.assignment.board.service.dto.BoardCreateServiceRequest;
 import org.c4marathon.assignment.board.service.dto.BoardUpdateServiceRequest;
@@ -22,7 +22,7 @@ class BoardServiceTest extends IntegrationTestSupport {
     private BoardService boardService;
 
     @Autowired
-    private BoardRepository boardRepository;
+    private BoardJpaRepository boardRepository;
 
     @AfterEach
     void tearDown() {

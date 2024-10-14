@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class BoardRepositoryTest extends IntegrationTestSupport {
+class BoardJpaRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
-    private BoardRepository boardRepository;
+    private BoardJpaRepository boardRepository;
 
     @AfterEach
     void tearDown() {
