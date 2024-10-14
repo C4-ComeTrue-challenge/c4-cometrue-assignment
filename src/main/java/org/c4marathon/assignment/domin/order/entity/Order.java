@@ -16,7 +16,7 @@ import java.util.List;
 public class Order extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
+    @Column(name = "orders_id")
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
