@@ -1,7 +1,7 @@
 package org.c4marathon.assignment.user.presentation;
 
 import org.c4marathon.assignment.global.config.SessionConfig;
-import org.c4marathon.assignment.user.domain.User;
+import org.c4marathon.assignment.user.domain.Users;
 import org.c4marathon.assignment.user.dto.EmailCheckRequest;
 import org.c4marathon.assignment.user.dto.EmailCheckResponse;
 import org.c4marathon.assignment.user.dto.LoginRequest;
@@ -40,8 +40,8 @@ public class UserController {
 		@Valid @RequestBody LoginRequest request,
 		HttpServletRequest httpServletRequest
 	) {
-		User user = userService.login(request);
-		sessionConfig.createSession(httpServletRequest, user);
+		Users users = userService.login(request);
+		sessionConfig.createSession(httpServletRequest, users);
 		return ResponseEntity.ok().build();
 	}
 
@@ -73,13 +73,13 @@ public class UserController {
 	public ResponseEntity<Void> deleteUser(
 		HttpServletRequest httpServletRequest
 	) {
-		User loginUser = sessionConfig.getSessionUser(httpServletRequest);
+		Users loginUsers = sessionConfig.getSessionUser(httpServletRequest);
 
-		if (loginUser == null) {
+		if (loginUsers == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 
-		userService.deleteUser(loginUser.getEmail());
+		userService.deleteUser(loginUsers.getEmail());
 		sessionConfig.invalidateSession(httpServletRequest);
 
 		return ResponseEntity.ok().build();

@@ -1,11 +1,11 @@
 package org.c4marathon.assignment.board.service;
 
-import org.c4marathon.assignment.board.domain.Board;
+import org.c4marathon.assignment.board.domain.Boards;
 import org.c4marathon.assignment.board.domain.repository.BoardRepository;
 import org.c4marathon.assignment.board.dto.BoardCreateRequest;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
 import org.c4marathon.assignment.board.dto.BoardGetOneResponse;
-import org.c4marathon.assignment.user.domain.User;
+import org.c4marathon.assignment.user.domain.Users;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,15 +22,15 @@ public class BoardService {
 	private final PasswordEncoder encoder;
 
 	@Transactional
-	public long createBoardAsUser(BoardCreateRequest request, User user) {
-		Board board = toBoard(request, user);
-		return boardRepository.save(board).getId();
+	public long createBoardAsUser(BoardCreateRequest request, Users users) {
+		Boards boards = toBoard(request, users);
+		return boardRepository.save(boards).getId();
 	}
 
 	@Transactional
 	public long createBoardAsGuest(BoardCreateRequest request) {
-		Board board = toBoard(request);
-		return boardRepository.save(board).getId();
+		Boards boards = toBoard(request);
+		return boardRepository.save(boards).getId();
 	}
 
 	@Transactional(readOnly = true)
@@ -40,20 +40,20 @@ public class BoardService {
 
 	@Transactional(readOnly = true)
 	public BoardGetOneResponse getOneBoard(Long id) {
-		Board board = boardRepository.getById(id);
-		return toDto(board);
+		Boards boards = boardRepository.getById(id);
+		return toDto(boards);
 	}
 
-	private Board toBoard(BoardCreateRequest request, User user) {
-		return Board.builder()
+	private Boards toBoard(BoardCreateRequest request, Users users) {
+		return Boards.builder()
 			.title(request.title())
 			.content(request.content())
-			.user(user)
+			.users(users)
 			.build();
 	}
 
-	private Board toBoard(BoardCreateRequest request) {
-		return Board.builder()
+	private Boards toBoard(BoardCreateRequest request) {
+		return Boards.builder()
 			.title(request.title())
 			.content(request.content())
 			.writerName(request.writerName())
@@ -61,14 +61,14 @@ public class BoardService {
 			.build();
 	}
 
-	private BoardGetOneResponse toDto(Board board) {
+	private BoardGetOneResponse toDto(Boards boards) {
 		return new BoardGetOneResponse(
-			board.getId(),
-			board.getContent(),
-			board.getTitle(),
-			board.getWriterName(),
-			board.getCreatedDate(),
-			board.getLastModifiedDate()
+			boards.getId(),
+			boards.getContent(),
+			boards.getTitle(),
+			boards.getWriterName(),
+			boards.getCreatedDate(),
+			boards.getLastModifiedDate()
 		);
 	}
 

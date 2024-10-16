@@ -3,7 +3,7 @@ package org.c4marathon.assignment.user.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.c4marathon.assignment.global.exception.ErrorCode.*;
 
-import org.c4marathon.assignment.user.domain.User;
+import org.c4marathon.assignment.user.domain.Users;
 import org.c4marathon.assignment.user.domain.repository.UserJpaRepository;
 import org.c4marathon.assignment.user.domain.repository.UserRepository;
 import org.c4marathon.assignment.user.dto.EmailCheckResponse;
@@ -20,9 +20,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-class UserServiceTest {
+@ActiveProfiles("test")
+class UsersServiceTest {
 
 	@Autowired
 	private UserRepository userRepository;
@@ -51,27 +53,27 @@ class UserServiceTest {
 		userService.signup(request);
 
 		// Then
-		User savedUser = userRepository.getByEmail("test@test.com");
-		assertThat(savedUser).isNotNull();
-		assertThat(savedUser.getEmail()).isEqualTo("test@test.com");
-		assertThat(savedUser.getNickname()).isEqualTo("testNickname");
+		Users savedUsers = userRepository.getByEmail("test@test.com");
+		assertThat(savedUsers).isNotNull();
+		assertThat(savedUsers.getEmail()).isEqualTo("test@test.com");
+		assertThat(savedUsers.getNickname()).isEqualTo("testNickname");
 	}
 
 	@DisplayName("이미 존재하는 이메일로 회원가입 시 예외가 발생한다.")
 	@Test
 	void signupWithDuplicateEmail() {
 		// Given
-		userRepository.save(User.builder()
-			.email("test@test.com")
-			.password(encoder.encode("password"))
-			.nickname("nickname")
-			.build());
+		userRepository.save(
+			org.c4marathon.assignment.user.domain.Users.builder()
+				.email("test@test.com")
+				.password(encoder.encode("password"))
+				.nickname("nickname")
+				.build());
 
 		SignupRequest request = new SignupRequest("test@test.com", "password", "testNickname");
 
 		// When & Then
-		assertThatThrownBy(() -> userService.signup(request))
-			.isInstanceOf(DuplicatedEmailException.class)
+		assertThatThrownBy(() -> userService.signup(request)).isInstanceOf(DuplicatedEmailException.class)
 			.hasMessageContaining(EMAIL_DUPLICATED_ERROR.getMessage());
 	}
 
@@ -79,7 +81,7 @@ class UserServiceTest {
 	@Test
 	void signupWithDuplicateNickname() {
 		// Given
-		userRepository.save(User.builder()
+		userRepository.save(org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
 			.password(encoder.encode("password"))
 			.nickname("testNickname")
@@ -88,8 +90,7 @@ class UserServiceTest {
 		SignupRequest request = new SignupRequest("new@test.com", "password", "testNickname");
 
 		// When & Then
-		assertThatThrownBy(() -> userService.signup(request))
-			.isInstanceOf(DuplicatedNicknameException.class)
+		assertThatThrownBy(() -> userService.signup(request)).isInstanceOf(DuplicatedNicknameException.class)
 			.hasMessageContaining(NICKNAME_DUPLICATED_ERROR.getMessage());
 	}
 
@@ -97,7 +98,7 @@ class UserServiceTest {
 	@Test
 	void loginSuccess() {
 		// Given
-		userRepository.save(User.builder()
+		userRepository.save(org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
 			.password(encoder.encode("password"))
 			.nickname("testNickname")
@@ -106,18 +107,18 @@ class UserServiceTest {
 		LoginRequest request = new LoginRequest("test@test.com", "password");
 
 		// When
-		User loginUser = userService.login(request);
+		Users loginUsers = userService.login(request);
 
 		// Then
-		assertThat(loginUser.getEmail()).isEqualTo("test@test.com");
-		assertThat(loginUser.getNickname()).isEqualTo("testNickname");
+		assertThat(loginUsers.getEmail()).isEqualTo("test@test.com");
+		assertThat(loginUsers.getNickname()).isEqualTo("testNickname");
 	}
 
 	@DisplayName("잘못된 비밀번호로 로그인 시 예외가 발생한다.")
 	@Test
 	void loginWithWrongPassword() {
 		// Given
-		userRepository.save(User.builder()
+		userRepository.save(org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
 			.password(encoder.encode("password"))
 			.nickname("testNickname")
@@ -126,8 +127,7 @@ class UserServiceTest {
 		LoginRequest request = new LoginRequest("test@test.com", "wrongPassword");
 
 		// When & Then
-		assertThatThrownBy(() -> userService.login(request))
-			.isInstanceOf(WrongPasswordException.class)
+		assertThatThrownBy(() -> userService.login(request)).isInstanceOf(WrongPasswordException.class)
 			.hasMessageContaining(WRONG_PASSWORD_ERROR.getMessage());
 	}
 
@@ -135,11 +135,12 @@ class UserServiceTest {
 	@Test
 	void checkEmail() {
 		// Given
-		userRepository.save(User.builder()
-			.email("test@test.com")
-			.password(encoder.encode("password"))
-			.nickname("nickname")
-			.build());
+		userRepository.save(
+			org.c4marathon.assignment.user.domain.Users.builder()
+				.email("test@test.com")
+				.password(encoder.encode("password"))
+				.nickname("nickname")
+				.build());
 
 		// When
 		EmailCheckResponse response = userService.checkEmail("test@test.com");
@@ -152,7 +153,7 @@ class UserServiceTest {
 	@Test
 	void checkNickname() {
 		// Given
-		userRepository.save(User.builder()
+		userRepository.save(Users.builder()
 			.email("test@test.com")
 			.password(encoder.encode("password"))
 			.nickname("testNickname")
@@ -169,18 +170,17 @@ class UserServiceTest {
 	@Test
 	void deleteUserSuccess() {
 		// Given
-		User user = userRepository.save(User.builder()
+		Users users = userRepository.save(org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test2@test.com")
 			.password(encoder.encode("password"))
 			.nickname("testNickname")
 			.build());
 
 		// When
-		userService.deleteUser(user.getEmail());
+		userService.deleteUser(users.getEmail());
 
 		// Then
-		assertThatThrownBy(() -> userRepository.getByEmail(user.getEmail()))
-			.isInstanceOf(NotFoundUserException.class)
+		assertThatThrownBy(() -> userRepository.getByEmail(users.getEmail())).isInstanceOf(NotFoundUserException.class)
 			.hasMessageContaining(NOT_FOUND_USER_ERROR.getMessage());
 	}
 }

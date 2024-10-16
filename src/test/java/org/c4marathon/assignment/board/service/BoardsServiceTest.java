@@ -3,14 +3,14 @@ package org.c4marathon.assignment.board.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.c4marathon.assignment.global.exception.ErrorCode.*;
 
-import org.c4marathon.assignment.board.domain.Board;
+import org.c4marathon.assignment.board.domain.Boards;
 import org.c4marathon.assignment.board.domain.repository.BoardJpaRepository;
 import org.c4marathon.assignment.board.domain.repository.BoardRepository;
 import org.c4marathon.assignment.board.dto.BoardCreateRequest;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
 import org.c4marathon.assignment.board.dto.BoardGetOneResponse;
 import org.c4marathon.assignment.board.exception.NotFoundBoardException;
-import org.c4marathon.assignment.user.domain.User;
+import org.c4marathon.assignment.user.domain.Users;
 import org.c4marathon.assignment.user.domain.repository.UserJpaRepository;
 import org.c4marathon.assignment.user.domain.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -21,9 +21,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-class BoardServiceTest {
+@ActiveProfiles("test")
+class BoardsServiceTest {
 
 	@Autowired
 	private BoardService boardService;
@@ -53,25 +55,25 @@ class BoardServiceTest {
 	@Test
 	void createBoardAsUserSuccess() {
 		// Given
-		User user = User.builder()
+		Users users = Users.builder()
 			.email("test@test.com")
 			.password(encoder.encode("password"))
 			.nickname("testNickname")
 			.build();
 
-		user = userRepository.save(user);
+		users = userRepository.save(users);
 
 		BoardCreateRequest request = new BoardCreateRequest("Test Title", "Test Content", null, null);
 
 		// When
-		long id = boardService.createBoardAsUser(request, user);
+		long id = boardService.createBoardAsUser(request, users);
 
 		// Then
-		Board board = boardRepository.getById(id);  // 첫 번째로 생성된 게시글 조회
-		assertThat(board).isNotNull();
-		assertThat(board.getTitle()).isEqualTo("Test Title");
-		assertThat(board.getContent()).isEqualTo("Test Content");
-		assertThat(board.getWriterName()).isEqualTo("testNickname");
+		Boards boards = boardRepository.getById(id);  // 첫 번째로 생성된 게시글 조회
+		assertThat(boards).isNotNull();
+		assertThat(boards.getTitle()).isEqualTo("Test Title");
+		assertThat(boards.getContent()).isEqualTo("Test Content");
+		assertThat(boards.getWriterName()).isEqualTo("testNickname");
 	}
 
 	@DisplayName("비회원이 게시글을 성공적으로 생성한다.")
@@ -84,11 +86,11 @@ class BoardServiceTest {
 		long id = boardService.createBoardAsGuest(request);
 
 		// Then
-		Board board = boardRepository.getById(id);  // 첫 번째로 생성된 게시글 조회
-		assertThat(board).isNotNull();
-		assertThat(board.getTitle()).isEqualTo("Test Title");
-		assertThat(board.getContent()).isEqualTo("Test Content");
-		assertThat(board.getWriterName()).isEqualTo("GuestUser");
+		Boards boards = boardRepository.getById(id);  // 첫 번째로 생성된 게시글 조회
+		assertThat(boards).isNotNull();
+		assertThat(boards.getTitle()).isEqualTo("Test Title");
+		assertThat(boards.getContent()).isEqualTo("Test Content");
+		assertThat(boards.getWriterName()).isEqualTo("GuestUser");
 	}
 
 	@DisplayName("게시글을 ID로 성공적으로 조회한다.")

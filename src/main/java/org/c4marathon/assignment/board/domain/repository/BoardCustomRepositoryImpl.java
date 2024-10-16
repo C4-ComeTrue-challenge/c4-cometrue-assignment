@@ -1,46 +1,40 @@
 package org.c4marathon.assignment.board.domain.repository;
 
-import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import static org.c4marathon.assignment.board.domain.QBoards.*;
+
+import java.util.List;
+
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
-import static org.c4marathon.assignment.board.domain.QBoard.board;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 
 public class BoardCustomRepositoryImpl implements BoardCustomRepository {
 
-    private final JPAQueryFactory queryFactory;
+	private final JPAQueryFactory queryFactory;
 
-    public BoardCustomRepositoryImpl(JPAQueryFactory queryFactory) {
-        this.queryFactory = queryFactory;
-    }
+	public BoardCustomRepositoryImpl(JPAQueryFactory queryFactory) {
+		this.queryFactory = queryFactory;
+	}
 
-    @Override
-    public Page<BoardGetAllResponse> findAllWithPaging(Pageable pageable) {
+	@Override
+	public Page<BoardGetAllResponse> findAllWithPaging(Pageable pageable) {
 
-        List<BoardGetAllResponse> results = queryFactory
-                .select(Projections.constructor(BoardGetAllResponse.class,
-                        board.content,
-                        board.writerName,
-                        board.createdDate,
-                        board.lastModifiedDate))
-                .from(board)
-                .orderBy(board.createdDate.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+		List<BoardGetAllResponse> results = queryFactory.select(
+				Projections.constructor(BoardGetAllResponse.class, boards.content, boards.writerName, boards.createdDate,
+					boards.lastModifiedDate))
+			.from(boards)
+			.orderBy(boards.createdDate.desc())
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
 
-        long total = queryFactory
-                .select(board.count())
-                .from(board)
-                .fetchOne();
+		long total = queryFactory.select(boards.count()).from(boards).fetchOne();
 
-        return new PageImpl<>(results, pageable, total);
-    }
-
+		return new PageImpl<>(results, pageable, total);
+	}
 
 }

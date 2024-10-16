@@ -1,6 +1,6 @@
 package org.c4marathon.assignment.user.domain.repository;
 
-import org.c4marathon.assignment.user.domain.User;
+import org.c4marathon.assignment.user.domain.Users;
 import org.c4marathon.assignment.user.exception.NotFoundUserException;
 import org.springframework.stereotype.Repository;
 
@@ -12,16 +12,16 @@ public class UserRepository {
 
 	private final UserJpaRepository userJpaRepository;
 
-	public void deleteUser(User user) {
-		userJpaRepository.delete(user);
+	public void deleteUser(Users users) {
+		userJpaRepository.delete(users);
 	}
 
-	public User getByEmail(String email) {
+	public Users getByEmail(String email) {
 		return userJpaRepository.findByEmail(email)
 			.orElseThrow(() -> new NotFoundUserException());
 	}
 
-	public User getById(Long id) {
+	public Users getById(Long id) {
 		return userJpaRepository.findById(id)
 			.orElseThrow(() -> new NotFoundUserException());
 	}
@@ -34,7 +34,7 @@ public class UserRepository {
 		return userJpaRepository.existsByNickname(nickname);
 	}
 
-	public User save(User user) {
-		return userJpaRepository.save(user);
+	public Users save(Users users) {
+		return userJpaRepository.save(users);
 	}
 }

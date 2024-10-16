@@ -5,7 +5,7 @@ import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
 import org.c4marathon.assignment.board.dto.BoardGetOneResponse;
 import org.c4marathon.assignment.board.service.BoardService;
 import org.c4marathon.assignment.global.config.SessionConfig;
-import org.c4marathon.assignment.user.domain.User;
+import org.c4marathon.assignment.user.domain.Users;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -34,15 +34,15 @@ public class BoardController {
 		@Valid @RequestBody BoardCreateRequest request,
 		HttpServletRequest httpServletRequest
 	) {
-		User loginUser = sessionConfig.getSessionUser(httpServletRequest);
+		Users loginUsers = sessionConfig.getSessionUser(httpServletRequest);
 
-		if (loginUser == null) {
+		if (loginUsers == null) {
 			if (request.writerName() == null || request.password() == null) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 			}
 			boardService.createBoardAsGuest(request);
 		} else {
-			boardService.createBoardAsUser(request, loginUser);
+			boardService.createBoardAsUser(request, loginUsers);
 		}
 
 		return ResponseEntity.status(HttpStatus.CREATED).build();

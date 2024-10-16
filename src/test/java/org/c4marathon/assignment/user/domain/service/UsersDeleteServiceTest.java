@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.Optional;
 
-import org.c4marathon.assignment.user.domain.User;
+import org.c4marathon.assignment.user.domain.Users;
 import org.c4marathon.assignment.user.domain.repository.UserJpaRepository;
 import org.c4marathon.assignment.user.domain.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -12,9 +12,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-class UserDeleteServiceTest {
+@ActiveProfiles("test")
+class UsersDeleteServiceTest {
 
 	@Autowired
 	private UserRepository userRepository;
@@ -31,19 +33,19 @@ class UserDeleteServiceTest {
 	@Test
 	void deleteUserSuccess() {
 		// Given
-		User user = User.builder()
+		Users users = org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
 			.password("password")
 			.nickname("testNickname")
 			.build();
 
-		user = userJpaRepository.save(user);
+		users = userJpaRepository.save(users);
 
 		// When
-		userRepository.deleteUser(user);
+		userRepository.deleteUser(users);
 
 		// Then
-		Optional<User> deletedUser = userJpaRepository.findById(user.getId());
+		Optional<Users> deletedUser = userJpaRepository.findById(users.getId());
 		assertThat(deletedUser).isNotPresent(); // 사용자가 삭제된 후 더 이상 존재하지 않아야 함
 	}
 
@@ -51,14 +53,14 @@ class UserDeleteServiceTest {
 	@Test
 	void deleteNonExistingUser() {
 		// Given
-		User user = User.builder()
+		Users users = org.c4marathon.assignment.user.domain.Users.builder()
 			.email("nonexistent@test.com")
 			.password("password")
 			.nickname("nonexistentNickname")
 			.build();
 
 		// When
-		userRepository.deleteUser(user);
+		userRepository.deleteUser(users);
 
 		// Then
 		assertThat(userJpaRepository.findAll()).isEmpty();

@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.Optional;
 
-import org.c4marathon.assignment.user.domain.User;
+import org.c4marathon.assignment.user.domain.Users;
 import org.c4marathon.assignment.user.domain.repository.UserJpaRepository;
 import org.c4marathon.assignment.user.domain.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -13,9 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-class UserSaveServiceTest {
+@ActiveProfiles("test")
+class UsersSaveServiceTest {
 
 	@Autowired
 	private UserRepository userRepository;
@@ -32,23 +34,23 @@ class UserSaveServiceTest {
 	@Test
 	void saveUserSuccess() {
 		// Given
-		User user = User.builder()
+		Users users = org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
 			.password("password")
 			.nickname("testNickname")
 			.build();
 
 		// When
-		User savedUser = userRepository.save(user);
+		Users savedUsers = userRepository.save(users);
 
 		// Then
-		assertThat(savedUser).isNotNull();
-		assertThat(savedUser.getId()).isNotNull();
-		assertThat(savedUser.getEmail()).isEqualTo("test@test.com");
-		assertThat(savedUser.getNickname()).isEqualTo("testNickname");
+		assertThat(savedUsers).isNotNull();
+		assertThat(savedUsers.getId()).isNotNull();
+		assertThat(savedUsers.getEmail()).isEqualTo("test@test.com");
+		assertThat(savedUsers.getNickname()).isEqualTo("testNickname");
 
 		// 데이터베이스에 저장되었는지 확인
-		Optional<User> foundUser = userJpaRepository.findById(savedUser.getId());
+		Optional<Users> foundUser = userJpaRepository.findById(savedUsers.getId());
 		assertThat(foundUser).isPresent();
 		assertThat(foundUser.get().getEmail()).isEqualTo("test@test.com");
 	}
@@ -57,12 +59,12 @@ class UserSaveServiceTest {
 	@Test
 	void saveUserWithNullEmail() {
 		// Given
-		User user = User.builder()
+		Users users = org.c4marathon.assignment.user.domain.Users.builder()
 			.password("password")
 			.nickname("testNickname")
 			.build();
 		// When & Then
-		assertThatThrownBy(() -> userRepository.save(user))
+		assertThatThrownBy(() -> userRepository.save(users))
 			.isInstanceOf(DataIntegrityViolationException.class)
 			.hasMessageContaining("could not execute statement");
 	}
@@ -71,13 +73,13 @@ class UserSaveServiceTest {
 	@Test
 	void saveUserWithNullNickname() {
 		// Given
-		User user = User.builder()
+		Users users = org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
 			.password("password")
 			.build();
 
 		// When & Then
-		assertThatThrownBy(() -> userRepository.save(user))
+		assertThatThrownBy(() -> userRepository.save(users))
 			.isInstanceOf(DataIntegrityViolationException.class)
 			.hasMessageContaining("could not execute statement");
 	}
@@ -86,13 +88,13 @@ class UserSaveServiceTest {
 	@Test
 	void saveUserWithNullPassword() {
 		// Given
-		User user = User.builder()
+		Users users = org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
 			.nickname("testNickname")
 			.build();
 
 		// When & Then
-		assertThatThrownBy(() -> userRepository.save(user))
+		assertThatThrownBy(() -> userRepository.save(users))
 			.isInstanceOf(DataIntegrityViolationException.class)
 			.hasMessageContaining("could not execute statement");
 	}

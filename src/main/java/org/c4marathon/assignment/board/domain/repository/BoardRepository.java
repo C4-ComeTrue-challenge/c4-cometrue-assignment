@@ -1,6 +1,6 @@
 package org.c4marathon.assignment.board.domain.repository;
 
-import org.c4marathon.assignment.board.domain.Board;
+import org.c4marathon.assignment.board.domain.Boards;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
 import org.c4marathon.assignment.board.exception.NotFoundBoardException;
 import org.springframework.data.domain.Page;
@@ -19,12 +19,12 @@ public class BoardRepository {
 		return boardJpaRepository.findAllWithPaging(pageable);
 	}
 
-	public Board getById(Long id) {
+	public Boards getById(Long id) {
 		return boardJpaRepository.findById(id)
 			.orElseThrow(() -> new NotFoundBoardException());
 	}
 
-	public Board save(Board board) {
-		return boardJpaRepository.save(board);
+	public Boards save(Boards boards) {
+		return boardJpaRepository.save(boards);
 	}
 }

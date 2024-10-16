@@ -2,7 +2,7 @@ package org.c4marathon.assignment.board.domain.service;
 
 import static org.assertj.core.api.Assertions.*;
 
-import org.c4marathon.assignment.board.domain.Board;
+import org.c4marathon.assignment.board.domain.Boards;
 import org.c4marathon.assignment.board.domain.repository.BoardJpaRepository;
 import org.c4marathon.assignment.board.domain.repository.BoardRepository;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
@@ -15,9 +15,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-class BoardGetServiceTest {
+@ActiveProfiles("test")
+class BoardsGetServiceTest {
 
 	@Autowired
 	private BoardRepository boardRepository;
@@ -35,12 +37,12 @@ class BoardGetServiceTest {
 	void getAllBoardsSuccess() {
 		// Given
 		for (int i = 1; i <= 5; i++) {
-			Board board = Board.builder()
+			Boards boards = Boards.builder()
 				.title("Title " + i)
 				.content("Content " + i)
 				.writerName("Writer " + i)
 				.build();
-			boardJpaRepository.save(board);
+			boardJpaRepository.save(boards);
 		}
 
 		Pageable pageable = PageRequest.of(0, 3);
@@ -63,21 +65,21 @@ class BoardGetServiceTest {
 	@Test
 	void getByIdSuccess() {
 		// Given
-		Board board = Board.builder()
+		Boards boards = Boards.builder()
 			.title("Test Title")
 			.content("Test Content")
 			.writerName("Test Writer")
 			.build();
-		board = boardJpaRepository.save(board);
+		boards = boardJpaRepository.save(boards);
 
 		// When
-		Board foundBoard = boardRepository.getById(board.getId());
+		Boards foundBoards = boardRepository.getById(boards.getId());
 
 		// Then
-		assertThat(foundBoard).isNotNull();
-		assertThat(foundBoard.getTitle()).isEqualTo("Test Title");
-		assertThat(foundBoard.getContent()).isEqualTo("Test Content");
-		assertThat(foundBoard.getWriterName()).isEqualTo("Test Writer");
+		assertThat(foundBoards).isNotNull();
+		assertThat(foundBoards.getTitle()).isEqualTo("Test Title");
+		assertThat(foundBoards.getContent()).isEqualTo("Test Content");
+		assertThat(foundBoards.getWriterName()).isEqualTo("Test Writer");
 	}
 
 	@DisplayName("존재하지 않는 ID로 조회 시 예외가 발생한다.")

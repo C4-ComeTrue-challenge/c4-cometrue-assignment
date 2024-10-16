@@ -4,15 +4,17 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.Optional;
 
-import org.c4marathon.assignment.user.domain.User;
+import org.c4marathon.assignment.user.domain.Users;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-class UserJpaRepositoryTest {
+@ActiveProfiles("test")
+class UsersJpaRepositoryTest {
 
 	@Autowired
 	private UserJpaRepository userJpaRepository;
@@ -26,16 +28,16 @@ class UserJpaRepositoryTest {
 	@Test
 	void findByEmailSuccess() {
 		// Given
-		User user = User.builder()
+		Users users = org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
 			.password("password")
 			.nickname("testNickname")
 			.build();
 
-		userJpaRepository.save(user);
+		userJpaRepository.save(users);
 
 		// When
-		Optional<User> foundUser = userJpaRepository.findByEmail("test@test.com");
+		Optional<Users> foundUser = userJpaRepository.findByEmail("test@test.com");
 
 		// Then
 		assertThat(foundUser).isPresent();
@@ -47,7 +49,7 @@ class UserJpaRepositoryTest {
 	@Test
 	void findByEmailNotFound() {
 		// When
-		Optional<User> foundUser = userJpaRepository.findByEmail("notfound@test.com");
+		Optional<Users> foundUser = userJpaRepository.findByEmail("notfound@test.com");
 
 		// Then
 		assertThat(foundUser).isNotPresent();
@@ -57,13 +59,13 @@ class UserJpaRepositoryTest {
 	@Test
 	void existsByEmailSuccess() {
 		// Given
-		User user = User.builder()
+		Users users = org.c4marathon.assignment.user.domain.Users.builder()
 			.email("exists@test.com")
 			.password("password")
 			.nickname("testNickname")
 			.build();
 
-		userJpaRepository.save(user);
+		userJpaRepository.save(users);
 
 		// When
 		boolean exists = userJpaRepository.existsByEmail("exists@test.com");
@@ -86,13 +88,13 @@ class UserJpaRepositoryTest {
 	@Test
 	void existsByNicknameSuccess() {
 		// Given
-		User user = User.builder()
+		Users users = org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
 			.password("password")
 			.nickname("testNickname")
 			.build();
 
-		userJpaRepository.save(user);
+		userJpaRepository.save(users);
 
 		// When
 		boolean exists = userJpaRepository.existsByNickname("testNickname");

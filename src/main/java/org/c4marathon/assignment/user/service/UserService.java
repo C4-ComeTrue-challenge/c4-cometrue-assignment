@@ -1,6 +1,6 @@
 package org.c4marathon.assignment.user.service;
 
-import org.c4marathon.assignment.user.domain.User;
+import org.c4marathon.assignment.user.domain.Users;
 import org.c4marathon.assignment.user.domain.repository.UserRepository;
 import org.c4marathon.assignment.user.dto.EmailCheckResponse;
 import org.c4marathon.assignment.user.dto.LoginRequest;
@@ -25,15 +25,15 @@ public class UserService {
 	@Transactional
 	public void signup(SignupRequest request) {
 		validateSignupRequest(request);
-		User user = toUser(request);
-		userRepository.save(user);
+		Users users = toUser(request);
+		userRepository.save(users);
 	}
 
 	@Transactional(readOnly = true)
-	public User login(LoginRequest request) {
-		User user = userRepository.getByEmail(request.email());
-		validatePassword(request.password(), user.getPassword());
-		return user;
+	public Users login(LoginRequest request) {
+		Users users = userRepository.getByEmail(request.email());
+		validatePassword(request.password(), users.getPassword());
+		return users;
 	}
 
 	@Transactional(readOnly = true)
@@ -50,8 +50,8 @@ public class UserService {
 
 	@Transactional
 	public void deleteUser(String email) {
-		User user = userRepository.getByEmail(email);
-		userRepository.deleteUser(user);
+		Users users = userRepository.getByEmail(email);
+		userRepository.deleteUser(users);
 	}
 
 	private void validateSignupRequest(SignupRequest request) {
@@ -63,8 +63,8 @@ public class UserService {
 		}
 	}
 
-	private User toUser(SignupRequest request) {
-		return User.builder()
+	private Users toUser(SignupRequest request) {
+		return org.c4marathon.assignment.user.domain.Users.builder()
 			.email(request.email())
 			.password(encoder.encode(request.password()))
 			.nickname(request.nickname())

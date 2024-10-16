@@ -3,7 +3,7 @@ package org.c4marathon.assignment.user.domain.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.c4marathon.assignment.global.exception.ErrorCode.*;
 
-import org.c4marathon.assignment.user.domain.User;
+import org.c4marathon.assignment.user.domain.Users;
 import org.c4marathon.assignment.user.domain.repository.UserJpaRepository;
 import org.c4marathon.assignment.user.domain.repository.UserRepository;
 import org.c4marathon.assignment.user.exception.NotFoundUserException;
@@ -13,9 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
-class UserGetServiceTest {
+@ActiveProfiles("test")
+class UsersGetServiceTest {
 
 	@Autowired
 	private UserRepository userRepository;
@@ -35,21 +37,21 @@ class UserGetServiceTest {
 	@Test
 	void getByEmailSuccess() {
 		// Given
-		User user = User.builder()
+		Users users = org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
 			.password(encoder.encode("password"))
 			.nickname("testNickname")
 			.build();
 
-		userJpaRepository.save(user);
+		userJpaRepository.save(users);
 
 		// When
-		User foundUser = userRepository.getByEmail("test@test.com");
+		Users foundUsers = userRepository.getByEmail("test@test.com");
 
 		// Then
-		assertThat(foundUser).isNotNull();
-		assertThat(foundUser.getEmail()).isEqualTo("test@test.com");
-		assertThat(foundUser.getNickname()).isEqualTo("testNickname");
+		assertThat(foundUsers).isNotNull();
+		assertThat(foundUsers.getEmail()).isEqualTo("test@test.com");
+		assertThat(foundUsers.getNickname()).isEqualTo("testNickname");
 	}
 
 	@DisplayName("존재하지 않는 이메일로 조회 시 예외가 발생한다.")
@@ -65,21 +67,21 @@ class UserGetServiceTest {
 	@Test
 	void getByIdSuccess() {
 		// Given
-		User user = User.builder()
+		Users users = org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
 			.password(encoder.encode("password"))
 			.nickname("testNickname")
 			.build();
 
-		userJpaRepository.save(user);
+		userJpaRepository.save(users);
 
 		// When
-		User foundUser = userRepository.getById(user.getId());
+		Users foundUsers = userRepository.getById(users.getId());
 
 		// Then
-		assertThat(foundUser).isNotNull();
-		assertThat(foundUser.getId()).isEqualTo(user.getId());
-		assertThat(foundUser.getEmail()).isEqualTo("test@test.com");
+		assertThat(foundUsers).isNotNull();
+		assertThat(foundUsers.getId()).isEqualTo(users.getId());
+		assertThat(foundUsers.getEmail()).isEqualTo("test@test.com");
 	}
 
 	@DisplayName("존재하지 않는 ID로 조회 시 예외가 발생한다.")
@@ -95,13 +97,13 @@ class UserGetServiceTest {
 	@Test
 	void existByEmailSuccess() {
 		// Given
-		User user = User.builder()
+		Users users = org.c4marathon.assignment.user.domain.Users.builder()
 			.email("exists@test.com")
 			.password(encoder.encode("password"))
 			.nickname("testNickname")
 			.build();
 
-		userJpaRepository.save(user);
+		userJpaRepository.save(users);
 
 		// When
 		boolean exists = userRepository.existByEmail("exists@test.com");
@@ -124,13 +126,13 @@ class UserGetServiceTest {
 	@Test
 	void existByNicknameSuccess() {
 		// Given
-		User user = User.builder()
+		Users users = org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
 			.password(encoder.encode("password"))
 			.nickname("testNickname")
 			.build();
 
-		userJpaRepository.save(user);
+		userJpaRepository.save(users);
 
 		// When
 		boolean exists = userRepository.existByNickname("testNickname");
