@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @MockBean(JpaMetamodelMappingContext.class)
 @ExtendWith({SpringExtension.class})
-public class CommonControllerTest {
+public abstract class CommonControllerTest {
 
 	@Autowired
 	protected MockMvc mockMvc;
