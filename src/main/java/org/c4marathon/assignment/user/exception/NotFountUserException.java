@@ -4,8 +4,8 @@ import org.c4marathon.assignment.global.exception.CustomException;
 import org.c4marathon.assignment.global.exception.ErrorCode;
 
 public class NotFountUserException extends CustomException {
-    public NotFountUserException(ErrorCode errorCode) {
-        super(errorCode);
+    public NotFountUserException() {
+        super(ErrorCode.NOT_FOUND_USER);
     }
 }
 

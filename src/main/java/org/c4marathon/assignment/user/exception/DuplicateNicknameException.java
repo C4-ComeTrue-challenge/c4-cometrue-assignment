@@ -4,7 +4,7 @@ import org.c4marathon.assignment.global.exception.CustomException;
 import org.c4marathon.assignment.global.exception.ErrorCode;
 
 public class DuplicateNicknameException extends CustomException {
-    public DuplicateNicknameException(ErrorCode errorCode) {
-        super(errorCode);
+    public DuplicateNicknameException() {
+        super(ErrorCode.DUPLICATE_NICKNAME);
     }
 }

@@ -4,7 +4,7 @@ import org.c4marathon.assignment.global.exception.CustomException;
 import org.c4marathon.assignment.global.exception.ErrorCode;
 
 public class NotFoundBoardException extends CustomException {
-    public NotFoundBoardException(ErrorCode errorCode) {
-        super(errorCode);
+    public NotFoundBoardException() {
+        super(ErrorCode.NOT_FOUND_BOARD);
     }
 }

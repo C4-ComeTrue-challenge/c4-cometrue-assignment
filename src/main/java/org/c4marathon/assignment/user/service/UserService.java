@@ -2,7 +2,6 @@ package org.c4marathon.assignment.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.c4marathon.assignment.global.exception.ErrorCode;
 import org.c4marathon.assignment.user.domain.User;
 import org.c4marathon.assignment.user.domain.repository.UserRepository;
 import org.c4marathon.assignment.user.exception.*;
@@ -22,10 +21,10 @@ public class UserService {
     public UserRegisterResponse register(UserRegisterServiceRequest registerDto) {
 
         if (validateEmailDuplicate(registerDto.email())) {
-            throw new DuplicateEmailException(ErrorCode.DUPLICATE_EMAIL);
+            throw new DuplicateEmailException();
         }
         if (validateNicknameDuplicate(registerDto.nickname())) {
-            throw new DuplicateNicknameException(ErrorCode.DUPLICATE_NICKNAME);
+            throw new DuplicateNicknameException();
         }
 
         User user = User.create(
@@ -40,17 +39,17 @@ public class UserService {
 
     public Long login(UserLoginServiceRequest loginDto) {
         User user = userRepository.findByEmail(loginDto.email())
-                .orElseThrow(() -> new NotFountUserException(ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(NotFountUserException::new);
 
         if (!loginDto.password().equals(user.getPassword())) {
-            throw new InvalidLoginException(ErrorCode.INVALID_LOGIN);
+            throw new InvalidLoginException();
         }
         return user.getId();
     }
 
     private boolean validateNicknameDuplicate(String nickname) {
         if (!validateNicknameFormat(nickname)) {
-            throw new InvalidNicknameFormat(ErrorCode.INVALID_NICKNAME);
+            throw new InvalidNicknameFormat();
         }
         return userRepository.existsByNickname(nickname);
     }

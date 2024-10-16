@@ -5,7 +5,7 @@ import org.c4marathon.assignment.global.exception.ErrorCode;
 
 public class InvalidNicknameFormat extends CustomException {
 
-    public InvalidNicknameFormat(ErrorCode errorCode) {
-        super(errorCode);
+    public InvalidNicknameFormat() {
+        super(ErrorCode.INVALID_NICKNAME);
     }
 }
