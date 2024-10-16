@@ -1,13 +1,11 @@
 package org.c4marathon.assignment.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.c4marathon.assignment.global.exception.ErrorCode;
 import org.c4marathon.assignment.user.domain.User;
 import org.c4marathon.assignment.user.domain.repository.UserRepository;
-import org.c4marathon.assignment.user.exception.DuplicateEmailException;
-import org.c4marathon.assignment.user.exception.DuplicateNicknameException;
-import org.c4marathon.assignment.user.exception.InvalidLoginException;
-import org.c4marathon.assignment.user.exception.NotFountUserException;
+import org.c4marathon.assignment.user.exception.*;
 import org.c4marathon.assignment.user.presentation.dto.UserRegisterResponse;
 import org.c4marathon.assignment.user.service.dto.UserLoginServiceRequest;
 import org.c4marathon.assignment.user.service.dto.UserRegisterServiceRequest;
@@ -51,10 +49,18 @@ public class UserService {
     }
 
     private boolean validateNicknameDuplicate(String nickname) {
+        if (!validateNicknameFormat(nickname)) {
+            throw new InvalidNicknameFormat(ErrorCode.INVALID_NICKNAME);
+        }
         return userRepository.existsByNickname(nickname);
     }
 
     private boolean validateEmailDuplicate(String email) {
         return userRepository.existsByEmail(email);
     }
+
+    private boolean validateNicknameFormat(String nickname) {
+        return StringUtils.isNotBlank(nickname) && !nickname.contains(" ");
+    }
+
 }
