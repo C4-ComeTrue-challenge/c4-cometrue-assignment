@@ -46,10 +46,23 @@ dependencies {
     annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 }
 
+checkstyle {
+    configFile = file("${rootDir}/naver-checkstyle.xml")
+    configProperties = ["suppressionFile": "${rootDir}/naver-checkstyle-suppressions.xml"]
+    toolVersion = "9.2"
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+    }
+}
+
 tasks.named('test') {
     useJUnitPlatform()
     finalizedBy 'jacocoTestReport'
 }
+
 
 def querydslSrcDir = 'src/main/generated'
 
@@ -61,12 +74,6 @@ tasks.withType(JavaCompile) {
     options.generatedSourceOutputDirectory = file(querydslSrcDir)
 }
 
-
-jacocoTestReport {
-    reports {
-        xml.required = true
-    }
-}
 
 sonar {
     properties {
