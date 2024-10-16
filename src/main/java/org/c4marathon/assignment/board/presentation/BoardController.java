@@ -1,4 +1,4 @@
-package org.c4marathon.assignment.board.presentatition;
+package org.c4marathon.assignment.board.presentation;
 
 import org.c4marathon.assignment.board.dto.BoardCreateRequest;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
