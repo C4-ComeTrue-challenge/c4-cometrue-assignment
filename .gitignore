@@ -36,8 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 
-### yml ###
-application.yml
-
 ##querydsl 설정파일
 src/main/generated/
