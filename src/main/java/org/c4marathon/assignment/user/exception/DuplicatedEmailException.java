@@ -1,12 +1,12 @@
 package org.c4marathon.assignment.user.exception;
 
-import org.c4marathon.assignment.global.exception.ApplicationException;
+import static org.c4marathon.assignment.global.exception.ErrorCode.*;
 
-import static org.c4marathon.assignment.global.exception.ErrorCode.EMAIL_DUPLICATED_ERROR;
+import org.c4marathon.assignment.global.exception.ApplicationException;
 
 public class DuplicatedEmailException extends ApplicationException {
 
-    public DuplicatedEmailException() {
-        super(EMAIL_DUPLICATED_ERROR);
-    }
+	public DuplicatedEmailException() {
+		super(EMAIL_DUPLICATED_ERROR);
+	}
 }

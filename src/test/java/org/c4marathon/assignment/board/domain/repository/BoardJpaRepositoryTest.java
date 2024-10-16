@@ -1,11 +1,9 @@
-package org.c4marathon.assignment.board.domain.service;
+package org.c4marathon.assignment.board.domain.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
 import org.c4marathon.assignment.board.domain.Board;
-import org.c4marathon.assignment.board.domain.repository.BoardJpaRepository;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
-import org.c4marathon.assignment.board.exception.NotFoundBoardException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,12 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
-class BoardGetServiceTest {
-
-	@Autowired
-	private BoardGetService boardGetService;
+@Transactional
+class BoardJpaRepositoryTest {
 
 	@Autowired
 	private BoardJpaRepository boardJpaRepository;
@@ -31,8 +28,8 @@ class BoardGetServiceTest {
 
 	@DisplayName("게시글 페이징 조회가 성공적으로 동작한다.")
 	@Test
-	void getAllBoardsSuccess() {
-		// Given
+	void findAllWithPagingSuccess() {
+		// Given: 5개의 게시글을 저장
 		for (int i = 1; i <= 5; i++) {
 			Board board = Board.builder()
 				.title("Title " + i)
@@ -42,10 +39,10 @@ class BoardGetServiceTest {
 			boardJpaRepository.save(board);
 		}
 
-		Pageable pageable = PageRequest.of(0, 3);
+		Pageable pageable = PageRequest.of(0, 3);  // 1페이지에 3개씩 가져오는 페이지 요청
 
 		// When
-		Page<BoardGetAllResponse> page = boardGetService.getAll(pageable);
+		Page<BoardGetAllResponse> page = boardJpaRepository.findAllWithPaging(pageable);
 
 		// Then
 		assertThat(page).isNotNull();
@@ -56,34 +53,5 @@ class BoardGetServiceTest {
 		assertThat(page.getContent().get(0).writerName()).isEqualTo("Writer 5");
 		assertThat(page.getContent().get(1).writerName()).isEqualTo("Writer 4");
 		assertThat(page.getContent().get(2).writerName()).isEqualTo("Writer 3");
-	}
-
-	@DisplayName("ID로 게시글을 성공적으로 조회한다.")
-	@Test
-	void getByIdSuccess() {
-		// Given
-		Board board = Board.builder()
-			.title("Test Title")
-			.content("Test Content")
-			.writerName("Test Writer")
-			.build();
-		board = boardJpaRepository.save(board);
-
-		// When
-		Board foundBoard = boardGetService.getById(board.getId());
-
-		// Then
-		assertThat(foundBoard).isNotNull();
-		assertThat(foundBoard.getTitle()).isEqualTo("Test Title");
-		assertThat(foundBoard.getContent()).isEqualTo("Test Content");
-		assertThat(foundBoard.getWriterName()).isEqualTo("Test Writer");
-	}
-
-	@DisplayName("존재하지 않는 ID로 조회 시 예외가 발생한다.")
-	@Test
-	void getByIdNotFound() {
-		// When & Then
-		assertThatThrownBy(() -> boardGetService.getById(999L))
-			.isInstanceOf(NotFoundBoardException.class);
 	}
 }
