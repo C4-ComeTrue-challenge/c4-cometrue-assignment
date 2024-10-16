@@ -36,12 +36,10 @@ class BoardServiceTest extends IntegrationTestSupport {
         BoardCreateServiceRequest request = new BoardCreateServiceRequest("test");
 
         // when
-        BoardResponse board = boardService.createBoard(request);
+        Long boardId = boardService.createBoard(request);
 
         // then
-        assertThat(board).isNotNull();
-        assertThat(board.name()).isEqualTo("test");
-
+        assertThat(boardId).isNotNull();
     }
 
     @DisplayName("이미 있는 게시판의 이름으로 생성하면 예외가 발생한다.")

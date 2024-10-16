@@ -45,7 +45,7 @@ class UserControllerTest extends ControllerTestSupport {
         UserLoginRequest loginDto = new UserLoginRequest("test@test.com", "1234");
 
         User user = User.create("test@test.com", "1234", "test");
-        given(userService.login(any())).willReturn(user);
+        given(userService.login(any())).willReturn(user.getId());
 
         // when // then
         mockMvc.perform(
@@ -55,7 +55,7 @@ class UserControllerTest extends ControllerTestSupport {
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(request().sessionAttribute(SessionConst.LOGIN_USER, user));
+                .andExpect(request().sessionAttribute(SessionConst.LOGIN_USER, user.getId()));
     }
 
     @DisplayName("로그아웃 성공")

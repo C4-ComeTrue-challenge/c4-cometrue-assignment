@@ -19,7 +19,7 @@ import java.util.List;
 public class BoardService {
     private final BoardRepository boardRepository;
 
-    public void createBoard(BoardCreateServiceRequest request) {
+    public Long createBoard(BoardCreateServiceRequest request) {
 
         if (validateNameDuplicate(request.name())) {
             throw new DuplicateNameException();
@@ -28,6 +28,7 @@ public class BoardService {
         Board board = Board.create(request.name());
         boardRepository.save(board);
 
+        return board.getId();
     }
 
     private boolean validateNameDuplicate(String name) {
