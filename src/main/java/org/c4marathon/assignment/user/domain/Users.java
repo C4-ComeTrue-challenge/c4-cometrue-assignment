@@ -3,6 +3,8 @@ package org.c4marathon.assignment.user.domain;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
+import java.io.Serializable;
+
 import org.c4marathon.assignment.global.BaseTimeEntity;
 
 import jakarta.persistence.Column;
@@ -16,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class Users extends BaseTimeEntity {
+public class Users extends BaseTimeEntity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
