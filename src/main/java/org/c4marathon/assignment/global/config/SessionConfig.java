@@ -1,10 +1,10 @@
 package org.c4marathon.assignment.global.config;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-
 import org.c4marathon.assignment.user.domain.Users;
 import org.springframework.stereotype.Component;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Component
 public class SessionConfig {
