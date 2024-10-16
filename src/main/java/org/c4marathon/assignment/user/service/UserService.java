@@ -40,14 +40,14 @@ public class UserService {
     }
 
 
-    public User login(UserLoginServiceRequest loginDto) {
+    public Long login(UserLoginServiceRequest loginDto) {
         User user = userRepository.findByEmail(loginDto.email())
                 .orElseThrow(() -> new NotFountUserException(ErrorCode.NOT_FOUND_USER));
 
         if (!loginDto.password().equals(user.getPassword())) {
             throw new InvalidLoginException(ErrorCode.INVALID_LOGIN);
         }
-        return user;
+        return user.getId();
     }
 
     private boolean validateNicknameDuplicate(String nickname) {

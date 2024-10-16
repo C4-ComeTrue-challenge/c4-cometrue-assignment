@@ -34,10 +34,10 @@ public class UserController {
 
     @PostMapping("/v1/login")
     public ResponseEntity<Void> login(@Valid @RequestBody UserLoginRequest loginDto, HttpServletRequest request) {
-        User loginUser = userService.login(loginDto.toServiceDto());
+        Long loginUserId = userService.login(loginDto.toServiceDto());
 
         HttpSession session = request.getSession(true);
-        session.setAttribute(SessionConst.LOGIN_USER, loginUser.getId());
+        session.setAttribute(SessionConst.LOGIN_USER, loginUserId);
 
         return ResponseEntity.ok().build();
     }
