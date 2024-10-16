@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+##querydsl 설정파일
+src/main/generated/
