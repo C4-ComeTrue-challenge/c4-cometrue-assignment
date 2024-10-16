@@ -8,7 +8,6 @@ import org.c4marathon.assignment.board.dto.BoardGetOneResponse;
 import org.c4marathon.assignment.user.domain.Users;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 public class BoardService {
 
 	private final BoardRepository boardRepository;
-	private final PasswordEncoder encoder;
 
 	@Transactional
 	public long createBoardAsUser(BoardCreateRequest request, Users users) {
@@ -45,11 +43,7 @@ public class BoardService {
 	}
 
 	private Boards toBoard(BoardCreateRequest request, Users users) {
-		return Boards.builder()
-			.title(request.title())
-			.content(request.content())
-			.users(users)
-			.build();
+		return Boards.builder().title(request.title()).content(request.content()).users(users).build();
 	}
 
 	private Boards toBoard(BoardCreateRequest request) {
@@ -57,19 +51,13 @@ public class BoardService {
 			.title(request.title())
 			.content(request.content())
 			.writerName(request.writerName())
-			.password(encoder.encode(request.password()))
+			.password(request.password())
 			.build();
 	}
 
 	private BoardGetOneResponse toDto(Boards boards) {
-		return new BoardGetOneResponse(
-			boards.getId(),
-			boards.getContent(),
-			boards.getTitle(),
-			boards.getWriterName(),
-			boards.getCreatedDate(),
-			boards.getLastModifiedDate()
-		);
+		return new BoardGetOneResponse(boards.getId(), boards.getContent(), boards.getTitle(), boards.getWriterName(),
+			boards.getCreatedDate(), boards.getLastModifiedDate());
 	}
 
 }

@@ -19,7 +19,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
@@ -34,9 +33,6 @@ class UsersServiceTest {
 
 	@Autowired
 	private UserJpaRepository userJpaRepository;
-
-	@Autowired
-	private BCryptPasswordEncoder encoder;
 
 	@AfterEach
 	void tearDown() {
@@ -66,7 +62,7 @@ class UsersServiceTest {
 		userRepository.save(
 			org.c4marathon.assignment.user.domain.Users.builder()
 				.email("test@test.com")
-				.password(encoder.encode("password"))
+				.password("password")
 				.nickname("nickname")
 				.build());
 
@@ -83,7 +79,7 @@ class UsersServiceTest {
 		// Given
 		userRepository.save(org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
-			.password(encoder.encode("password"))
+			.password("password")
 			.nickname("testNickname")
 			.build());
 
@@ -100,7 +96,7 @@ class UsersServiceTest {
 		// Given
 		userRepository.save(org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
-			.password(encoder.encode("password"))
+			.password("password")
 			.nickname("testNickname")
 			.build());
 
@@ -120,7 +116,7 @@ class UsersServiceTest {
 		// Given
 		userRepository.save(org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
-			.password(encoder.encode("password"))
+			.password("password")
 			.nickname("testNickname")
 			.build());
 
@@ -138,7 +134,7 @@ class UsersServiceTest {
 		userRepository.save(
 			org.c4marathon.assignment.user.domain.Users.builder()
 				.email("test@test.com")
-				.password(encoder.encode("password"))
+				.password("password")
 				.nickname("nickname")
 				.build());
 
@@ -155,7 +151,7 @@ class UsersServiceTest {
 		// Given
 		userRepository.save(Users.builder()
 			.email("test@test.com")
-			.password(encoder.encode("password"))
+			.password("password")
 			.nickname("testNickname")
 			.build());
 
@@ -172,7 +168,7 @@ class UsersServiceTest {
 		// Given
 		Users users = userRepository.save(org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test2@test.com")
-			.password(encoder.encode("password"))
+			.password("password")
 			.nickname("testNickname")
 			.build());
 

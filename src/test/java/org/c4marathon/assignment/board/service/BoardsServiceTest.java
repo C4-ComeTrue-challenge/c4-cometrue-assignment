@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
@@ -42,9 +41,6 @@ class BoardsServiceTest {
 	@Autowired
 	private UserJpaRepository userJpaRepository;
 
-	@Autowired
-	private BCryptPasswordEncoder encoder;
-
 	@AfterEach
 	void tearDown() {
 		boardJpaRepository.deleteAllInBatch();
@@ -57,7 +53,7 @@ class BoardsServiceTest {
 		// Given
 		Users users = Users.builder()
 			.email("test@test.com")
-			.password(encoder.encode("password"))
+			.password("password")
 			.nickname("testNickname")
 			.build();
 

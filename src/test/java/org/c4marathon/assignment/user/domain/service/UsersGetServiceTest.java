@@ -12,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
@@ -25,9 +24,6 @@ class UsersGetServiceTest {
 	@Autowired
 	private UserJpaRepository userJpaRepository;
 
-	@Autowired
-	private BCryptPasswordEncoder encoder;
-
 	@AfterEach
 	void tearDown() {
 		userJpaRepository.deleteAllInBatch();
@@ -39,7 +35,7 @@ class UsersGetServiceTest {
 		// Given
 		Users users = org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
-			.password(encoder.encode("password"))
+			.password("password")
 			.nickname("testNickname")
 			.build();
 
@@ -69,7 +65,7 @@ class UsersGetServiceTest {
 		// Given
 		Users users = org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
-			.password(encoder.encode("password"))
+			.password("password")
 			.nickname("testNickname")
 			.build();
 
@@ -99,7 +95,7 @@ class UsersGetServiceTest {
 		// Given
 		Users users = org.c4marathon.assignment.user.domain.Users.builder()
 			.email("exists@test.com")
-			.password(encoder.encode("password"))
+			.password("password")
 			.nickname("testNickname")
 			.build();
 
@@ -128,7 +124,7 @@ class UsersGetServiceTest {
 		// Given
 		Users users = org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
-			.password(encoder.encode("password"))
+			.password("password")
 			.nickname("testNickname")
 			.build();
 

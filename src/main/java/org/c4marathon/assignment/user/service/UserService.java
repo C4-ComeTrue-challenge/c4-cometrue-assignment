@@ -9,7 +9,6 @@ import org.c4marathon.assignment.user.dto.SignupRequest;
 import org.c4marathon.assignment.user.exception.DuplicatedEmailException;
 import org.c4marathon.assignment.user.exception.DuplicatedNicknameException;
 import org.c4marathon.assignment.user.exception.WrongPasswordException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
 	private final UserRepository userRepository;
-	private final PasswordEncoder encoder;
 
 	@Transactional
 	public void signup(SignupRequest request) {
@@ -66,13 +64,13 @@ public class UserService {
 	private Users toUser(SignupRequest request) {
 		return org.c4marathon.assignment.user.domain.Users.builder()
 			.email(request.email())
-			.password(encoder.encode(request.password()))
+			.password(request.password())
 			.nickname(request.nickname())
 			.build();
 	}
 
-	private void validatePassword(String rawPassword, String encodedPassword) {
-		if (!encoder.matches(rawPassword, encodedPassword)) {
+	private void validatePassword(String input, String output) {
+		if (!input.equals(output)) {
 			throw new WrongPasswordException();
 		}
 	}
