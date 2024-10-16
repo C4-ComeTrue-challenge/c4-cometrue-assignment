@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.c4marathon.assignment.user.domain.User;
 import org.c4marathon.assignment.user.domain.repository.UserJpaRepository;
+import org.c4marathon.assignment.user.domain.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 class UserSaveServiceTest {
 
 	@Autowired
-	private UserSaveService userSaveService;
+	private UserRepository userRepository;
 
 	@Autowired
 	private UserJpaRepository userJpaRepository;
@@ -38,7 +39,7 @@ class UserSaveServiceTest {
 			.build();
 
 		// When
-		User savedUser = userSaveService.save(user);
+		User savedUser = userRepository.save(user);
 
 		// Then
 		assertThat(savedUser).isNotNull();
@@ -61,7 +62,7 @@ class UserSaveServiceTest {
 			.nickname("testNickname")
 			.build();
 		// When & Then
-		assertThatThrownBy(() -> userSaveService.save(user))
+		assertThatThrownBy(() -> userRepository.save(user))
 			.isInstanceOf(DataIntegrityViolationException.class)
 			.hasMessageContaining("could not execute statement");
 	}
@@ -76,7 +77,7 @@ class UserSaveServiceTest {
 			.build();
 
 		// When & Then
-		assertThatThrownBy(() -> userSaveService.save(user))
+		assertThatThrownBy(() -> userRepository.save(user))
 			.isInstanceOf(DataIntegrityViolationException.class)
 			.hasMessageContaining("could not execute statement");
 	}
@@ -91,7 +92,7 @@ class UserSaveServiceTest {
 			.build();
 
 		// When & Then
-		assertThatThrownBy(() -> userSaveService.save(user))
+		assertThatThrownBy(() -> userRepository.save(user))
 			.isInstanceOf(DataIntegrityViolationException.class)
 			.hasMessageContaining("could not execute statement");
 	}

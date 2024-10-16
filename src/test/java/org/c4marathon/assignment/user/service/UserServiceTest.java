@@ -5,8 +5,7 @@ import static org.c4marathon.assignment.global.exception.ErrorCode.*;
 
 import org.c4marathon.assignment.user.domain.User;
 import org.c4marathon.assignment.user.domain.repository.UserJpaRepository;
-import org.c4marathon.assignment.user.domain.service.UserGetService;
-import org.c4marathon.assignment.user.domain.service.UserSaveService;
+import org.c4marathon.assignment.user.domain.repository.UserRepository;
 import org.c4marathon.assignment.user.dto.EmailCheckResponse;
 import org.c4marathon.assignment.user.dto.LoginRequest;
 import org.c4marathon.assignment.user.dto.NicknameCheckResponse;
@@ -26,10 +25,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 class UserServiceTest {
 
 	@Autowired
-	private UserSaveService userSaveService;
-
-	@Autowired
-	private UserGetService userGetService;
+	private UserRepository userRepository;
 
 	@Autowired
 	private UserService userService;
@@ -55,7 +51,7 @@ class UserServiceTest {
 		userService.signup(request);
 
 		// Then
-		User savedUser = userGetService.getByEmail("test@test.com");
+		User savedUser = userRepository.getByEmail("test@test.com");
 		assertThat(savedUser).isNotNull();
 		assertThat(savedUser.getEmail()).isEqualTo("test@test.com");
 		assertThat(savedUser.getNickname()).isEqualTo("testNickname");
@@ -65,7 +61,7 @@ class UserServiceTest {
 	@Test
 	void signupWithDuplicateEmail() {
 		// Given
-		userSaveService.save(User.builder()
+		userRepository.save(User.builder()
 			.email("test@test.com")
 			.password(encoder.encode("password"))
 			.nickname("nickname")
@@ -83,7 +79,7 @@ class UserServiceTest {
 	@Test
 	void signupWithDuplicateNickname() {
 		// Given
-		userSaveService.save(User.builder()
+		userRepository.save(User.builder()
 			.email("test@test.com")
 			.password(encoder.encode("password"))
 			.nickname("testNickname")
@@ -101,7 +97,7 @@ class UserServiceTest {
 	@Test
 	void loginSuccess() {
 		// Given
-		userSaveService.save(User.builder()
+		userRepository.save(User.builder()
 			.email("test@test.com")
 			.password(encoder.encode("password"))
 			.nickname("testNickname")
@@ -121,7 +117,7 @@ class UserServiceTest {
 	@Test
 	void loginWithWrongPassword() {
 		// Given
-		userSaveService.save(User.builder()
+		userRepository.save(User.builder()
 			.email("test@test.com")
 			.password(encoder.encode("password"))
 			.nickname("testNickname")
@@ -139,7 +135,7 @@ class UserServiceTest {
 	@Test
 	void checkEmail() {
 		// Given
-		userSaveService.save(User.builder()
+		userRepository.save(User.builder()
 			.email("test@test.com")
 			.password(encoder.encode("password"))
 			.nickname("nickname")
@@ -156,7 +152,7 @@ class UserServiceTest {
 	@Test
 	void checkNickname() {
 		// Given
-		userSaveService.save(User.builder()
+		userRepository.save(User.builder()
 			.email("test@test.com")
 			.password(encoder.encode("password"))
 			.nickname("testNickname")
@@ -173,7 +169,7 @@ class UserServiceTest {
 	@Test
 	void deleteUserSuccess() {
 		// Given
-		User user = userSaveService.save(User.builder()
+		User user = userRepository.save(User.builder()
 			.email("test2@test.com")
 			.password(encoder.encode("password"))
 			.nickname("testNickname")
@@ -183,7 +179,7 @@ class UserServiceTest {
 		userService.deleteUser(user.getEmail());
 
 		// Then
-		assertThatThrownBy(() -> userGetService.getByEmail(user.getEmail()))
+		assertThatThrownBy(() -> userRepository.getByEmail(user.getEmail()))
 			.isInstanceOf(NotFoundUserException.class)
 			.hasMessageContaining(NOT_FOUND_USER_ERROR.getMessage());
 	}

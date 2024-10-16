@@ -5,6 +5,7 @@ import static org.c4marathon.assignment.global.exception.ErrorCode.*;
 
 import org.c4marathon.assignment.user.domain.User;
 import org.c4marathon.assignment.user.domain.repository.UserJpaRepository;
+import org.c4marathon.assignment.user.domain.repository.UserRepository;
 import org.c4marathon.assignment.user.exception.NotFoundUserException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 class UserGetServiceTest {
 
 	@Autowired
-	private UserGetService userGetService;
+	private UserRepository userRepository;
 
 	@Autowired
 	private UserJpaRepository userJpaRepository;
@@ -43,7 +44,7 @@ class UserGetServiceTest {
 		userJpaRepository.save(user);
 
 		// When
-		User foundUser = userGetService.getByEmail("test@test.com");
+		User foundUser = userRepository.getByEmail("test@test.com");
 
 		// Then
 		assertThat(foundUser).isNotNull();
@@ -55,7 +56,7 @@ class UserGetServiceTest {
 	@Test
 	void getByEmailNotFound() {
 		// When & Then
-		assertThatThrownBy(() -> userGetService.getByEmail("notfound@test.com"))
+		assertThatThrownBy(() -> userRepository.getByEmail("notfound@test.com"))
 			.isInstanceOf(NotFoundUserException.class)
 			.hasMessageContaining(NOT_FOUND_USER_ERROR.getMessage());
 	}
@@ -73,7 +74,7 @@ class UserGetServiceTest {
 		userJpaRepository.save(user);
 
 		// When
-		User foundUser = userGetService.getById(user.getId());
+		User foundUser = userRepository.getById(user.getId());
 
 		// Then
 		assertThat(foundUser).isNotNull();
@@ -85,7 +86,7 @@ class UserGetServiceTest {
 	@Test
 	void getByIdNotFound() {
 		// When & Then
-		assertThatThrownBy(() -> userGetService.getById(999L))
+		assertThatThrownBy(() -> userRepository.getById(999L))
 			.isInstanceOf(NotFoundUserException.class)
 			.hasMessageContaining(NOT_FOUND_USER_ERROR.getMessage());
 	}
@@ -103,7 +104,7 @@ class UserGetServiceTest {
 		userJpaRepository.save(user);
 
 		// When
-		boolean exists = userGetService.existByEmail("exists@test.com");
+		boolean exists = userRepository.existByEmail("exists@test.com");
 
 		// Then
 		assertThat(exists).isTrue();
@@ -113,7 +114,7 @@ class UserGetServiceTest {
 	@Test
 	void existByEmailNotFound() {
 		// When
-		boolean exists = userGetService.existByEmail("notfound@test.com");
+		boolean exists = userRepository.existByEmail("notfound@test.com");
 
 		// Then
 		assertThat(exists).isFalse();
@@ -132,7 +133,7 @@ class UserGetServiceTest {
 		userJpaRepository.save(user);
 
 		// When
-		boolean exists = userGetService.existByNickname("testNickname");
+		boolean exists = userRepository.existByNickname("testNickname");
 
 		// Then
 		assertThat(exists).isTrue();
@@ -142,7 +143,7 @@ class UserGetServiceTest {
 	@Test
 	void existByNicknameNotFound() {
 		// When
-		boolean exists = userGetService.existByNickname("nonexistentNickname");
+		boolean exists = userRepository.existByNickname("nonexistentNickname");
 
 		// Then
 		assertThat(exists).isFalse();

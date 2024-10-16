@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.c4marathon.assignment.user.domain.User;
 import org.c4marathon.assignment.user.domain.repository.UserJpaRepository;
+import org.c4marathon.assignment.user.domain.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class UserDeleteServiceTest {
 
 	@Autowired
-	private UserDeleteService userDeleteService;
+	private UserRepository userRepository;
 
 	@Autowired
 	private UserJpaRepository userJpaRepository;
@@ -39,7 +40,7 @@ class UserDeleteServiceTest {
 		user = userJpaRepository.save(user);
 
 		// When
-		userDeleteService.deleteUser(user);
+		userRepository.deleteUser(user);
 
 		// Then
 		Optional<User> deletedUser = userJpaRepository.findById(user.getId());
@@ -57,7 +58,7 @@ class UserDeleteServiceTest {
 			.build();
 
 		// When
-		userDeleteService.deleteUser(user);
+		userRepository.deleteUser(user);
 
 		// Then
 		assertThat(userJpaRepository.findAll()).isEmpty();

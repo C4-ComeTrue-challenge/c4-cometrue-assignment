@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.c4marathon.assignment.board.domain.Board;
 import org.c4marathon.assignment.board.domain.repository.BoardJpaRepository;
+import org.c4marathon.assignment.board.domain.repository.BoardRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class BoardSaveServiceTest {
 
 	@Autowired
-	private BoardSaveService boardSaveService;
+	private BoardRepository boardRepository;
 
 	@Autowired
 	private BoardJpaRepository boardJpaRepository;
@@ -37,7 +38,7 @@ class BoardSaveServiceTest {
 			.build();
 
 		// When
-		Board savedBoard = boardSaveService.save(board);
+		Board savedBoard = boardRepository.save(board);
 
 		// Then
 		assertThat(savedBoard).isNotNull();

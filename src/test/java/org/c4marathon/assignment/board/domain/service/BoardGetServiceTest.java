@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import org.c4marathon.assignment.board.domain.Board;
 import org.c4marathon.assignment.board.domain.repository.BoardJpaRepository;
+import org.c4marathon.assignment.board.domain.repository.BoardRepository;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
 import org.c4marathon.assignment.board.exception.NotFoundBoardException;
 import org.junit.jupiter.api.AfterEach;
@@ -19,7 +20,7 @@ import org.springframework.data.domain.Pageable;
 class BoardGetServiceTest {
 
 	@Autowired
-	private BoardGetService boardGetService;
+	private BoardRepository boardRepository;
 
 	@Autowired
 	private BoardJpaRepository boardJpaRepository;
@@ -45,7 +46,7 @@ class BoardGetServiceTest {
 		Pageable pageable = PageRequest.of(0, 3);
 
 		// When
-		Page<BoardGetAllResponse> page = boardGetService.getAll(pageable);
+		Page<BoardGetAllResponse> page = boardRepository.getAll(pageable);
 
 		// Then
 		assertThat(page).isNotNull();
@@ -70,7 +71,7 @@ class BoardGetServiceTest {
 		board = boardJpaRepository.save(board);
 
 		// When
-		Board foundBoard = boardGetService.getById(board.getId());
+		Board foundBoard = boardRepository.getById(board.getId());
 
 		// Then
 		assertThat(foundBoard).isNotNull();
@@ -83,7 +84,7 @@ class BoardGetServiceTest {
 	@Test
 	void getByIdNotFound() {
 		// When & Then
-		assertThatThrownBy(() -> boardGetService.getById(999L))
+		assertThatThrownBy(() -> boardRepository.getById(999L))
 			.isInstanceOf(NotFoundBoardException.class);
 	}
 }

@@ -5,14 +5,14 @@ import static org.c4marathon.assignment.global.exception.ErrorCode.*;
 
 import org.c4marathon.assignment.board.domain.Board;
 import org.c4marathon.assignment.board.domain.repository.BoardJpaRepository;
-import org.c4marathon.assignment.board.domain.service.BoardGetService;
+import org.c4marathon.assignment.board.domain.repository.BoardRepository;
 import org.c4marathon.assignment.board.dto.BoardCreateRequest;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
 import org.c4marathon.assignment.board.dto.BoardGetOneResponse;
 import org.c4marathon.assignment.board.exception.NotFoundBoardException;
 import org.c4marathon.assignment.user.domain.User;
 import org.c4marathon.assignment.user.domain.repository.UserJpaRepository;
-import org.c4marathon.assignment.user.domain.service.UserSaveService;
+import org.c4marathon.assignment.user.domain.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,10 +29,10 @@ class BoardServiceTest {
 	private BoardService boardService;
 
 	@Autowired
-	private BoardGetService boardGetService;
+	private BoardRepository boardRepository;
 
 	@Autowired
-	private UserSaveService userSaveService;
+	private UserRepository userRepository;
 
 	@Autowired
 	private BoardJpaRepository boardJpaRepository;
@@ -59,19 +59,15 @@ class BoardServiceTest {
 			.nickname("testNickname")
 			.build();
 
-		user = userSaveService.save(user);
+		user = userRepository.save(user);
 
-		BoardCreateRequest request = new BoardCreateRequest(
-			"Test Title",
-			"Test Content",
-			null,
-			null);
+		BoardCreateRequest request = new BoardCreateRequest("Test Title", "Test Content", null, null);
 
 		// When
 		long id = boardService.createBoardAsUser(request, user);
 
 		// Then
-		Board board = boardGetService.getById(id);  // 첫 번째로 생성된 게시글 조회
+		Board board = boardRepository.getById(id);  // 첫 번째로 생성된 게시글 조회
 		assertThat(board).isNotNull();
 		assertThat(board.getTitle()).isEqualTo("Test Title");
 		assertThat(board.getContent()).isEqualTo("Test Content");
@@ -82,17 +78,13 @@ class BoardServiceTest {
 	@Test
 	void createBoardAsGuestSuccess() {
 		// Given
-		BoardCreateRequest request = new BoardCreateRequest(
-			"Test Title",
-			"Test Content",
-			"GuestUser",
-			"password");
+		BoardCreateRequest request = new BoardCreateRequest("Test Title", "Test Content", "GuestUser", "password");
 
 		// When
 		long id = boardService.createBoardAsGuest(request);
 
 		// Then
-		Board board = boardGetService.getById(id);  // 첫 번째로 생성된 게시글 조회
+		Board board = boardRepository.getById(id);  // 첫 번째로 생성된 게시글 조회
 		assertThat(board).isNotNull();
 		assertThat(board.getTitle()).isEqualTo("Test Title");
 		assertThat(board.getContent()).isEqualTo("Test Content");
@@ -103,11 +95,7 @@ class BoardServiceTest {
 	@Test
 	void getOneBoardSuccess() {
 		// Given
-		BoardCreateRequest request = new BoardCreateRequest(
-			"Test Title",
-			"Test Content",
-			"GuestUser",
-			"password");
+		BoardCreateRequest request = new BoardCreateRequest("Test Title", "Test Content", "GuestUser", "password");
 		long id = boardService.createBoardAsGuest(request);
 
 		// When
@@ -124,8 +112,7 @@ class BoardServiceTest {
 	@Test
 	void getOneBoardNotFound() {
 		// When & Then
-		assertThatThrownBy(() -> boardService.getOneBoard(999L))
-			.isInstanceOf(NotFoundBoardException.class)
+		assertThatThrownBy(() -> boardService.getOneBoard(999L)).isInstanceOf(NotFoundBoardException.class)
 			.hasMessageContaining(NOT_FOUND_BOARD_ERROR.getMessage());
 	}
 
@@ -133,21 +120,12 @@ class BoardServiceTest {
 	@Test
 	void getAllBoardsSuccess() {
 		// Given
-		boardService.createBoardAsGuest(new BoardCreateRequest(
-			"Title1",
-			"Content1",
-			"GuestUser1",
-			"password1"));
+		boardService.createBoardAsGuest(new BoardCreateRequest("Title1", "Content1", "GuestUser1", "password1"));
 
-		boardService.createBoardAsGuest(new BoardCreateRequest(
-			"Title2",
-			"Content2",
-			"GuestUser2",
-			"password2"));
+		boardService.createBoardAsGuest(new BoardCreateRequest("Title2", "Content2", "GuestUser2", "password2"));
 
 		// When
-		Page<BoardGetAllResponse> responsePage = boardService.getAllBoards(
-			PageRequest.of(0, 10));
+		Page<BoardGetAllResponse> responsePage = boardService.getAllBoards(PageRequest.of(0, 10));
 
 		// Then
 		assertThat(responsePage.getContent().size()).isEqualTo(2);
