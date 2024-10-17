@@ -20,4 +20,10 @@ public class ImageUtils {
 
 		return imageUrls;
 	}
+
+	public static List<String> extractFileNamesFromImageUrls(List<String> imageUrls) {
+		return imageUrls.stream()
+			.map(url -> url.substring(url.lastIndexOf('/') + 1)) // 파일명 추출
+			.toList();
+	}
 }

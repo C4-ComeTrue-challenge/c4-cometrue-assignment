@@ -32,4 +32,8 @@ public class Img extends BaseTimeEntity {
 	public Img(String fileName) {
 		this.fileName = fileName;
 	}
+
+	public void updateBoardId(Long boardId) {
+		this.boardId = boardId;
+	}
 }
