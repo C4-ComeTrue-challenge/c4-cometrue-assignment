@@ -2,6 +2,7 @@ package org.c4marathon.assignment.img.domain.repository;
 
 import java.util.List;
 
+import org.c4marathon.assignment.board.domain.Boards;
 import org.c4marathon.assignment.img.domain.Img;
 import org.springframework.stereotype.Repository;
 
@@ -16,11 +17,11 @@ public class ImgRepository {
 		imgJpaRepository.save(Img.builder().fileName(fileName).build());
 	}
 
-	public void updateImgBoardId(List<String> fileNames, Long boardId) {
+	public void setBoardByFileName(List<String> fileNames, Boards board) {
 		List<Img> images = imgJpaRepository.findByFileNameIn(fileNames);
 
 		images.forEach(img -> {
-			img.updateBoardId(boardId);
+			img.setBoard(board);
 			imgJpaRepository.save(img);
 		});
 	}
