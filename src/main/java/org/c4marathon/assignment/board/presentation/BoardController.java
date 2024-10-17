@@ -4,7 +4,7 @@ import org.c4marathon.assignment.board.dto.BoardCreateRequest;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
 import org.c4marathon.assignment.board.dto.BoardGetOneResponse;
 import org.c4marathon.assignment.board.service.BoardService;
-import org.c4marathon.assignment.global.config.SessionConfig;
+import org.c4marathon.assignment.global.annotation.LoginUser;
 import org.c4marathon.assignment.user.domain.Users;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -27,22 +26,19 @@ import lombok.RequiredArgsConstructor;
 public class BoardController {
 
 	private final BoardService boardService;
-	private final SessionConfig sessionConfig;
 
 	@PostMapping
 	public ResponseEntity<Void> createBoard(
 		@Valid @RequestBody BoardCreateRequest request,
-		HttpServletRequest httpServletRequest
+		@LoginUser Users loginUser
 	) {
-		Users loginUsers = sessionConfig.getSessionUser(httpServletRequest);
-
-		if (loginUsers == null) {
+		if (loginUser == null) {
 			if (request.writerName() == null || request.password() == null) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 			}
 			boardService.createBoardAsGuest(request);
 		} else {
-			boardService.createBoardAsUser(request, loginUsers);
+			boardService.createBoardAsUser(request, loginUser);
 		}
 
 		return ResponseEntity.status(HttpStatus.CREATED).build();
