@@ -7,7 +7,9 @@ import org.c4marathon.assignment.board.domain.repository.BoardRepository;
 import org.c4marathon.assignment.board.dto.BoardCreateRequest;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
 import org.c4marathon.assignment.board.dto.BoardGetOneResponse;
+import org.c4marathon.assignment.board.dto.BoardUpdateRequest;
 import org.c4marathon.assignment.board.exception.NotFoundImgException;
+import org.c4marathon.assignment.board.service.mapper.BoardMapper;
 import org.c4marathon.assignment.global.utils.ImageUtils;
 import org.c4marathon.assignment.img.domain.repository.ImgRepository;
 import org.c4marathon.assignment.user.domain.Users;
@@ -26,22 +28,29 @@ public class BoardService {
 	private final ImgRepository imgRepository;
 
 	@Transactional
-	public long createBoardAsUser(BoardCreateRequest request, Users users) {
-		Boards board = toBoard(request, users);
+	public void createBoardAsUser(BoardCreateRequest request, Users users) {
+		Boards board = BoardMapper.toBoard(request, users);
 
-		List<String> imageUrls = ImageUtils.extractImageUrls(request.content());
-		List<String> fileNames = ImageUtils.extractFileNamesFromImageUrls(imageUrls);
+		processImagesForBoard(request, board);
 
-		validateImg(imageUrls, fileNames);
-
-		imgRepository.updateImgBoardId(fileNames, board.getId());
-		return boardRepository.save(board).getId();
+		boardRepository.save(board);
 	}
 
 	@Transactional
-	public long createBoardAsGuest(BoardCreateRequest request) {
-		Boards board = toBoard(request);
-		return boardRepository.save(board).getId();
+	public void createBoardAsGuest(BoardCreateRequest request) {
+		Boards board = BoardMapper.toBoard(request);
+
+		processImagesForBoard(request, board);
+
+		boardRepository.save(board);
+	}
+
+	public void updateBoardAsUser(BoardUpdateRequest request) {
+		
+	}
+
+	public void updateBoardAsGuest(BoardUpdateRequest request) {
+
 	}
 
 	@Transactional(readOnly = true)
@@ -52,7 +61,17 @@ public class BoardService {
 	@Transactional(readOnly = true)
 	public BoardGetOneResponse getOneBoard(Long id) {
 		Boards boards = boardRepository.getById(id);
-		return toDto(boards);
+		return BoardMapper.toDto(boards);
+	}
+
+	private void processImagesForBoard(BoardCreateRequest request, Boards board) {
+		List<String> imageUrls = ImageUtils.extractImageUrls(request.content());
+
+		List<String> fileNames = ImageUtils.extractFileNamesFromImageUrls(imageUrls);
+
+		validateImg(imageUrls, fileNames);
+
+		imgRepository.setBoardByFileName(fileNames, board);
 	}
 
 	private void validateImg(List<String> imgUrls, List<String> fileNames) {
@@ -67,24 +86,6 @@ public class BoardService {
 		if (!invalidFileNames.isEmpty()) {
 			throw new NotFoundImgException();
 		}
-	}
-
-	private Boards toBoard(BoardCreateRequest request, Users users) {
-		return Boards.builder().title(request.title()).content(request.content()).users(users).build();
-	}
-
-	private Boards toBoard(BoardCreateRequest request) {
-		return Boards.builder()
-			.title(request.title())
-			.content(request.content())
-			.writerName(request.writerName())
-			.password(request.password())
-			.build();
-	}
-
-	private BoardGetOneResponse toDto(Boards boards) {
-		return new BoardGetOneResponse(boards.getId(), boards.getContent(), boards.getTitle(), boards.getWriterName(),
-			boards.getCreatedDate(), boards.getLastModifiedDate());
 	}
 
 }
