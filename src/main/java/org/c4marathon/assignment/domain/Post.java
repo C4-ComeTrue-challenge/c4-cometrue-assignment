@@ -21,13 +21,16 @@ public class Post extends BaseTimeEntity{
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id", nullable = true)
     private Member member;
 
+    private String password;
+
     @Builder
-    public Post(String title, String content, Member member) {
+    public Post(String title, String content, Member member,String password) {
         this.title = title;
         this.content = content;
         this.member = member;
+        this.password = password;
     }
 }

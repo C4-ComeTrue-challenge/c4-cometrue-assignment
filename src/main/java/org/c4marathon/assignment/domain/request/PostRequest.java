@@ -6,9 +6,11 @@ import lombok.Data;
 public class PostRequest {
     private String title;
     private String content;
+    private String password;
 
-    public PostRequest(String title, String content) {
+    public PostRequest(String title, String content,String password) {
         this.title = title;
         this.content = content;
+        this.password=password;
     }
 }

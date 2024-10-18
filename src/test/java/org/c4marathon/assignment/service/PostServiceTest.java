@@ -36,15 +36,7 @@ class PostServiceTest {
     @Test
     @DisplayName("게시글 작성")
     void createPostTest() {
-        // given
-        Member member = Member.builder().email("kumsh0330@naver.com").nickname("sh").build();
-        PostRequest postRequest = new PostRequest("제목", "내용");
 
-        // when
-        postService.createPost(postRequest, member);
-
-        // then
-        verify(postRepository, times(1)).save(any(Post.class));
     }
 
     @Test

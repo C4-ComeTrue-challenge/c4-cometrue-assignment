@@ -27,12 +27,8 @@ public class PostController {
     // 게시글 작성 (회원 정보를 세션에서 가져옴)
     @PostMapping("/write")
     public ResponseEntity<?> createPost(@RequestBody PostRequest postRequest, HttpSession session) {
-        return Optional.ofNullable((Member) session.getAttribute("member"))
-                .map(member -> {
-                    postService.createPost(postRequest, member);
-                    return ResponseEntity.ok("게시글 작성 성공");
-                })
-                .orElseGet(() -> ResponseEntity.status(401).body("로그인이 필요합니다."));
+        postService.createPost(postRequest, session);
+        return ResponseEntity.ok("게시글 작성 성공");
     }
 
     // 게시글 전체 조회
