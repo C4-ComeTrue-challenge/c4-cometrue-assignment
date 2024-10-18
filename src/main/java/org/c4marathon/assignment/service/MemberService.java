@@ -1,5 +1,6 @@
 package org.c4marathon.assignment.service;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.c4marathon.assignment.domain.Member;
 import org.c4marathon.assignment.domain.request.LoginRequest;
@@ -30,8 +31,9 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public Member validateLogin(LoginRequest loginRequest) {
-        return memberRepository.findByEmailAndPassword(loginRequest.getEmail(), loginRequest.getPassword())
+    public void validateLogin(LoginRequest loginRequest, HttpSession session) {
+        Member member=memberRepository.findByEmailAndPassword(loginRequest.getEmail(), loginRequest.getPassword())
                 .orElseThrow(()->new LoginFailedException("이메일 혹은 비밀번호를 확인해주세요"));
+        session.setAttribute("member", member);  // 세션에 사용자 정보 저장
     }
 }

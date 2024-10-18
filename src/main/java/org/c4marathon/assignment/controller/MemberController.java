@@ -25,8 +25,7 @@ public class MemberController {
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
-        Member member = memberService.validateLogin(loginRequest);
-        session.setAttribute("member", member);  // 세션에 사용자 정보 저장
+        memberService.validateLogin(loginRequest,session);
         return ResponseEntity.ok("로그인에 성공하였습니다.");
     }
 
