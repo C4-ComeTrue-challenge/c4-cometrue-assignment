@@ -4,8 +4,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.UUID;
 
+import org.c4marathon.assignment.global.config.UUIDProvider;
 import org.c4marathon.assignment.img.domain.Img;
 import org.c4marathon.assignment.img.domain.repository.ImgRepository;
 import org.c4marathon.assignment.img.dto.ImageUrlRequest;
@@ -28,6 +28,7 @@ public class S3Service {
 
 	private final AmazonS3Client amazonS3;
 	private final ImgRepository imgRepository;
+	private final UUIDProvider uuidProvider;
 
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
@@ -39,7 +40,7 @@ public class S3Service {
 
 		String valueFileExtension = request.imageFileExtension().getUploadExtension();
 
-		String fileName = createFileName(valueFileExtension);
+		String fileName = uuidProvider.randomUUID() + "." + valueFileExtension;
 
 		String imgUrl = prefix + "/" + fileName;
 
@@ -61,10 +62,6 @@ public class S3Service {
 				amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
 			}
 		}
-	}
-
-	private String createFileName(String fileExtension) {
-		return UUID.randomUUID() + "." + fileExtension;
 	}
 
 	private GeneratePresignedUrlRequest getGeneratePreSignedUrlRequest(String bucket, String fileName) {
