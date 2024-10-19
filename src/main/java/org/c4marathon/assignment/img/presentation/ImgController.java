@@ -2,7 +2,7 @@ package org.c4marathon.assignment.img.presentation;
 
 import org.c4marathon.assignment.img.dto.ImageUrlRequest;
 import org.c4marathon.assignment.img.dto.ImageUrlResponse;
-import org.c4marathon.assignment.img.service.ImgService;
+import org.c4marathon.assignment.img.service.S3Service;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,11 +16,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ImgController {
 
-	private final ImgService imgService;
+	private final S3Service s3Service;
 
 	@PostMapping("/presigned")
 	public ResponseEntity<ImageUrlResponse> createPresigned(
 		@RequestBody ImageUrlRequest request) {
-		return ResponseEntity.ok(imgService.issuePresignedUrl(request));
+		return ResponseEntity.ok(s3Service.issuePresignedUrl(request));
 	}
 }

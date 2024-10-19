@@ -9,7 +9,7 @@ import org.jsoup.nodes.Element;
 
 public class ImageUtils {
 
-	public static List<String> extractImageUrls(String content) {
+	public static List<String> extractImgUrls(String content) {
 		List<String> imageUrls = new ArrayList<>();
 
 		Document document = Jsoup.parse(content);
@@ -19,11 +19,5 @@ public class ImageUtils {
 		}
 
 		return imageUrls;
-	}
-
-	public static List<String> extractFileNamesFromImageUrls(List<String> imageUrls) {
-		return imageUrls.stream()
-			.map(url -> url.substring(url.lastIndexOf('/') + 1)) // 파일명 추출
-			.toList();
 	}
 }

@@ -13,20 +13,23 @@ import lombok.RequiredArgsConstructor;
 public class ImgRepository {
 	private final ImgJpaRepository imgJpaRepository;
 
-	public void save(String fileName) {
-		imgJpaRepository.save(Img.builder().fileName(fileName).build());
+	public void save(Img img) {
+		imgJpaRepository.save(img);
 	}
 
 	public void setBoardByFileName(List<String> fileNames, Boards board) {
-		List<Img> images = imgJpaRepository.findByFileNameIn(fileNames);
-
-		images.forEach(img -> {
-			img.setBoard(board);
-			imgJpaRepository.save(img);
-		});
+		imgJpaRepository.updateBoardByFileNames(fileNames, board);
 	}
 
 	public boolean existsByFileName(String fileName) {
 		return imgJpaRepository.existsByFileName(fileName);
+	}
+
+	public void deleteByFileNames(List<String> fileNames) {
+		imgJpaRepository.deleteByFileNames(fileNames);
+	}
+
+	public List<String> getFileNamesByBoardId(Long boardId) {
+		return imgJpaRepository.findFileNamesByBoardId(boardId);
 	}
 }

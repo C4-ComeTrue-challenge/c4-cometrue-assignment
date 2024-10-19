@@ -2,9 +2,11 @@ package org.c4marathon.assignment.img.service;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import org.c4marathon.assignment.img.domain.Img;
 import org.c4marathon.assignment.img.domain.repository.ImgRepository;
 import org.c4marathon.assignment.img.dto.ImageUrlRequest;
 import org.c4marathon.assignment.img.dto.ImageUrlResponse;
@@ -22,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class ImgService {
+public class S3Service {
 
 	private final AmazonS3Client amazonS3;
 	private final ImgRepository imgRepository;
@@ -44,17 +46,20 @@ public class ImgService {
 		GeneratePresignedUrlRequest presignedUrlRequest = getGeneratePreSignedUrlRequest(bucket, fileName);
 		String url = amazonS3.generatePresignedUrl(presignedUrlRequest).toString();
 
-		imgRepository.save(fileName);
+		imgRepository.save(Img.builder().fileName(fileName).build());
 
 		return new ImageUrlResponse(url, imgUrl);
 	}
 
-	public void deleteImage(String fileUrl) {
-		String splitStr = ".com/";
-		String fileName = fileUrl.substring(fileUrl.lastIndexOf(splitStr) + splitStr.length());
+	public boolean validateUrl(String url) {
+		return url != null && url.startsWith(prefix);
+	}
 
-		if (amazonS3.doesObjectExist(bucket, fileName)) {
-			amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+	public void deleteImages(List<String> fileNames) {
+		for (String fileName : fileNames) {
+			if (amazonS3.doesObjectExist(bucket, fileName)) {
+				amazonS3.deleteObject(new DeleteObjectRequest(bucket, fileName));
+			}
 		}
 	}
 

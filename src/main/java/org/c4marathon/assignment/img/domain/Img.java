@@ -36,8 +36,9 @@ public class Img extends BaseTimeEntity {
 	private String fileName;
 
 	@Builder
-	public Img(String fileName) {
+	public Img(String fileName, Boards board) {
 		this.fileName = fileName;
+		this.board = board;
 	}
 
 	public void setBoard(Boards board) {
