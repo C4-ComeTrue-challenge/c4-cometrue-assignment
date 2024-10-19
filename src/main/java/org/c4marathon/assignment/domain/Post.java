@@ -24,6 +24,8 @@ public class Post extends BaseTimeEntity{
     @JoinColumn(name = "member_id", nullable = true)
     private Member member;
 
+    // 비회원용 닉네임
+    private String nickname;
     private String password;
 
     @Builder

@@ -12,6 +12,6 @@ public class PostResponse {
     public PostResponse(Post post) {
         this.postId=post.getPostId();
         this.title = post.getTitle();
-        this.nickname = post.getMember().getNickname();
+        this.nickname = (post.getMember() != null) ? post.getMember().getNickname() : post.getNickname();
     }
 }

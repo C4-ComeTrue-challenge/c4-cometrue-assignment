@@ -41,9 +41,9 @@ public class PostController {
 
     // 게시글 전체 조회
     @GetMapping
-    public ResponseEntity<?> getAllPosts(@PageableDefault(size = 5, sort = "postId",
-            direction = Sort.Direction.DESC) Pageable pageable, HttpSession session) {
-        Page<PostResponse> posts = postService.getAllPosts(pageable);
+    public ResponseEntity<?> getAllPosts(@RequestParam(value = "lastPostId", required = false) Long lastPostId,
+                                         @RequestParam(value = "size", defaultValue = "5") int size) {
+        List<PostResponse> posts = postService.getAllPosts(lastPostId, size);
         return ResponseEntity.ok(posts);
     }
 

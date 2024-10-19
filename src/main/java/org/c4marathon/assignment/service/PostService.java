@@ -12,11 +12,14 @@ import org.c4marathon.assignment.exception.PostNotFoundException;
 import org.c4marathon.assignment.exception.UnauthorizedException;
 import org.c4marathon.assignment.repository.PostRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -58,9 +61,19 @@ public class PostService {
         return contentWithImages.toString();
     }
 
-    // 게시글 전체 조회
-    public Page<PostResponse> getAllPosts(Pageable pageable) {
-        return postRepository.findAll(pageable).map(PostResponse::new);
+    // No-Offset 방식으로 게시글 전체 조회
+    public List<PostResponse> getAllPosts(Long lastPostId, int size) {
+        List<Post> posts;
+        Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "postId"));
+
+        if (lastPostId == null) {
+            // 첫 페이지일 경우, 최신 게시글부터 가져오기
+            posts = postRepository.findTopNPosts(pageable);
+        } else {
+            // lastPostId 이후의 게시글 가져오기
+            posts = postRepository.findNextPosts(lastPostId, pageable);
+        }
+        return posts.stream().map(PostResponse::new).collect(Collectors.toList());
     }
 
     // 게시글 수정
