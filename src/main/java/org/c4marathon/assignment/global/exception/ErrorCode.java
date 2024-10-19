@@ -17,6 +17,7 @@ public enum ErrorCode {
 	EMAIL_DUPLICATED_ERROR("AU0002", HttpStatus.BAD_REQUEST, "이메일이 중복됩니다"),
 	NOT_FOUND_USER_ERROR("AU0003", HttpStatus.NOT_FOUND, "해당하는 유저가 없습니다"),
 	WRONG_PASSWORD_ERROR("AU0004", HttpStatus.BAD_REQUEST, "비밀번호가 틀렸습니다."),
+	NOT_WRITER_ERROR("AU0005", HttpStatus.UNAUTHORIZED, "권한이 없습니다"),
 
 	NOT_FOUND_BOARD_ERROR("B0001", HttpStatus.NOT_FOUND, "해당하는 게시글이 없습니다."),
 	NOT_FOUND_IMG_ERROR("B0002", HttpStatus.NOT_FOUND, "유효하지 않는 img url이 있습니다");
