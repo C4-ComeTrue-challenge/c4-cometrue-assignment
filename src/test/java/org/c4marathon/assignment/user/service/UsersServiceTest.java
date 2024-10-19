@@ -2,6 +2,13 @@ package org.c4marathon.assignment.user.service;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.c4marathon.assignment.global.exception.ErrorCode.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import org.c4marathon.assignment.user.domain.Users;
 import org.c4marathon.assignment.user.domain.repository.UserJpaRepository;
@@ -12,13 +19,13 @@ import org.c4marathon.assignment.user.dto.NicknameCheckResponse;
 import org.c4marathon.assignment.user.dto.SignupRequest;
 import org.c4marathon.assignment.user.exception.DuplicatedEmailException;
 import org.c4marathon.assignment.user.exception.DuplicatedNicknameException;
-import org.c4marathon.assignment.user.exception.NotFoundUserException;
 import org.c4marathon.assignment.user.exception.WrongPasswordException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
@@ -33,6 +40,9 @@ class UsersServiceTest {
 
 	@Autowired
 	private UserJpaRepository userJpaRepository;
+
+	@MockBean
+	private Clock clock;
 
 	@AfterEach
 	void tearDown() {
@@ -57,14 +67,13 @@ class UsersServiceTest {
 
 	@DisplayName("이미 존재하는 이메일로 회원가입 시 예외가 발생한다.")
 	@Test
-	void signupWithDuplicateEmail() {
+	void signupFailForDuplicateEmail() {
 		// Given
-		userRepository.save(
-			org.c4marathon.assignment.user.domain.Users.builder()
-				.email("test@test.com")
-				.password("password")
-				.nickname("nickname")
-				.build());
+		userRepository.save(org.c4marathon.assignment.user.domain.Users.builder()
+			.email("test@test.com")
+			.password("password")
+			.nickname("nickname")
+			.build());
 
 		SignupRequest request = new SignupRequest("test@test.com", "password", "testNickname");
 
@@ -75,7 +84,7 @@ class UsersServiceTest {
 
 	@DisplayName("이미 존재하는 닉네임으로 회원가입 시 예외가 발생한다.")
 	@Test
-	void signupWithDuplicateNickname() {
+	void signupFailForDuplicateNickname() {
 		// Given
 		userRepository.save(org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
@@ -112,7 +121,7 @@ class UsersServiceTest {
 
 	@DisplayName("잘못된 비밀번호로 로그인 시 예외가 발생한다.")
 	@Test
-	void loginWithWrongPassword() {
+	void loginFailForWrongPassword() {
 		// Given
 		userRepository.save(org.c4marathon.assignment.user.domain.Users.builder()
 			.email("test@test.com")
@@ -129,14 +138,13 @@ class UsersServiceTest {
 
 	@DisplayName("이메일 중복 여부를 확인한다.")
 	@Test
-	void checkEmail() {
+	void checkEmailSuccess() {
 		// Given
-		userRepository.save(
-			org.c4marathon.assignment.user.domain.Users.builder()
-				.email("test@test.com")
-				.password("password")
-				.nickname("nickname")
-				.build());
+		userRepository.save(org.c4marathon.assignment.user.domain.Users.builder()
+			.email("test@test.com")
+			.password("password")
+			.nickname("nickname")
+			.build());
 
 		// When
 		EmailCheckResponse response = userService.checkEmail("test@test.com");
@@ -147,13 +155,10 @@ class UsersServiceTest {
 
 	@DisplayName("닉네임 중복 여부를 확인한다.")
 	@Test
-	void checkNickname() {
+	void checkNicknameSuccess() {
 		// Given
-		userRepository.save(Users.builder()
-			.email("test@test.com")
-			.password("password")
-			.nickname("testNickname")
-			.build());
+		userRepository.save(
+			Users.builder().email("test@test.com").password("password").nickname("testNickname").build());
 
 		// When
 		NicknameCheckResponse response = userService.checkNickname("testNickname");
@@ -166,17 +171,21 @@ class UsersServiceTest {
 	@Test
 	void deleteUserSuccess() {
 		// Given
-		Users users = userRepository.save(org.c4marathon.assignment.user.domain.Users.builder()
-			.email("test2@test.com")
-			.password("password")
-			.nickname("testNickname")
-			.build());
+		Users users = userRepository.save(
+			Users.builder().email("test2@test.com").password("password").nickname("testNickname").build());
+
+		LocalDateTime fixedTime = LocalDateTime.of(2024, 10, 19, 12, 0);
+		Instant fixedInstant = fixedTime.toInstant(ZoneOffset.UTC);
+		when(clock.instant()).thenReturn(fixedInstant);
+		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
 		// When
-		userService.deleteUser(users.getEmail());
+		userService.deleteUser(users.getEmail(), "탈퇴하고 싶어서");
 
 		// Then
-		assertThatThrownBy(() -> userRepository.getByEmail(users.getEmail())).isInstanceOf(NotFoundUserException.class)
-			.hasMessageContaining(NOT_FOUND_USER_ERROR.getMessage());
+		Users deletedUser = userRepository.getById(users.getId());
+		assertTrue(deletedUser.isDeleted());
+		assertEquals("탈퇴하고 싶어서", deletedUser.getDeletionReason());
+		assertEquals(fixedTime, deletedUser.getDeletedDate());
 	}
 }
