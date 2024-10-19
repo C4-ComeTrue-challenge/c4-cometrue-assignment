@@ -17,8 +17,10 @@ import org.c4marathon.assignment.board.domain.repository.BoardJpaRepository;
 import org.c4marathon.assignment.board.domain.repository.BoardRepository;
 import org.c4marathon.assignment.board.dto.BoardCreateRequest;
 import org.c4marathon.assignment.board.dto.BoardDeleteRequest;
+import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
 import org.c4marathon.assignment.board.dto.BoardGetOneResponse;
 import org.c4marathon.assignment.board.dto.BoardUpdateRequest;
+import org.c4marathon.assignment.board.dto.PageInfo;
 import org.c4marathon.assignment.img.domain.Img;
 import org.c4marathon.assignment.img.domain.repository.ImgJpaRepository;
 import org.c4marathon.assignment.img.domain.repository.ImgRepository;
@@ -294,6 +296,78 @@ class BoardServiceTest {
 		assertTrue(deletedBoard.isDeleted());
 		assertEquals(DELETED_BY_MEMBER.getMessage(), deletedBoard.getDeletionReason());
 		assertEquals(fixedTime, deletedBoard.getDeletedDate());
+	}
+
+	@DisplayName("페이지 토큰 없이 게시글을 성공적으로 조회한다.")
+	@Test
+	void getAllBoardsWithoutPageTokenSuccess() {
+		// Given
+		int size = 10;
+
+		for (int i = 1; i <= 20; i++) {
+			boardRepository.save(
+				Boards.builder()
+					.title("Test Title " + i)
+					.content("Test Content " + i)
+					.writerName("Test Writer")
+					.writerType(WriterType.USER)
+					.build()
+			);
+		}
+
+		// When
+		PageInfo<BoardGetAllResponse> pageInfo = boardService.getAllBoards(null, size);
+
+		// Then
+		assertThat(pageInfo.data()).hasSize(size);
+		assertThat(pageInfo.hasNext()).isTrue();
+		assertThat(pageInfo.pageToken()).isNotNull();
+	}
+
+	@DisplayName("페이지 토큰을 사용하여 다음 페이지의 게시글을 성공적으로 조회한다.")
+	@Test
+	void getAllBoardsWithPageTokenSuccess() {
+		// Given
+		int size = 10;
+
+		// 게시글 20개 생성
+		for (int i = 1; i <= 20; i++) {
+			boardRepository.save(
+				Boards.builder()
+					.title("Test Title " + i)
+					.content("Test Content " + i)
+					.writerName("Test Writer")
+					.writerType(WriterType.USER)
+					.build()
+			);
+		}
+
+		// 첫 페이지 조회
+		PageInfo<BoardGetAllResponse> firstPage = boardService.getAllBoards(null, size);
+		String firstPageToken = firstPage.pageToken();
+
+		// When
+		PageInfo<BoardGetAllResponse> secondPage = boardService.getAllBoards(firstPageToken, size);
+
+		// Then
+		assertThat(secondPage.data()).hasSize(size);
+		assertThat(secondPage.hasNext()).isFalse();
+		assertThat(secondPage.pageToken()).isNull();
+	}
+
+	@DisplayName("게시글이 없는 경우 페이지 토큰 없이 조회하면 빈 결과를 반환한다.")
+	@Test
+	void getAllBoardsWithoutPageTokenReturnsEmpty() {
+		// Given
+		int size = 10;
+
+		// When
+		PageInfo<BoardGetAllResponse> pageInfo = boardService.getAllBoards(null, size);
+
+		// Then
+		assertThat(pageInfo.data()).isEmpty();
+		assertThat(pageInfo.hasNext()).isFalse();
+		assertThat(pageInfo.pageToken()).isNull();
 	}
 
 }
