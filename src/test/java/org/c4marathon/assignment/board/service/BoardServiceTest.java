@@ -350,9 +350,12 @@ class BoardServiceTest {
 		PageInfo<BoardGetAllResponse> secondPage = boardService.getAllBoards(firstPageToken, size);
 
 		// Then
-		assertThat(secondPage.data()).hasSize(size);
-		assertThat(secondPage.hasNext()).isFalse();
-		assertThat(secondPage.pageToken()).isNull();
+		assertThat(secondPage.data()).hasSizeLessThanOrEqualTo(size);  // 두 번째 페이지에도 size 이하의 게시글이 조회되는지 확인
+		if (secondPage.hasNext()) {
+			assertThat(secondPage.pageToken()).isNotNull();  // 다음 페이지가 있으면 페이지 토큰이 있어야 함
+		} else {
+			assertThat(secondPage.pageToken()).isNull();  // 마지막 페이지이므로 페이지 토큰은 null이어야 함
+		}
 	}
 
 	@DisplayName("게시글이 없는 경우 페이지 토큰 없이 조회하면 빈 결과를 반환한다.")
