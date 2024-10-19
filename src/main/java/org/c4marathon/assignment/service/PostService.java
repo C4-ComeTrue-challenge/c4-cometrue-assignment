@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -33,6 +35,23 @@ public class PostService {
                 .password(password) // 비로그인 회원의 비밀번호 설정
                 .build();
         postRepository.save(post);
+    }
+
+    // 본문 중간에 이미지 URL을 삽입하는 메서드
+    private String insertImagesIntoContent(String content, List<String> imageUrls) {
+        if (imageUrls == null || imageUrls.isEmpty()) {
+            return content;
+        }
+
+        // 예시: 각 이미지 URL을 본문 끝에 삽입 (또는 적절한 위치를 지정 가능)
+        StringBuilder contentWithImages = new StringBuilder(content);
+        for (String imageUrl : imageUrls) {
+            contentWithImages.append("<br><img src=\"")
+                    .append(imageUrl)
+                    .append("\" alt=\"Image\"><br>");
+        }
+
+        return contentWithImages.toString();
     }
 
     // 게시글 전체 조회
