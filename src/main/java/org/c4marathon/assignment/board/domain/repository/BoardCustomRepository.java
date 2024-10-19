@@ -1,11 +1,14 @@
 package org.c4marathon.assignment.board.domain.repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 public interface BoardCustomRepository {
 
-    Page<BoardGetAllResponse> findAllWithPaging(Pageable pageable);
+	List<BoardGetAllResponse> findBoards(int limit);
+
+	List<BoardGetAllResponse> findBoardsWithPageToken(LocalDateTime createdDate, Long id, int limit);
 
 }

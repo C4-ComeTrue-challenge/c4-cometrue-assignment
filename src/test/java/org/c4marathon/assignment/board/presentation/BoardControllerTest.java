@@ -1,34 +1,31 @@
 package org.c4marathon.assignment.board.presentation;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.util.Collections;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import org.c4marathon.assignment.board.dto.BoardCreateRequest;
+import org.c4marathon.assignment.board.dto.BoardDeleteRequest;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
 import org.c4marathon.assignment.board.dto.BoardGetOneResponse;
+import org.c4marathon.assignment.board.dto.BoardUpdateRequest;
+import org.c4marathon.assignment.board.dto.PageInfo;
 import org.c4marathon.assignment.board.service.BoardService;
 import org.c4marathon.assignment.config.CommonControllerTest;
 import org.c4marathon.assignment.global.config.SessionConfig;
 import org.c4marathon.assignment.user.domain.Users;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 @WebMvcTest(controllers = BoardController.class)
-public class BoardControllerTest extends CommonControllerTest {
+class BoardControllerTest extends CommonControllerTest {
 
 	@MockBean
 	private BoardService boardService;
@@ -36,93 +33,145 @@ public class BoardControllerTest extends CommonControllerTest {
 	@MockBean
 	private SessionConfig sessionConfig;
 
-	@Nested
-	@DisplayName("POST /api/board")
-	class CreateBoardTest {
+	@Test
+	@DisplayName("POST /api/board 요청 시 회원이 게시글을 성공적으로 작성하면 201 CREATED 상태를 반환한다.")
+	void createBoardAsUserSuccess() throws Exception {
+		// Given
+		BoardCreateRequest createRequest = new BoardCreateRequest("Test Title", "Test Content", null, null);
+		Users mockUser = Users.builder().email("test@example.com").nickname("testUser").build();
 
-		@Test
-		@DisplayName("게스트 사용자가 게시물을 작성할 수 있다.")
-		void guestCanCreateBoard() throws Exception {
-			BoardCreateRequest request = new BoardCreateRequest("제목", "내용", "guest", "password");
+		Mockito.when(sessionConfig.getSessionUser(any())).thenReturn(mockUser);
 
-			mockMvc.perform(post("/api/board")
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(objectMapper.writeValueAsString(request)))
-				.andExpect(status().isCreated());
+		// When & Then
+		mockMvc.perform(post("/api/board")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(createRequest)))
+			.andExpect(status().isCreated());
 
-			verify(boardService, times(1)).createBoardAsGuest(any(BoardCreateRequest.class));
-		}
-
-		@Test
-		@DisplayName("로그인 사용자가 게시물을 작성할 수 있다.")
-		void loggedInUserCanCreateBoard() throws Exception {
-			Users mockUser = Users.builder()
-				.email("test@example.com")
-				.password("password123")
-				.nickname("testUser")
-				.build();
-
-			BoardCreateRequest request = new BoardCreateRequest("제목", "내용", null, null);
-
-			Mockito.when(sessionConfig.getSessionUser(any(HttpServletRequest.class))).thenReturn(mockUser);
-
-			mockMvc.perform(post("/api/board")
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(objectMapper.writeValueAsString(request)))
-				.andExpect(status().isCreated());
-
-			verify(boardService, times(1)).createBoardAsUser(any(BoardCreateRequest.class), any(Users.class));
-		}
-
-		@Test
-		@DisplayName("게스트 사용자가 이름과 비밀번호를 제공하지 않으면 400 에러를 발생시킨다.")
-		void guestWithoutNameAndPasswordShouldFail() throws Exception {
-			BoardCreateRequest request = new BoardCreateRequest("제목", "내용", null, null);
-
-			mockMvc.perform(post("/api/board")
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(objectMapper.writeValueAsString(request)))
-				.andExpect(status().isBadRequest());
-
-			verify(boardService, times(0)).createBoardAsGuest(any(BoardCreateRequest.class));
-		}
+		Mockito.verify(boardService, Mockito.times(1)).createBoardAsUser(any(BoardCreateRequest.class), eq(mockUser));
 	}
 
-	@Nested
-	@DisplayName("GET /api/board/all")
-	class GetAllBoardsTest {
+	@Test
+	@DisplayName("POST /api/board 요청 시 비회원이 게시글을 작성할 때 필요한 정보가 없으면 400 Bad Request 상태를 반환한다.")
+	void createBoardAsGuestFailMissingInfo() throws Exception {
+		// Given
+		BoardCreateRequest createRequest = new BoardCreateRequest("Test Title", "Test Content", null, null);
 
-		@Test
-		@DisplayName("모든 게시물을 페이지로 가져온다.")
-		void getAllBoards() throws Exception {
-			Page<BoardGetAllResponse> page = new PageImpl<>(Collections.emptyList(), PageRequest.of(0, 10), 0);
+		// When & Then
+		mockMvc.perform(post("/api/board")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(createRequest)))
+			.andExpect(status().isBadRequest());
 
-			Mockito.when(boardService.getAllBoards(any(PageRequest.class))).thenReturn(page);
-
-			mockMvc.perform(get("/api/board/all")
-					.param("page", "0")
-					.param("size", "10"))
-				.andExpect(status().isOk());
-
-			verify(boardService, times(1)).getAllBoards(any(PageRequest.class));
-		}
+		Mockito.verify(boardService, Mockito.times(0)).createBoardAsGuest(any(BoardCreateRequest.class));
 	}
 
-	@Nested
-	@DisplayName("GET /api/board/{id}")
-	class GetOneBoardTest {
+	@Test
+	@DisplayName("GET /api/board/all 요청 시 성공적으로 게시글 목록을 조회하면 200 OK 상태를 반환한다.")
+	void getAllBoardsSuccess() throws Exception {
+		// Given
+		List<BoardGetAllResponse> boardResponses = List.of(
+			new BoardGetAllResponse(1L, "Title 1", "Content 1", "Writer 1", LocalDateTime.now(), LocalDateTime.now()),
+			new BoardGetAllResponse(2L, "Title 2", "Content 2", "Writer 2", LocalDateTime.now(), LocalDateTime.now())
+		);
+		PageInfo<BoardGetAllResponse> mockPageInfo = new PageInfo<>("nextPageToken", boardResponses, true);
+		
+		Mockito.when(boardService.getAllBoards(anyString(), anyInt())).thenReturn(mockPageInfo);
 
-		@Test
-		@DisplayName("특정 ID의 게시물을 가져온다.")
-		void getOneBoard() throws Exception {
-			BoardGetOneResponse response = new BoardGetOneResponse(1L, "내용", "제목", "guest", null, null);
+		// When & Then: GET 요청을 보내고 응답을 검증합니다.
+		mockMvc.perform(get("/api/board/all")
+				.param("pageToken", "nextPageToken")
+				.param("count", "10"))
+			.andExpect(jsonPath("$.data.size()").value(2))  // 게시글 목록이 2개인지 확인
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.hasNext").value(true))     // 다음 페이지가 있는지 확인
+			.andExpect(jsonPath("$.pageToken").value("nextPageToken"));  // 페이지 토큰이 반환되는지 확인
 
-			Mockito.when(boardService.getOneBoard(1L)).thenReturn(response);
+		Mockito.verify(boardService, Mockito.times(1)).getAllBoards(anyString(), anyInt());
+	}
 
-			mockMvc.perform(get("/api/board/1"))
-				.andExpect(status().isOk());
+	@Test
+	@DisplayName("GET /api/board/{id} 요청 시 게시글을 성공적으로 조회하면 200 OK 상태를 반환한다.")
+	void getOneBoardSuccess() throws Exception {
+		// Given
+		BoardGetOneResponse response = new BoardGetOneResponse(1L, "Test Content", "Test Title", "Test Writer", null,
+			null);
 
-			verify(boardService, times(1)).getOneBoard(1L);
-		}
+		Mockito.when(boardService.getOneBoard(anyLong())).thenReturn(response);
+
+		// When & Then
+		mockMvc.perform(get("/api/board/{id}", 1L))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.title").value("Test Title"))
+			.andExpect(jsonPath("$.content").value("Test Content"));
+
+		Mockito.verify(boardService, Mockito.times(1)).getOneBoard(anyLong());
+	}
+
+	@Test
+	@DisplayName("PUT /api/board/{id} 요청 시 회원이 게시글을 성공적으로 수정하면 201 CREATED 상태를 반환한다.")
+	void updateBoardAsUserSuccess() throws Exception {
+		// Given
+		BoardUpdateRequest updateRequest = new BoardUpdateRequest("Updated Title", "Updated Content", null);
+		Users mockUser = Users.builder().email("test@example.com").nickname("testUser").build();
+
+		Mockito.when(sessionConfig.getSessionUser(any())).thenReturn(mockUser);
+
+		// When & Then
+		mockMvc.perform(put("/api/board/{id}", 1L)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(updateRequest)))
+			.andExpect(status().isCreated());
+
+		Mockito.verify(boardService, Mockito.times(1))
+			.updateBoardAsUser(anyLong(), any(BoardUpdateRequest.class), eq(mockUser.getNickname()));
+	}
+
+	@Test
+	@DisplayName("PUT /api/board/{id} 요청 시 비회원이 게시글을 수정할 때 비밀번호가 없으면 400 Bad Request 상태를 반환한다.")
+	void updateBoardAsGuestFailMissingPassword() throws Exception {
+		// Given
+		BoardUpdateRequest updateRequest = new BoardUpdateRequest("Updated Title", "Updated Content", null);
+
+		// When & Then
+		mockMvc.perform(put("/api/board/{id}", 1L)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(updateRequest)))
+			.andExpect(status().isBadRequest());
+
+		Mockito.verify(boardService, Mockito.times(0)).updateBoardAsGuest(anyLong(), any(BoardUpdateRequest.class));
+	}
+
+	@Test
+	@DisplayName("DELETE /api/board/{id} 요청 시 회원이 게시글을 성공적으로 삭제하면 201 CREATED 상태를 반환한다.")
+	void deleteBoardAsUserSuccess() throws Exception {
+		// Given
+		Users mockUser = Users.builder().email("test@example.com").nickname("testUser").build();
+		BoardDeleteRequest deleteRequest = new BoardDeleteRequest(null);
+
+		Mockito.when(sessionConfig.getSessionUser(any())).thenReturn(mockUser);
+
+		// When & Then
+		mockMvc.perform(delete("/api/board/{id}", 1L)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(deleteRequest)))
+			.andExpect(status().isCreated());
+
+		Mockito.verify(boardService, Mockito.times(1)).deleteBoardAsUser(anyLong(), eq(mockUser.getNickname()));
+	}
+
+	@Test
+	@DisplayName("DELETE /api/board/{id} 요청 시 비회원이 게시글을 삭제할 때 비밀번호가 없으면 400 Bad Request 상태를 반환한다.")
+	void deleteBoardAsGuestFailMissingPassword() throws Exception {
+		// Given
+		BoardDeleteRequest deleteRequest = new BoardDeleteRequest(null);
+
+		// When & Then
+		mockMvc.perform(delete("/api/board/{id}", 1L)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(deleteRequest)))
+			.andExpect(status().isBadRequest());
+
+		Mockito.verify(boardService, Mockito.times(0)).deleteBoardAsGuest(anyLong(), any(BoardDeleteRequest.class));
 	}
 }

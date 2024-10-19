@@ -8,6 +8,7 @@ import org.c4marathon.assignment.user.dto.LoginRequest;
 import org.c4marathon.assignment.user.dto.NicknameCheckRequest;
 import org.c4marathon.assignment.user.dto.NicknameCheckResponse;
 import org.c4marathon.assignment.user.dto.SignupRequest;
+import org.c4marathon.assignment.user.dto.WithdrawRequest;
 import org.c4marathon.assignment.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,6 +72,7 @@ public class UserController {
 
 	@PostMapping("/withdraw")
 	public ResponseEntity<Void> deleteUser(
+		@RequestBody WithdrawRequest request,
 		HttpServletRequest httpServletRequest
 	) {
 		Users loginUsers = sessionConfig.getSessionUser(httpServletRequest);
@@ -79,7 +81,7 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 
-		userService.deleteUser(loginUsers.getEmail());
+		userService.deleteUser(loginUsers.getEmail(), request.deletionReason());
 		sessionConfig.invalidateSession(httpServletRequest);
 
 		return ResponseEntity.ok().build();

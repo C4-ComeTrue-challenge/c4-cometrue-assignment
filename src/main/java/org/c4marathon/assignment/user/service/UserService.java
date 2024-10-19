@@ -1,5 +1,7 @@
 package org.c4marathon.assignment.user.service;
 
+import java.time.Clock;
+
 import org.c4marathon.assignment.user.domain.Users;
 import org.c4marathon.assignment.user.domain.repository.UserRepository;
 import org.c4marathon.assignment.user.dto.EmailCheckResponse;
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
 	private final UserRepository userRepository;
+	private final Clock clock;
 
 	@Transactional
 	public void signup(SignupRequest request) {
@@ -47,9 +50,9 @@ public class UserService {
 	}
 
 	@Transactional
-	public void deleteUser(String email) {
+	public void deleteUser(String email, String deletionReason) {
 		Users users = userRepository.getByEmail(email);
-		userRepository.deleteUser(users);
+		users.deleteUser(deletionReason, clock);
 	}
 
 	private void validateSignupRequest(SignupRequest request) {
