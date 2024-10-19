@@ -2,6 +2,7 @@ package org.c4marathon.assignment.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.c4marathon.assignment.domain.Member;
 import org.c4marathon.assignment.domain.Post;
 import org.c4marathon.assignment.domain.request.PostRequest;
@@ -23,6 +24,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/posts")
 @RequiredArgsConstructor
+@Slf4j
 public class PostController {
     private final PostService postService;
 
@@ -32,7 +34,7 @@ public class PostController {
     // 게시글 작성 (회원 정보를 세션에서 가져옴)
     @PostMapping("/write")
     public ResponseEntity<?> createPost(@RequestBody PostRequest postRequest,
-                                        @RequestParam MultipartFile file, HttpSession session) {
+                                         HttpSession session) {
         postService.createPost(postRequest, session);
         return ResponseEntity.ok("게시글 작성 성공");
     }
@@ -45,9 +47,23 @@ public class PostController {
         return ResponseEntity.ok(posts);
     }
 
-    // 게시글 단일 조회
+    // 게시글 단건 조회
     @GetMapping("/{id}")
     public ResponseEntity<?> getPostById(@PathVariable("id") Post post) {
         return ResponseEntity.ok(new PostDetailResponse(post));
+    }
+
+    // 게시글 수정
+    @PutMapping("/{postId}")
+    public ResponseEntity<?> updatePost(@PathVariable Long postId, @RequestBody PostRequest postRequest, HttpSession session) {
+        postService.updatePost(postId, postRequest, session);
+        return ResponseEntity.ok("게시글 수정 성공");
+    }
+
+    // 게시글 삭제
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<?> deletePost(@PathVariable Long postId, @RequestParam(required = false) String password, HttpSession session) {
+        postService.deletePost(postId, session, password);
+        return ResponseEntity.ok("게시글 삭제 성공");
     }
 }

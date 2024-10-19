@@ -2,11 +2,14 @@ package org.c4marathon.assignment.service;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.c4marathon.assignment.domain.Member;
 import org.c4marathon.assignment.domain.Post;
 import org.c4marathon.assignment.domain.request.PostRequest;
 import org.c4marathon.assignment.domain.response.PostResponse;
 import org.c4marathon.assignment.exception.PasswordNotFoundException;
+import org.c4marathon.assignment.exception.PostNotFoundException;
+import org.c4marathon.assignment.exception.UnauthorizedException;
 import org.c4marathon.assignment.repository.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +20,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PostService {
     private final PostRepository postRepository;
 
@@ -58,4 +62,47 @@ public class PostService {
     public Page<PostResponse> getAllPosts(Pageable pageable) {
         return postRepository.findAll(pageable).map(PostResponse::new);
     }
+
+    // 게시글 수정
+    @Transactional
+    public void updatePost(Long postId, PostRequest postRequest, HttpSession session) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException("게시글을 찾을 수 없습니다."));
+        Member member = (Member) session.getAttribute("member");
+        log.info("{}",member.getMemberId());
+        // 권한 확인
+        if (!isAuthorizedToModifyPost(post, member, postRequest.getPassword())) {
+            throw new UnauthorizedException("수정 권한이 없습니다.");
+        }
+
+        // 수정된 내용 설정
+        post.update(postRequest.getTitle(),postRequest.getContent());
+
+        postRepository.save(post);
+    }
+
+    // 게시글 삭제
+    @Transactional
+    public void deletePost(Long postId, HttpSession session, String password) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException("게시글을 찾을 수 없습니다."));
+        Member member = (Member) session.getAttribute("member");
+
+        // 권한 확인
+        if (!isAuthorizedToModifyPost(post, member, password)) {
+            throw new UnauthorizedException("삭제 권한이 없습니다.");
+        }
+
+        postRepository.delete(post);
+    }
+
+    // 게시글 권한 체크
+    private boolean isAuthorizedToModifyPost(Post post, Member member, String password) {
+        if (member != null) {
+            return post.getMember() != null && post.getMember().equals(member);
+        } else {
+            return post.getMember() == null && post.getPassword().equals(password);
+        }
+    }
+
 }

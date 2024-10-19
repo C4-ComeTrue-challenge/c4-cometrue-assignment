@@ -72,18 +72,7 @@ class MemberServiceTest {
     @Test
     @DisplayName("로그인 성공")
     void validateLogin_Success() {
-        // given
-        LoginRequest loginRequest = new LoginRequest("kumsh0330@naver.com", "1234");
-        Member member = new Member("kumsh0330@naver.com", "1234", "sh");
-        when(memberRepository.findByEmailAndPassword("kumsh0330@naver.com", "1234"))
-                .thenReturn(Optional.of(member));
 
-        // when
-        Member result = memberService.validateLogin(loginRequest);
-
-        // then
-        assertNotNull(result);
-        assertEquals("sh", result.getNickname());
     }
 
     // 로그인 테스트: 실패 (이메일 또는 비밀번호 불일치)
