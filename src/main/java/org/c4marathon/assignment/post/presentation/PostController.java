@@ -23,7 +23,7 @@ public class PostController {
 
     @PostMapping("/v1/post/{boardId}")
     public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostCreateRequest request,
-                                                   @PathVariable Long boardId,
+                                                   @PathVariable @Positive Long boardId,
                                                    HttpServletRequest http) {
         /*
          * 401, 403과 같은 인가같은 경우는 나중에 스프링 인터셉터를 통해 처리하도록 하자
@@ -38,6 +38,8 @@ public class PostController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(post);
     }
+
+
 
     @GetMapping("/v1/post")
     public PageInfo<PostResponse> getAllPosts(
