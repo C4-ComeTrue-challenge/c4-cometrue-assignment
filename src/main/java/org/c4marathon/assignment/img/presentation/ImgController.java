@@ -18,8 +18,8 @@ public class ImgController {
 
 	private final S3Service s3Service;
 
-	@PostMapping("/presigned")
-	public ResponseEntity<ImageUrlResponse> createPresigned(
+	@PostMapping("/presignedUrl")
+	public ResponseEntity<ImageUrlResponse> createPresignedUrl(
 		@RequestBody ImageUrlRequest request) {
 		return ResponseEntity.ok(s3Service.issuePresignedUrl(request));
 	}
