@@ -2,6 +2,7 @@ package org.c4marathon.assignment.customer.ui;
 
 import org.c4marathon.assignment.common.api.ApiResponse;
 import org.c4marathon.assignment.customer.ui.dto.request.SignUpRequest;
+import org.c4marathon.assignment.customer.ui.dto.response.ChargePointResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,15 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @see org.c4marathon.assignment.customer.domain.Customer
  */
 public interface CustomerApi {
+	/**
+	 * 회원가입
+	 */
 	@PostMapping("/customers")
 	ResponseEntity<ApiResponse<Void>> postSignUp(@RequestBody SignUpRequest request);
+
+	/**
+	 * 포인트 충전
+	 */
+	@PostMapping("/customers/my/charge-point")
+	ResponseEntity<ApiResponse<ChargePointResponse>> postChargePoint(@RequestBody ChargePointRequest request);
 }
