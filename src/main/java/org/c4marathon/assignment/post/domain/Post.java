@@ -75,6 +75,11 @@ public class Post extends BaseEntity {
         return post;
     }
 
+    public void updatePost(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
+
 
     public void setPostTypeUser() {
         this.postType = PostType.USER;

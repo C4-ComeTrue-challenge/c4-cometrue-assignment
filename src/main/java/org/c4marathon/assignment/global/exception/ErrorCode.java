@@ -21,7 +21,11 @@ public enum ErrorCode {
     //Image
     NOT_FOUND_IMAGE(404, "조회된 이미지가 없습니다."),
     DB_SAVE_FAILED(500, "DB 저장 중 오류가 발생했습니다."),
-    S3_DELETE_FAILED(500, "S3에서 이미지 삭제 중 오류가 발생했습니다.");
+    S3_DELETE_FAILED(500, "S3에서 이미지 삭제 중 오류가 발생했습니다."),
+
+    //Post
+    NOT_FOUND_POST(404, "조회된 게시글이 없습니다."),
+    UNAUTHORIZED(401, "인가된 사용자가 아닙니다.");
 
 
     private final int status;
