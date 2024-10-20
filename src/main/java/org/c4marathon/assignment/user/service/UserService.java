@@ -27,7 +27,7 @@ public class UserService {
             throw new DuplicateNicknameException();
         }
 
-        User user = User.create(
+        User user = User.of(
                 registerDto.email(),
                 registerDto.nickname(),
                 registerDto.password()

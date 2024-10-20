@@ -2,7 +2,7 @@ package org.c4marathon.assignment.board.service;
 
 import org.c4marathon.assignment.IntegrationTestSupport;
 import org.c4marathon.assignment.board.domain.Board;
-import org.c4marathon.assignment.board.domain.repository.BoardRepository;
+import org.c4marathon.assignment.board.domain.repository.BoardJpaRepository;
 import org.c4marathon.assignment.board.presentation.dto.BoardResponse;
 import org.c4marathon.assignment.board.service.dto.BoardCreateServiceRequest;
 import org.c4marathon.assignment.board.service.dto.BoardUpdateServiceRequest;
@@ -22,7 +22,7 @@ class BoardServiceTest extends IntegrationTestSupport {
     private BoardService boardService;
 
     @Autowired
-    private BoardRepository boardRepository;
+    private BoardJpaRepository boardRepository;
 
     @AfterEach
     void tearDown() {
@@ -36,17 +36,19 @@ class BoardServiceTest extends IntegrationTestSupport {
         BoardCreateServiceRequest request = new BoardCreateServiceRequest("test");
 
         // when
-        Long boardId = boardService.createBoard(request);
+        BoardResponse board = boardService.createBoard(request);
 
         // then
-        assertThat(boardId).isNotNull();
+        assertThat(board).isNotNull();
+        assertThat(board.name()).isEqualTo("test");
+
     }
 
     @DisplayName("이미 있는 게시판의 이름으로 생성하면 예외가 발생한다.")
     @Test
     void createBoardByDuplicateName() throws Exception {
         // given
-        Board board = Board.create("test");
+        Board board = Board.of("test");
         boardRepository.save(board);
 
         BoardCreateServiceRequest request = new BoardCreateServiceRequest("test");
@@ -61,10 +63,10 @@ class BoardServiceTest extends IntegrationTestSupport {
     @Test
     void getAllBoard() throws Exception {
         // given
-        Board board = Board.create("test");
-        Board board1 = Board.create("test1");
-        Board board2 = Board.create("test2");
-        Board board3 = Board.create("test3");
+        Board board = Board.of("test");
+        Board board1 = Board.of("test1");
+        Board board2 = Board.of("test2");
+        Board board3 = Board.of("test3");
 
         boardRepository.saveAll(List.of(board, board1, board2, board3));
 
@@ -83,7 +85,7 @@ class BoardServiceTest extends IntegrationTestSupport {
     @Test
     void changeName() throws Exception {
         // given
-        Board board = Board.create("test");
+        Board board = Board.of("test");
         boardRepository.save(board);
 
         BoardUpdateServiceRequest request = new BoardUpdateServiceRequest(board.getId(), "changeName");
@@ -98,8 +100,8 @@ class BoardServiceTest extends IntegrationTestSupport {
     @Test
     void changeNameByDuplicateName() throws Exception {
         // given
-        Board board = Board.create("test");
-        Board board1 = Board.create("test1");
+        Board board = Board.of("test");
+        Board board1 = Board.of("test1");
         boardRepository.saveAll(List.of(board, board1));
 
         BoardUpdateServiceRequest request = new BoardUpdateServiceRequest(board.getId(), "test1");

@@ -24,7 +24,7 @@ class UserRepositoryTest extends IntegrationTestSupport {
     @Test
     void validateDuplicateNickname_1() {
         // given
-        User user = User.create("test1@test.com", "1234", "opix");
+        User user = User.of("test1@test.com", "1234", "opix");
 
         userRepository.save(user);
 
@@ -39,7 +39,7 @@ class UserRepositoryTest extends IntegrationTestSupport {
     @Test
     void validateDuplicateNickname_2() {
         // given
-        User user = User.create("test1@test.com", "1234", "opix");
+        User user = User.of("test1@test.com", "1234", "opix");
 
         userRepository.save(user);
 
@@ -54,7 +54,7 @@ class UserRepositoryTest extends IntegrationTestSupport {
     @Test
     void validateDuplicateEmail_1() {
         // given
-        User user = User.create("test1@test.com", "1234", "opix");
+        User user = User.of("test1@test.com", "1234", "opix");
 
         userRepository.save(user);
 
@@ -69,7 +69,7 @@ class UserRepositoryTest extends IntegrationTestSupport {
     @Test
     void validateDuplicateEmail_2() {
         // given
-        User user = User.create("test1@test.com", "1234", "opix");
+        User user = User.of("test1@test.com", "1234", "opix");
 
         userRepository.save(user);
 
@@ -84,7 +84,7 @@ class UserRepositoryTest extends IntegrationTestSupport {
     @Test
     void findUserByEmail() {
         // given
-        User user = User.create("test@test.com", "1234", "test");
+        User user = User.of("test@test.com", "1234", "test");
         userRepository.save(user);
 
         // when

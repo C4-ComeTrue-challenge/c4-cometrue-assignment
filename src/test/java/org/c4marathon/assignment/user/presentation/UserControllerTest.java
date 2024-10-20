@@ -44,7 +44,7 @@ class UserControllerTest extends ControllerTestSupport {
         // given
         UserLoginRequest loginDto = new UserLoginRequest("test@test.com", "1234");
 
-        User user = User.create("test@test.com", "1234", "test");
+        User user = User.of("test@test.com", "1234", "test");
         given(userService.login(any())).willReturn(user.getId());
 
         // when // then
@@ -64,7 +64,7 @@ class UserControllerTest extends ControllerTestSupport {
         // given
         MockHttpSession session = new MockHttpSession();
 
-        User user = User.create("test@test.com", "1234", "test");
+        User user = User.of("test@test.com", "1234", "test");
         session.setAttribute(SessionConst.LOGIN_USER, user);
 
         // when // then
