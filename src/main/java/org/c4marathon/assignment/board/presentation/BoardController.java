@@ -19,11 +19,9 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping("/v1/board")
-    public ResponseEntity<BoardResponse> createBoard(@Valid @RequestBody BoardCreateRequest request) {
-
-        BoardResponse board = boardService.createBoard(request.toServiceDto());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(board);
+    public ResponseEntity<Void> createBoard(@Valid @RequestBody BoardCreateRequest request) {
+        boardService.createBoard(request.toServiceDto());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/v1/board")

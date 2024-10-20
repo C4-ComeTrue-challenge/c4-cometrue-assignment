@@ -6,7 +6,6 @@ import org.c4marathon.assignment.board.exception.NotFoundBoardException;
 import org.c4marathon.assignment.board.presentation.dto.BoardResponse;
 import org.c4marathon.assignment.board.service.dto.BoardCreateServiceRequest;
 import org.c4marathon.assignment.board.service.dto.BoardUpdateServiceRequest;
-import org.c4marathon.assignment.global.exception.ErrorCode;
 import org.c4marathon.assignment.user.exception.DuplicateNameException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +20,7 @@ public class BoardRepository {
     public BoardResponse createBoard(BoardCreateServiceRequest request) {
 
         if (validateNameDuplicate(request.name())) {
-            throw new DuplicateNameException(ErrorCode.DUPLICATE_NAME);
+            throw new DuplicateNameException();
         }
 
         Board board = Board.of(request.name());
@@ -43,11 +42,11 @@ public class BoardRepository {
     public BoardResponse updateBoardName(BoardUpdateServiceRequest request) {
 
         if (validateNameDuplicate(request.name())) {
-            throw new DuplicateNameException(ErrorCode.DUPLICATE_NAME);
+            throw new DuplicateNameException();
         }
 
         Board board = boardJpaRepository.findById(request.boardId())
-                .orElseThrow(() -> new NotFoundBoardException(ErrorCode.NOT_FOUND_BOARD));
+                .orElseThrow(NotFoundBoardException::new);
 
         board.changeBoardName(request.name());
 

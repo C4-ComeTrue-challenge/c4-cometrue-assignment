@@ -7,7 +7,6 @@ import org.c4marathon.assignment.board.presentation.dto.BoardUpdateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-
 import java.util.List;
 
 import static org.mockito.Mockito.when;

@@ -5,7 +5,7 @@ import org.c4marathon.assignment.global.exception.ErrorCode;
 
 public class InvalidLoginException extends CustomException {
 
-    public InvalidLoginException(ErrorCode errorCode) {
-        super(errorCode);
+    public InvalidLoginException() {
+        super(ErrorCode.INVALID_LOGIN);
     }
 }

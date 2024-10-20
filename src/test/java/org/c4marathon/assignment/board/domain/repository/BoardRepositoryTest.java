@@ -9,25 +9,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class BoardJpaRepositoryTest extends IntegrationTestSupport {
+class BoardRepositoryTest extends IntegrationTestSupport {
 
     @Autowired
-    private BoardJpaRepository boardRepository;
+    private BoardJpaRepository boardJpaRepository;
 
     @AfterEach
     void tearDown() {
-        boardRepository.deleteAllInBatch();
+        boardJpaRepository.deleteAllInBatch();
     }
 
     @DisplayName("종복된 게시판 이름을 조회하면 true을 반환한다.")
     @Test
     void existsBoardName() throws Exception {
         // given
-        Board board = Board.create("test");
-        boardRepository.save(board);
+        Board board = Board.of("test");
+        boardJpaRepository.save(board);
 
         // when
-        boolean result = boardRepository.existsByName(board.getName());
+        boolean result = boardJpaRepository.existsByName(board.getName());
 
         // then
         assertThat(result).isTrue();

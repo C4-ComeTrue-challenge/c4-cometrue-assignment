@@ -1,13 +1,10 @@
 package org.c4marathon.assignment.user.service;
 
 import lombok.RequiredArgsConstructor;
-import org.c4marathon.assignment.global.exception.ErrorCode;
+import org.apache.commons.lang3.StringUtils;
 import org.c4marathon.assignment.user.domain.User;
 import org.c4marathon.assignment.user.domain.repository.UserRepository;
-import org.c4marathon.assignment.user.exception.DuplicateEmailException;
-import org.c4marathon.assignment.user.exception.DuplicateNicknameException;
-import org.c4marathon.assignment.user.exception.InvalidLoginException;
-import org.c4marathon.assignment.user.exception.NotFountUserException;
+import org.c4marathon.assignment.user.exception.*;
 import org.c4marathon.assignment.user.presentation.dto.UserRegisterResponse;
 import org.c4marathon.assignment.user.service.dto.UserLoginServiceRequest;
 import org.c4marathon.assignment.user.service.dto.UserRegisterServiceRequest;
@@ -24,10 +21,10 @@ public class UserService {
     public UserRegisterResponse register(UserRegisterServiceRequest registerDto) {
 
         if (validateEmailDuplicate(registerDto.email())) {
-            throw new DuplicateEmailException(ErrorCode.DUPLICATE_EMAIL);
+            throw new DuplicateEmailException();
         }
         if (validateNicknameDuplicate(registerDto.nickname())) {
-            throw new DuplicateNicknameException(ErrorCode.DUPLICATE_NICKNAME);
+            throw new DuplicateNicknameException();
         }
 
         User user = User.of(
@@ -40,21 +37,29 @@ public class UserService {
     }
 
 
-    public User login(UserLoginServiceRequest loginDto) {
+    public Long login(UserLoginServiceRequest loginDto) {
         User user = userRepository.findByEmail(loginDto.email())
-                .orElseThrow(() -> new NotFountUserException(ErrorCode.NOT_FOUND_USER));
+                .orElseThrow(NotFountUserException::new);
 
         if (!loginDto.password().equals(user.getPassword())) {
-            throw new InvalidLoginException(ErrorCode.INVALID_LOGIN);
+            throw new InvalidLoginException();
         }
-        return user;
+        return user.getId();
     }
 
     private boolean validateNicknameDuplicate(String nickname) {
+        if (!validateNicknameFormat(nickname)) {
+            throw new InvalidNicknameFormat();
+        }
         return userRepository.existsByNickname(nickname);
     }
 
     private boolean validateEmailDuplicate(String email) {
         return userRepository.existsByEmail(email);
     }
+
+    private boolean validateNicknameFormat(String nickname) {
+        return StringUtils.isNotBlank(nickname) && !nickname.contains(" ");
+    }
+
 }

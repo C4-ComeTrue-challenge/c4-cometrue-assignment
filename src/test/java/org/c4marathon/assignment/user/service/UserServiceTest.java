@@ -93,12 +93,10 @@ class UserServiceTest extends IntegrationTestSupport {
         UserLoginServiceRequest loginDto = new UserLoginServiceRequest("test@test.com", "1234");
 
         // when
-        User loginUser = userService.login(loginDto);
+        Long login = userService.login(loginDto);
 
         // then
-        assertThat(loginUser)
-                .extracting("email", "nickname")
-                .contains("test@test.com", "test");
+        assertThat(login).isNotNull();
     }
 
     @DisplayName("가입한적 없는 이메일로 로그인 시도를 할 경우 예외가 발생한다.")
