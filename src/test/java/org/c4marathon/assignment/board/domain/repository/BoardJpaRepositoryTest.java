@@ -23,7 +23,7 @@ class BoardJpaRepositoryTest extends IntegrationTestSupport {
     @Test
     void existsBoardName() throws Exception {
         // given
-        Board board = Board.create("test");
+        Board board = Board.of("test");
         boardRepository.save(board);
 
         // when
