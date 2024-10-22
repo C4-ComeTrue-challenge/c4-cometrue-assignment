@@ -31,8 +31,8 @@ public class Session {
     @Column(nullable = false)
     private String refreshToken;
 
-    private Long memberAuthId;
     private MemberAuthority authority;
+    private Long memberAuthId;
     private Boolean isBlackList;
 
     public Session(final String refreshToken, final MemberAuthority authority, final Long memberAuthId) {

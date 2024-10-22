@@ -20,7 +20,7 @@ public class AuthService {
 
     @Transactional
     public void loginAndStoreRefreshToken(MemberAuthority authority, String refreshToken) {
-        Long memberAuthId = extractEmailFrom(refreshToken);
+        Long memberAuthId = extractMemberAuthIdFrom(refreshToken);
         Session findSession = sessionRepository.findByAuthorityAndMemberAuthId(authority, memberAuthId);
 
         if (findSession == null) {
@@ -39,7 +39,7 @@ public class AuthService {
         findSession.blackSession();
     }
 
-    private Long extractEmailFrom(String refreshToken) {
+    private Long extractMemberAuthIdFrom(String refreshToken) {
         return Long.parseLong(tokenHandler.getClaims(refreshToken).get(MEMBER_ID).toString());
     }
 

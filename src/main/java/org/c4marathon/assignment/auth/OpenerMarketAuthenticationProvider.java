@@ -20,10 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OpenerMarketAuthenticationProvider implements AuthenticationProvider {
@@ -37,14 +34,23 @@ public class OpenerMarketAuthenticationProvider implements AuthenticationProvide
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String nickname = authentication.getName();
         String password = authentication.getCredentials().toString();
-        Member member = memberRepository.findByNickname(nickname)
-                                        .orElseThrow(() -> new AuthException(MEMBER_NOT_FOUND));
+        Member member = findMemberBy(nickname);
         isPasswordMatch(password, member);
 
         Long memberAuthId = getMemberAuthId(member);
 
         return new UsernamePasswordAuthenticationToken(memberAuthId, password,
                 List.of(new SimpleGrantedAuthority(member.getAuthority().toString())));
+    }
+
+    @Override
+    public boolean supports(Class<?> authentication) {
+        return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
+    }
+
+    private Member findMemberBy(String nickname) {
+        return memberRepository.findByNickname(nickname)
+                .orElseThrow(() -> new AuthException(MEMBER_NOT_FOUND));
     }
 
     private Long getMemberAuthId(Member member) {
@@ -61,11 +67,6 @@ public class OpenerMarketAuthenticationProvider implements AuthenticationProvide
         if (!passwordEncoder.matches(password, member.getPassword())) {
             throw new UsernameNotFoundException(MEMBER_NOT_FOUND.getMessage());
         }
-    }
-
-    @Override
-    public boolean supports(Class<?> authentication) {
-        return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
     }
 
 }
