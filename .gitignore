@@ -3,7 +3,9 @@ HELP.md
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
+src/main/resources/application.yml
 !**/src/test/**/build/
+src/test/resources/application.yml
 
 ### STS ###
 .apt_generated
@@ -35,3 +37,4 @@ out/
 
 ### VS Code ###
 .vscode/
+
