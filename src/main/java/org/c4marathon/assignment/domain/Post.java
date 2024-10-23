@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Post extends BaseTimeEntity{
+public class Post extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
@@ -29,14 +29,14 @@ public class Post extends BaseTimeEntity{
     private String password;
 
     @Builder
-    public Post(String title, String content, Member member,String password) {
+    public Post(String title, String content, Member member, String password) {
         this.title = title;
         this.content = content;
         this.member = member;
         this.password = password;
     }
 
-    public void update(String title, String content){
+    public void update(String title, String content) {
         this.title = title;
         this.content = content;
     }

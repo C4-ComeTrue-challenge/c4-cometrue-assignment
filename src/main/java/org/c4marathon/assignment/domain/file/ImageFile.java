@@ -13,7 +13,7 @@ public class ImageFile extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="file_id")
+    @Column(name = "file_id")
     private Long fileId;
 
     @Column(nullable = false)

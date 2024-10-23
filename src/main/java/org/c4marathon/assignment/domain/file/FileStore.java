@@ -14,9 +14,11 @@ import java.util.UUID;
 public class FileStore {
     @Value("${file.dir}")
     private String fileDir;
+
     public String getFullPath(String filename) {
         return fileDir + filename;
     }
+
     public List<ImageFile> storeFiles(List<MultipartFile> multipartFiles)
             throws IOException {
         List<ImageFile> storeFileResult = new ArrayList<>();
@@ -27,8 +29,8 @@ public class FileStore {
         }
         return storeFileResult;
     }
-    public ImageFile storeFile(MultipartFile multipartFile) throws IOException
-    {
+
+    public ImageFile storeFile(MultipartFile multipartFile) throws IOException {
         if (multipartFile.isEmpty()) {
             return null;
         }
@@ -37,11 +39,13 @@ public class FileStore {
         multipartFile.transferTo(new File(getFullPath(storeFileName)));
         return new ImageFile(originalFilename, storeFileName);
     }
+
     private String createStoreFileName(String originalFilename) {
         String ext = extractExt(originalFilename);
         String uuid = UUID.randomUUID().toString();
         return uuid + "." + ext;
     }
+
     private String extractExt(String originalFilename) {
         int pos = originalFilename.lastIndexOf(".");
         return originalFilename.substring(pos + 1);

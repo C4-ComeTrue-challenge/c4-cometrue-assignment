@@ -31,8 +31,8 @@ public class PostService {
     @Transactional
     public void createPost(PostRequest postRequest, HttpSession session) {
         Member member = (Member) session.getAttribute("member");
-        String password=postRequest.getPassword();
-        if(member==null && password==null) {
+        String password = postRequest.getPassword();
+        if (member == null && password == null) {
             throw new PasswordNotFoundException("비회원은 비밀번호를 입력해주세요");
         }
         Post post = Post.builder()
@@ -82,14 +82,14 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("게시글을 찾을 수 없습니다."));
         Member member = (Member) session.getAttribute("member");
-        log.info("{}",member.getMemberId());
+        log.info("{}", member.getMemberId());
         // 권한 확인
         if (!isAuthorizedToModifyPost(post, member, postRequest.getPassword())) {
             throw new UnauthorizedException("수정 권한이 없습니다.");
         }
 
         // 수정된 내용 설정
-        post.update(postRequest.getTitle(),postRequest.getContent());
+        post.update(postRequest.getTitle(), postRequest.getContent());
 
         postRepository.save(post);
     }

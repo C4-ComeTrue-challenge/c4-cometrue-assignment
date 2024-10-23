@@ -14,11 +14,11 @@ import java.util.Objects;
 @Getter
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = "nickname")})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member extends BaseTimeEntity{
+public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="member_id")
+    @Column(name = "member_id")
     private Long memberId;
 
     @Column(nullable = false)

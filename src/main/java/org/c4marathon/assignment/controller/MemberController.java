@@ -26,7 +26,7 @@ public class MemberController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
         // 질문: 세션에서 회원 정보를 가져오는 것은 컨트롤러에서 하는것이 좋을까요? 아니면 서비스에서 하는것이 좋을까요?
-        memberService.validateLogin(loginRequest,session);
+        memberService.validateLogin(loginRequest, session);
         return ResponseEntity.ok("로그인에 성공하였습니다.");
     }
 

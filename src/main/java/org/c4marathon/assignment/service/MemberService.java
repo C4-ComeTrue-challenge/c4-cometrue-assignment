@@ -32,8 +32,8 @@ public class MemberService {
     }
 
     public void validateLogin(LoginRequest loginRequest, HttpSession session) {
-        Member member=memberRepository.findByEmailAndPassword(loginRequest.getEmail(), loginRequest.getPassword())
-                .orElseThrow(()->new LoginFailedException("이메일 혹은 비밀번호를 확인해주세요"));
+        Member member = memberRepository.findByEmailAndPassword(loginRequest.getEmail(), loginRequest.getPassword())
+                .orElseThrow(() -> new LoginFailedException("이메일 혹은 비밀번호를 확인해주세요"));
         session.setAttribute("member", member);  // 세션에 사용자 정보 저장
     }
 }

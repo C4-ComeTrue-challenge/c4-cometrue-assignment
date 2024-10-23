@@ -10,7 +10,7 @@ public class PostResponse {
     private String nickname;
 
     public PostResponse(Post post) {
-        this.postId=post.getPostId();
+        this.postId = post.getPostId();
         this.title = post.getTitle();
         this.nickname = (post.getMember() != null) ? post.getMember().getNickname() : post.getNickname();
     }

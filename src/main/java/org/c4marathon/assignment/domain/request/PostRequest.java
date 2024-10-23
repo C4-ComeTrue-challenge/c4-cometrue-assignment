@@ -11,9 +11,9 @@ public class PostRequest {
     private String password;
     private List<String> imageUrls;
 
-    public PostRequest(String title, String content,String password) {
+    public PostRequest(String title, String content, String password) {
         this.title = title;
         this.content = content;
-        this.password=password;
+        this.password = password;
     }
 }
