@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: market
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/community
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        naming:
+        # show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 1000
+  #    open-in-view: false
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
+    org.springframework.security: debug
+
+file:
+  dir: /Users/sehyun/Desktop/file
