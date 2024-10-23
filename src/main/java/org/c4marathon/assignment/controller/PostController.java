@@ -32,7 +32,7 @@ public class PostController {
     private String fileDir;
 
     // 게시글 작성 (회원 정보를 세션에서 가져옴)
-    @PostMapping("/write")
+    @PostMapping()
     public ResponseEntity<?> createPost(@RequestBody PostRequest postRequest,
                                         HttpSession session) {
         postService.createPost(postRequest, session);

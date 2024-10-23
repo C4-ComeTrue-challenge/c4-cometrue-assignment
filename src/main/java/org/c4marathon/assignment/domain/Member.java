@@ -30,7 +30,6 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false, unique = true)
     private String nickname;
 
-
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;
 
