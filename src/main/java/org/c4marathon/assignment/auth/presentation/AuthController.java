@@ -6,7 +6,9 @@ import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
 import org.c4marathon.assignment.auth.dto.TokenResponse;
 import org.c4marathon.assignment.auth.service.AuthService;
 import org.c4marathon.assignment.auth.util.AuthTokenContext;
+import org.c4marathon.assignment.global.annotation.AuthMember;
 import org.c4marathon.assignment.member.domain.MemberAuthority;
+import org.c4marathon.assignment.member.dto.AuthMemberDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,10 +27,10 @@ public class AuthController {
 
     @RequestMapping("/login")
     public ResponseEntity<TokenResponse> loginMember(
-            Authentication authentication
+            @AuthMember AuthMemberDto authMember
     ) {
         TokenResponse tokens = authTokenContext.getCurrentToken();
-        MemberAuthority authority = getMemberAuthorityFrom(authentication);
+        MemberAuthority authority = authMember.getAuthority();
         authService.loginAndStoreRefreshToken(authority, tokens.refreshToken());
         authTokenContext.clearToken();
         return ResponseEntity.ok(tokens);
@@ -43,23 +45,12 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logoutMember(
-            Authentication authentication
+            @AuthMember AuthMemberDto authMember
     ) {
-        Long memberAuthId = getUserIdFrom(authentication);
-        MemberAuthority authority = getMemberAuthorityFrom(authentication);
+        Long memberAuthId = authMember.memberId();
+        MemberAuthority authority = authMember.getAuthority();
         authService.blackSessionBy(authority, memberAuthId);
         return ResponseEntity.noContent().build();
     }
 
-    private Long getUserIdFrom(Authentication authentication) {
-        return Long.parseLong(authentication.getName());
-    }
-
-    private MemberAuthority getMemberAuthorityFrom(Authentication authentication) {
-        if (authentication.getAuthorities().toString().contains("MERCHANT")) {
-            return MERCHANT;
-        } else {
-            return CUSTOMER;
-        }
-    }
 }

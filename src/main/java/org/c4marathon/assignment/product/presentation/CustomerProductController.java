@@ -22,8 +22,7 @@ public class CustomerProductController {
     @GetMapping
     public ResponseEntity<ProductPageResponse> getProductPage(
             @RequestParam(required = false) Long productCursorId,
-            @RequestParam String searchKeyword,
-            Authentication authentication
+            @RequestParam String searchKeyword
     ) {
         ProductPageDto response = customerProductService.getProducts(productCursorId, searchKeyword);
         return ResponseEntity.ok(new ProductPageResponse(response));

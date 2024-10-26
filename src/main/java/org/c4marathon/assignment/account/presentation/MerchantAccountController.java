@@ -5,8 +5,10 @@ import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
 
 import org.c4marathon.assignment.account.dto.response.AccountResponse;
 import org.c4marathon.assignment.account.service.CommonAccountService;
+import org.c4marathon.assignment.global.annotation.AuthMember;
 import org.c4marathon.assignment.global.exception.AccountException;
 import org.c4marathon.assignment.member.domain.MemberAuthority;
+import org.c4marathon.assignment.member.dto.AuthMemberDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,24 +28,12 @@ public class MerchantAccountController {
     @GetMapping
     public ResponseEntity<AccountResponse> getAccountInfo(
             @RequestParam(required = false) Long transactionId,
-            Authentication authentication
+            @AuthMember AuthMemberDto authMember
     ) {
-        Long memberAuthId = getMemberAuthId(authentication);
-        MemberAuthority authority = getAuthority(authentication);
+        Long memberAuthId = authMember.memberId();
+        MemberAuthority authority = authMember.getAuthority();
         AccountResponse accountDto = accountService.showAccountInfo(authority, memberAuthId, transactionId);
-
         return ResponseEntity.ok(accountDto);
     }
 
-    private static MemberAuthority getAuthority(Authentication authentication) {
-        if (authentication.getAuthorities().toString().contains("MERCHANT")) {
-            return MERCHANT;
-        } else {
-            throw new AccountException(NO_AUTHORITY);
-        }
-    }
-
-    private static long getMemberAuthId(Authentication auth) {
-        return Long.parseLong(auth.getName());
-    }
 }

@@ -5,7 +5,9 @@ import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
 
 import org.c4marathon.assignment.account.domain.Account;
 import org.c4marathon.assignment.account.service.CommonAccountService;
+import org.c4marathon.assignment.global.annotation.AuthMember;
 import org.c4marathon.assignment.member.domain.MemberAuthority;
+import org.c4marathon.assignment.member.dto.AuthMemberDto;
 import org.c4marathon.assignment.transaction.dto.ChargeRequest;
 import org.c4marathon.assignment.transaction.service.ChargeService;
 import org.springframework.http.ResponseEntity;
@@ -28,24 +30,16 @@ public class ChargeController {
     @PostMapping
     public ResponseEntity<Void> chargeAccount(
             @RequestBody final ChargeRequest chargeRequest,
-            Authentication authentication
+            @AuthMember AuthMemberDto authMember
     ) {
-        Account account = getAccount(authentication);
+        Account account = getAccount(authMember);
         chargeService.chargeCash(account.getId(), chargeRequest.money());
         return ResponseEntity.ok().build();
     }
 
-    private Account getAccount(Authentication authentication) {
-        Long memAuthId = Long.parseLong(authentication.getName());
-        MemberAuthority authority = getAuthority(authentication);
-        return commonAccountService.findAccountByAuthorityAndMemberAuthId(authority, memAuthId);
+    private Account getAccount(AuthMemberDto authMember) {
+        MemberAuthority authority = authMember.getAuthority();
+        return commonAccountService.findAccountByAuthorityAndMemberAuthId(authority, authMember.memberId());
     }
 
-    private static MemberAuthority getAuthority(Authentication authentication) {
-        if (authentication.getAuthorities().contains("MERCHANT")) {
-            return MERCHANT;
-        } else {
-            return CUSTOMER;
-        }
-    }
 }

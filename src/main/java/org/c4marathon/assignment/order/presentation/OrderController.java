@@ -3,7 +3,9 @@ package org.c4marathon.assignment.order.presentation;
 import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.NO_AUTHORITY;
 import static org.springframework.http.HttpStatus.CREATED;
 
+import org.c4marathon.assignment.global.annotation.AuthMember;
 import org.c4marathon.assignment.global.exception.AuthException;
+import org.c4marathon.assignment.member.dto.AuthMemberDto;
 import org.c4marathon.assignment.order.dto.OrderDto;
 import org.c4marathon.assignment.order.dto.request.OrderRequest;
 import org.c4marathon.assignment.order.service.OrderFacadeService;
@@ -26,11 +28,10 @@ public class OrderController {
     @PostMapping()
     public ResponseEntity<Void> order(
             @RequestBody OrderRequest orderRequest,
-            Authentication authentication
+            @AuthMember AuthMemberDto authMember
     ) {
-        validateCustomer(authentication);
-        Long customerId = getCustomerId(authentication);
-        orderFacadeService.buyProduct(new OrderDto(customerId,
+        authMember.validateCustomer();
+        orderFacadeService.buyProduct(new OrderDto(authMember.memberId(),
                                                    orderRequest.merchantId(),
                                                    orderRequest.productId(),
                                                    orderRequest.quantity()));
@@ -38,13 +39,4 @@ public class OrderController {
         return ResponseEntity.status(CREATED).build();
     }
 
-    private void validateCustomer(Authentication authentication) {
-        if (!authentication.getAuthorities().toString().contains("CUSTOMER")) {
-            throw new AuthException(NO_AUTHORITY);
-        }
-    }
-
-    private Long getCustomerId(Authentication authentication) {
-        return Long.parseLong(authentication.getName());
-    }
 }
