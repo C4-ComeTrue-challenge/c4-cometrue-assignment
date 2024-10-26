@@ -43,11 +43,14 @@ public class CommentService {
                     .orElseThrow(() -> new CommentNotFoundException("해당 댓글이 존재하지 않습니다."));
         }
 
+
         Comment comment = Comment.builder()
                 .content(commentRequest.getContent())
                 .member(member)
                 .post(post)
                 .parent(parent)
+                .nickname(member==null? commentRequest.getNickname(): member.getNickname())
+                .password(commentRequest.getPassword())
                 .build();
 
         commentRepository.save(comment);

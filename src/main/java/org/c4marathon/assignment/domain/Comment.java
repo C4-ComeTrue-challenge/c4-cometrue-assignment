@@ -47,11 +47,13 @@ public class Comment extends BaseTimeEntity { // 댓글과 답글을 단일 테�
     private boolean deleted = false; // 소프트 삭제를 위한 필드
 
     @Builder
-    public Comment(String content, Member member, Post post, Comment parent) {
+    public Comment(String content, Member member, Post post, Comment parent,String nickname,String password) {
         this.content = content;
         this.member = member;
         this.post = post;
         this.parent = parent;
+        this.nickname=nickname;
+        this.password=password;
     }
 
     public boolean isWrittenBy(Member member) {

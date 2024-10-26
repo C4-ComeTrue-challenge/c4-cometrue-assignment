@@ -18,7 +18,7 @@ public class CommentResponse {
     public CommentResponse(Comment comment) {
         this.commentId = comment.getCommentId();
         this.content = comment.getContent();
-        this.nickname = comment.getMember() != null ? comment.getMember().getNickname() : "비회원";
+        this.nickname = comment.getNickname();
         this.replies = comment.getReplies().stream().map(CommentResponse::new).collect(Collectors.toList());
     }
 }
