@@ -1,9 +1,11 @@
 package org.c4marathon.assignment.domain.response;
 
 import lombok.Data;
+import lombok.Getter;
 import org.c4marathon.assignment.domain.Post;
 
 @Data
+@Getter
 public class PostDetailResponse {
     private Long postId;
     private String title;

@@ -36,10 +36,12 @@ public class CommentService {
         Member member = (Member) session.getAttribute("member");
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("게시글이 존재하지 않습니다."));
-
+        Comment parent=null;
         // 부모 댓글 찾기
-        Comment parent = commentRepository.findById(commentRequest.getParentId())
-                .orElseThrow(() -> new CommentNotFoundException("해당 댓글이 존재하지 않습니다."));
+        if(commentRequest.getParentId() != null){
+            parent = commentRepository.findById(commentRequest.getParentId())
+                    .orElseThrow(() -> new CommentNotFoundException("해당 댓글이 존재하지 않습니다."));
+        }
 
         Comment comment = Comment.builder()
                 .content(commentRequest.getContent())

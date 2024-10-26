@@ -1,10 +1,14 @@
 package org.c4marathon.assignment.domain.response;
 
+import lombok.Data;
+import lombok.Getter;
 import org.c4marathon.assignment.domain.Comment;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Data
+@Getter
 public class CommentResponse {
     private Long commentId;
     private String content;
