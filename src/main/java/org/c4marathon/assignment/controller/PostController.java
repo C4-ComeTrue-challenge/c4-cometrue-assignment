@@ -69,11 +69,4 @@ public class PostController {
         return ResponseEntity.ok("게시글 삭제 성공");
     }
 
-    @GetMapping("/{postId}/comments")
-    public ResponseEntity<Page<CommentResponse>> getComments(
-            @PathVariable Long postId,
-            @PageableDefault(size = 100) Pageable pageable) {
-        Page<CommentResponse> comments = postService.getComments(postId, pageable);
-        return ResponseEntity.ok(comments);
-    }
 }

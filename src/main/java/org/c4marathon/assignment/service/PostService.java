@@ -133,9 +133,4 @@ public class PostService {
         return contentWithImages.toString();
     }
 
-    public Page<CommentResponse> getComments(Long postId, Pageable pageable) {
-        // 댓글/답글 구조를 깊이 우선 순회하여 조회, 페이징 처리
-        Page<Comment> comments = commentRepository.findByPostId(postId, pageable);
-        return comments.map(CommentResponse::new);
-    }
 }

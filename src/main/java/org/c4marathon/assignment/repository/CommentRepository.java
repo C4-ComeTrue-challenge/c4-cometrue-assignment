@@ -7,8 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    // 부모 댓글이 없는 경우가 최상위 댓글
-    @Query("SELECT c FROM Comment c WHERE c.post.postId = :postId AND c.parent IS NULL ORDER BY c.createdDate DESC")
-    Page<Comment> findByPostId(@Param("postId") Long postId, Pageable pageable);
+    @Query("SELECT c FROM Comment c WHERE c.post.postId = :postId ORDER BY COALESCE(c.parent.commentId, c.commentId), c.parent.commentId ASC, c.createdDate ASC")
+    Page<Comment> findCommentsWithReplies(@Param("postId") Long postId, Pageable pageable);
 }

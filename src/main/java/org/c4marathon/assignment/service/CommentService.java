@@ -18,6 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -27,8 +30,8 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public Page<CommentResponse> getComments(Long postId, Pageable pageable) {
-        // 댓글/답글 구조를 깊이 우선 탐색하여 조회 및 페이징 처리
-        Page<Comment> comments = commentRepository.findByPostId(postId, pageable);
+        // 부모 댓글과 답글을 함께 조회하는 쿼리를 개선해야 합니다.
+        Page<Comment> comments = commentRepository.findCommentsWithReplies(postId, pageable);
         return comments.map(CommentResponse::new);
     }
 

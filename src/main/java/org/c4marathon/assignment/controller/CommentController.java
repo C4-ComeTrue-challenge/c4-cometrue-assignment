@@ -5,8 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.c4marathon.assignment.domain.request.CommentRequest;
 import org.c4marathon.assignment.domain.response.CommentResponse;
 import org.c4marathon.assignment.service.CommentService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/posts/{postId}/comment")
@@ -35,4 +40,11 @@ public class CommentController {
         return ResponseEntity.ok("댓글 삭제 완료");
     }
 
+    @GetMapping
+    public ResponseEntity<?> getComments(
+            @PathVariable Long postId,
+            @PageableDefault(size = 100) Pageable pageable) {
+        Page<CommentResponse> comments = commentService.getComments(postId, pageable);
+        return ResponseEntity.ok(comments);
+    }
 }
