@@ -3,14 +3,18 @@ package org.c4marathon.assignment.service;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.c4marathon.assignment.domain.Comment;
 import org.c4marathon.assignment.domain.Member;
 import org.c4marathon.assignment.domain.Post;
 import org.c4marathon.assignment.domain.request.PostRequest;
+import org.c4marathon.assignment.domain.response.CommentResponse;
 import org.c4marathon.assignment.domain.response.PostResponse;
 import org.c4marathon.assignment.exception.PasswordNotFoundException;
 import org.c4marathon.assignment.exception.PostNotFoundException;
 import org.c4marathon.assignment.exception.UnauthorizedException;
+import org.c4marathon.assignment.repository.CommentRepository;
 import org.c4marathon.assignment.repository.PostRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,6 +29,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PostService {
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
     // 게시글 작성
     @Transactional
@@ -47,6 +52,7 @@ public class PostService {
     }
 
     // No-Offset 방식으로 게시글 전체 조회
+    @Transactional(readOnly = true)
     public List<PostResponse> getAllPosts(Long lastPostId, int size) {
         List<Post> posts;
         Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "postId"));
@@ -62,6 +68,7 @@ public class PostService {
     }
 
     // 게시글 단건 조회
+    @Transactional(readOnly = true)
     public PostResponse getPostById(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("해당 게시글을 찾을 수 없습니다."));
@@ -115,7 +122,7 @@ public class PostService {
         }
 
         // 예시: 각 이미지 URL을 본문 끝에 삽입
-        // 다른 위치 지정은 어떻게??
+        // 다른 위치 지정은 조금 더 생각을 해봐야할듯 (줄 단위로 이미지 url인지 문자열인지 확인...?)
         StringBuilder contentWithImages = new StringBuilder(content);
         for (String imageUrl : imageUrls) {
             contentWithImages.append("<br><img src=\"")
@@ -124,5 +131,11 @@ public class PostService {
         }
 
         return contentWithImages.toString();
+    }
+
+    public Page<CommentResponse> getComments(Long postId, Pageable pageable) {
+        // 댓글/답글 구조를 깊이 우선 순회하여 조회, 페이징 처리
+        Page<Comment> comments = commentRepository.findByPostId(postId, pageable);
+        return comments.map(CommentResponse::new);
     }
 }

@@ -25,7 +25,11 @@ public class Post extends BaseTimeEntity {
     private Member member;
 
     // 비회원용 닉네임
+    @Column(nullable = true)
     private String nickname;
+
+    // 비회원용 비밀번호
+    @Column(nullable = true)
     private String password;
 
     @Builder

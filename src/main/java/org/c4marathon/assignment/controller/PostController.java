@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.c4marathon.assignment.domain.Member;
 import org.c4marathon.assignment.domain.Post;
 import org.c4marathon.assignment.domain.request.PostRequest;
+import org.c4marathon.assignment.domain.response.CommentResponse;
 import org.c4marathon.assignment.domain.response.PostDetailResponse;
 import org.c4marathon.assignment.domain.response.PostResponse;
 import org.c4marathon.assignment.service.PostService;
@@ -66,5 +67,13 @@ public class PostController {
         postService.deletePost(postId, session, password);
 
         return ResponseEntity.ok("게시글 삭제 성공");
+    }
+
+    @GetMapping("/{postId}/comments")
+    public ResponseEntity<Page<CommentResponse>> getComments(
+            @PathVariable Long postId,
+            @PageableDefault(size = 100) Pageable pageable) {
+        Page<CommentResponse> comments = postService.getComments(postId, pageable);
+        return ResponseEntity.ok(comments);
     }
 }
