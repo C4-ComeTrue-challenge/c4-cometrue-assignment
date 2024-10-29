@@ -35,13 +35,15 @@ public class Img extends BaseTimeEntity {
 	@Column(nullable = false, length = 45)
 	private String fileName;
 
+	private boolean isDeleted = false;
+
 	@Builder
 	public Img(String fileName, Boards board) {
 		this.fileName = fileName;
 		this.board = board;
 	}
 
-	public void setBoard(Boards board) {
-		this.board = board;
+	public void deleteImg() {
+		this.isDeleted = true;
 	}
 }
