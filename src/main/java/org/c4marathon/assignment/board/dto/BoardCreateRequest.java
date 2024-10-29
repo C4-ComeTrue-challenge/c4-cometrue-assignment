@@ -4,15 +4,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record BoardCreateRequest(
-        @NotBlank
-        @Size(max=100)
-        String title,
+	@NotBlank
+	@Size(max = 100)
+	String title,
 
-        @NotBlank
-        String content,
+	@NotBlank
+	String content,
 
-        String writerName,
+	String writerName,
 
-        String password
+	String password
 ) {
 }

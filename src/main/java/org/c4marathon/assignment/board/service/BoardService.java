@@ -121,7 +121,7 @@ public class BoardService {
 			throw new WrongPasswordException();
 
 		board.deleteBoard(DELETED_BY_MEMBER.getMessage(), clock);
-		
+
 		List<String> existingImgNames = imgRepository.getFileNamesByBoardId(board.getId());
 
 		processDeletedImg(existingImgNames);
