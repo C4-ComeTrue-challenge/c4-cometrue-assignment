@@ -19,7 +19,7 @@ public class BoardRepository {
 	private final BoardJpaRepository boardJpaRepository;
 
 	public Boards getById(Long id) {
-		return boardJpaRepository.findById(id)
+		return boardJpaRepository.findNotDeletedById(id)
 			.orElseThrow(() -> new NotFoundBoardException());
 	}
 

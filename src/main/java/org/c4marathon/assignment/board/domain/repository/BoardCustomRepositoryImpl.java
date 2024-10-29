@@ -4,7 +4,9 @@ import static org.c4marathon.assignment.board.domain.QBoards.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
+import org.c4marathon.assignment.board.domain.Boards;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
 
 import com.querydsl.core.types.Projections;
@@ -24,6 +26,7 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository {
 				Projections.constructor(BoardGetAllResponse.class, boards.id, boards.title, boards.content,
 					boards.writerName, boards.createdDate, boards.lastModifiedDate))
 			.from(boards)
+			.where(boards.isDeleted.eq(false))
 			.orderBy(boards.createdDate.desc(), boards.id.asc())
 			.limit(limit)
 			.fetch();
@@ -37,10 +40,20 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository {
 					boards.writerName, boards.createdDate, boards.lastModifiedDate))
 			.from(boards)
 			.where(boards.createdDate.lt(createdDate)
-				.or(boards.createdDate.eq(createdDate).and(boards.id.gt(id))))
+				.or(boards.createdDate.eq(createdDate).and(boards.id.gt(id)))
+				.and(boards.isDeleted.eq(false)))
 			.orderBy(boards.createdDate.desc(), boards.id.asc())
 			.limit(limit)
 			.fetch();
 	}
 
+	@Override
+	public Optional<Boards> findNotDeletedById(Long id) {
+		return Optional.ofNullable(queryFactory.selectFrom(boards)
+			.where(
+				boards.id.eq(id),
+				boards.isDeleted.eq(false)
+			)
+			.fetchOne());
+	}
 }

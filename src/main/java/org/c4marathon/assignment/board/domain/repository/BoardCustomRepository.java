@@ -2,7 +2,9 @@ package org.c4marathon.assignment.board.domain.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
+import org.c4marathon.assignment.board.domain.Boards;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
 
 public interface BoardCustomRepository {
@@ -11,4 +13,5 @@ public interface BoardCustomRepository {
 
 	List<BoardGetAllResponse> findBoardsWithPageToken(LocalDateTime createdDate, Long id, int limit);
 
+	Optional<Boards> findNotDeletedById(Long id);
 }
