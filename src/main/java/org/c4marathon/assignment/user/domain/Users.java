@@ -4,6 +4,8 @@ import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
 import java.io.Serializable;
+import java.time.Clock;
+import java.time.LocalDateTime;
 
 import org.c4marathon.assignment.global.BaseTimeEntity;
 
@@ -34,11 +36,24 @@ public class Users extends BaseTimeEntity implements Serializable {
 	@Column(nullable = false)
 	private String password;
 
+	private boolean isDeleted;
+
+	@Column(length = 30)
+	private String deletionReason;
+
+	private LocalDateTime deletedDate;
+
 	@Builder
 	public Users(String email, String password, String nickname) {
 		this.email = email;
 		this.password = password;
 		this.nickname = nickname;
+	}
+
+	public void deleteUser(String deletionReason, Clock clock) {
+		this.isDeleted = true;
+		this.deletionReason = deletionReason;
+		this.deletedDate = LocalDateTime.now(clock);
 	}
 
 }

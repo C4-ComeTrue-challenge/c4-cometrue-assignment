@@ -12,10 +12,6 @@ public class UserRepository {
 
 	private final UserJpaRepository userJpaRepository;
 
-	public void deleteUser(Users users) {
-		userJpaRepository.delete(users);
-	}
-
 	public Users getByEmail(String email) {
 		return userJpaRepository.findByEmail(email)
 			.orElseThrow(() -> new NotFoundUserException());
