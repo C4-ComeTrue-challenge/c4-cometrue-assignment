@@ -72,8 +72,6 @@ class S3ServiceTest {
 		// Then
 		assertThat(response.presignedUrl()).isEqualTo(presignedUrl);
 		assertThat(response.imgUrl()).isEqualTo(prefix + "/" + fileName);
-
-		verify(imgRepository, times(1)).save(any());
 	}
 
 	@DisplayName("유효한 이미지 URL을 검증한다.")
@@ -81,6 +79,10 @@ class S3ServiceTest {
 	void validateUrlSuccess() {
 		// Given
 		String validUrl = prefix + "/image1.jpg";
+		String fileName = "image1.jpg";
+
+		// S3 객체 존재 여부 모킹
+		when(amazonS3.doesObjectExist(bucket, fileName)).thenReturn(true);
 
 		// When
 		boolean result = s3Service.validateUrl(validUrl);

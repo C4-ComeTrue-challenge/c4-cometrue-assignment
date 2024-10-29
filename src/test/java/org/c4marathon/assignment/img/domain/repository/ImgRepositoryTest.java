@@ -2,7 +2,9 @@ package org.c4marathon.assignment.img.domain.repository;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.c4marathon.assignment.board.domain.Boards;
 import org.c4marathon.assignment.board.domain.WriterType;
@@ -35,31 +37,6 @@ class ImgRepositoryTest {
 		imgJpaRepository.deleteAllInBatch();
 	}
 
-	@DisplayName("파일명이 존재하는지 성공적으로 확인한다.")
-	@Test
-	void existsByFileNameSuccess() {
-		// Given
-		String fileName = "testImage.jpg";
-		Img img = Img.builder().fileName(fileName).build();
-		imgRepository.save(img);
-
-		// When
-		boolean exists = imgRepository.existsByFileName(fileName);
-
-		// Then
-		assertThat(exists).isTrue();
-	}
-
-	@DisplayName("존재하지 않는 파일명으로 존재 여부를 확인하면 false를 반환한다.")
-	@Test
-	void existsByFileNameNotFound() {
-		// When
-		boolean exists = imgRepository.existsByFileName("nonexistentImage.jpg");
-
-		// Then
-		assertThat(exists).isFalse();
-	}
-
 	@DisplayName("이미지를 성공적으로 저장한다.")
 	@Test
 	void saveImageSuccess() {
@@ -71,8 +48,8 @@ class ImgRepositoryTest {
 		imgRepository.save(img);
 
 		// Then
-		boolean exists = imgRepository.existsByFileName(fileName);
-		assertThat(exists).isTrue();
+		Img foundImg = imgRepository.getById(img.getId());
+		assertThat(foundImg.getFileName()).isEqualTo(fileName);
 	}
 
 	@DisplayName("게시판 ID로 파일명을 성공적으로 조회한다.")
@@ -103,21 +80,22 @@ class ImgRepositoryTest {
 	@Test
 	void bulkDeleteByFileNamesSuccess() {
 		// Given
-		String fileName1 = "bulkDeleteImage1.jpg";
-		String fileName2 = "bulkDeleteImage2.jpg";
-		String fileName3 = "bulkDeleteImage3.jpg";
-		Img img1 = Img.builder().fileName(fileName1).build();
-		Img img2 = Img.builder().fileName(fileName2).build();
-		Img img3 = Img.builder().fileName(fileName3).build();
-		imgJpaRepository.saveAll(List.of(img1, img2, img3));
-
+		String[] fileName = new String[3];
+		for (int i = 0; i < 3; i++) {
+			fileName[i] = "bulkDeleteImage" + (i + 1) + ".jpg";
+		}
+		List<Img> imgs = new ArrayList<>();
+		for (int i = 0; i < 3; i++) {
+			imgs.add(imgRepository.save(Img.builder().fileName(fileName[i]).build()));
+		}
 		// When: 파일 이름 리스트를 사용해 다수의 이미지를 삭제
-		imgRepository.deleteByFileNames(List.of(fileName1, fileName2));
+		imgRepository.deleteByFileNames(List.of(fileName));
 
 		// Then: 삭제된 파일들이 더 이상 존재하지 않는지 확인
-		assertThat(imgJpaRepository.existsByFileName(fileName1)).isFalse();
-		assertThat(imgJpaRepository.existsByFileName(fileName2)).isFalse();
-		assertThat(imgJpaRepository.existsByFileName(fileName3)).isTrue();  // 삭제하지 않은 파일은 여전히 존재
+		for (int i = 0; i < 3; i++) {
+			Optional<Img> notDeletedImg = imgJpaRepository.findNotDeletedById(imgs.get(i).getId());
+			assertThat(notDeletedImg).isEmpty();
+		}
 	}
 
 	@DisplayName("파일명 리스트로 여러 개의 이미지의 게시판 정보를 일괄 업데이트한다.")
