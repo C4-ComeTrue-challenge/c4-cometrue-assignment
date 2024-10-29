@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.TimeZone;
 
 import org.c4marathon.assignment.global.config.UUIDProvider;
-import org.c4marathon.assignment.img.domain.Img;
-import org.c4marathon.assignment.img.domain.repository.ImgRepository;
 import org.c4marathon.assignment.img.dto.ImageUrlRequest;
 import org.c4marathon.assignment.img.dto.ImageUrlResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 public class S3Service {
 
 	private final AmazonS3Client amazonS3;
-	private final ImgRepository imgRepository;
 	private final UUIDProvider uuidProvider;
 
 	@Value("${cloud.aws.s3.bucket}")
@@ -47,13 +44,19 @@ public class S3Service {
 		GeneratePresignedUrlRequest presignedUrlRequest = getGeneratePreSignedUrlRequest(bucket, fileName);
 		String url = amazonS3.generatePresignedUrl(presignedUrlRequest).toString();
 
-		imgRepository.save(Img.builder().fileName(fileName).build());
-
 		return new ImageUrlResponse(url, imgUrl);
 	}
 
 	public boolean validateUrl(String url) {
-		return url != null && url.startsWith(prefix);
+		if (url == null || !url.startsWith(prefix)) {
+			return false;
+		}
+
+		// prefix를 제외한 파일명 추출
+		String fileName = url.substring(prefix.length() + 1);
+
+		// S3 버킷에 해당 객체가 존재하는지 확인
+		return amazonS3.doesObjectExist(bucket, fileName);
 	}
 
 	public void deleteImages(List<String> fileNames) {
