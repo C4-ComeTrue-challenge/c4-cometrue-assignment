@@ -197,7 +197,8 @@ class BoardServiceTest {
 				.content("Test Content")
 				.title("Test Title")
 				.writerName("Test Writer")
-				.writerType(WriterType.USER)
+				.password("1234")
+				.writerType(WriterType.GUEST)
 				.build());
 
 		// When
@@ -271,7 +272,8 @@ class BoardServiceTest {
 					.title("Test Title " + i)
 					.content("Test Content " + i)
 					.writerName("Test Writer")
-					.writerType(WriterType.USER)
+					.password("1234")
+					.writerType(WriterType.GUEST)
 					.build()
 			);
 		}
@@ -298,7 +300,8 @@ class BoardServiceTest {
 					.title("Test Title " + i)
 					.content("Test Content " + i)
 					.writerName("Test Writer")
-					.writerType(WriterType.USER)
+					.password("1234")
+					.writerType(WriterType.GUEST)
 					.build()
 			);
 		}
