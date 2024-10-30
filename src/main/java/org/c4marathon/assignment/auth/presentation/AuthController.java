@@ -1,8 +1,5 @@
 package org.c4marathon.assignment.auth.presentation;
 
-import static org.c4marathon.assignment.member.domain.MemberAuthority.CUSTOMER;
-import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
-
 import org.c4marathon.assignment.auth.dto.TokenResponse;
 import org.c4marathon.assignment.auth.service.AuthService;
 import org.c4marathon.assignment.auth.util.AuthTokenContext;
@@ -10,7 +7,6 @@ import org.c4marathon.assignment.global.annotation.AuthMember;
 import org.c4marathon.assignment.member.domain.MemberAuthority;
 import org.c4marathon.assignment.member.dto.AuthMemberDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

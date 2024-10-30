@@ -1,8 +1,5 @@
 package org.c4marathon.assignment.transaction.controller;
 
-import static org.c4marathon.assignment.member.domain.MemberAuthority.CUSTOMER;
-import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
-
 import org.c4marathon.assignment.account.domain.Account;
 import org.c4marathon.assignment.account.service.CommonAccountService;
 import org.c4marathon.assignment.global.annotation.AuthMember;
@@ -11,7 +8,6 @@ import org.c4marathon.assignment.member.dto.AuthMemberDto;
 import org.c4marathon.assignment.transaction.dto.ChargeRequest;
 import org.c4marathon.assignment.transaction.service.ChargeService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,16 +1,13 @@
 package org.c4marathon.assignment.order.presentation;
 
-import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.NO_AUTHORITY;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import org.c4marathon.assignment.global.annotation.AuthMember;
-import org.c4marathon.assignment.global.exception.AuthException;
 import org.c4marathon.assignment.member.dto.AuthMemberDto;
 import org.c4marathon.assignment.order.dto.OrderDto;
 import org.c4marathon.assignment.order.dto.request.OrderRequest;
 import org.c4marathon.assignment.order.service.OrderFacadeService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

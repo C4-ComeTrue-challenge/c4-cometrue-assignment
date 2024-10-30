@@ -1,17 +1,14 @@
 package org.c4marathon.assignment.product.presentation;
 
-import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.NO_AUTHORITY;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import org.c4marathon.assignment.global.annotation.AuthMember;
-import org.c4marathon.assignment.global.exception.AuthException;
 import org.c4marathon.assignment.member.domain.Merchant;
 import org.c4marathon.assignment.member.dto.AuthMemberDto;
 import org.c4marathon.assignment.member.service.MerchantService;
 import org.c4marathon.assignment.product.dto.request.CreateProductRequest;
 import org.c4marathon.assignment.product.service.MerchantProductService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
