@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import org.c4marathon.assignment.board.domain.Boards;
 import org.c4marathon.assignment.board.domain.repository.BoardRepository;
 import org.c4marathon.assignment.board.dto.BoardCreateRequest;
-import org.c4marathon.assignment.board.dto.BoardDeleteRequest;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
 import org.c4marathon.assignment.board.dto.BoardGetOneResponse;
 import org.c4marathon.assignment.board.dto.BoardUpdateRequest;
@@ -19,6 +18,7 @@ import org.c4marathon.assignment.board.service.mapper.BoardMapper;
 import org.c4marathon.assignment.global.utils.ImageUtils;
 import org.c4marathon.assignment.img.domain.Img;
 import org.c4marathon.assignment.img.domain.repository.ImgRepository;
+import org.c4marathon.assignment.img.exception.NotFoundImgException;
 import org.c4marathon.assignment.img.service.S3Service;
 import org.c4marathon.assignment.user.domain.Users;
 import org.c4marathon.assignment.user.exception.NotWriterException;
@@ -38,51 +38,54 @@ public class BoardService {
 	private final Clock clock;
 
 	@Transactional
-	public Long createBoardAsUser(BoardCreateRequest request, Users users) {
-		//게시글 저장
-		Boards board = BoardMapper.toBoard(request, users);
+	public Long createBoard(BoardCreateRequest request, Users user) {
+		Boards board = createBoardEntity(request, user);
 		boardRepository.save(board);
-		//이미지 저장
-		List<String> newImgNames = getImgNamesByContent(board.getContent());
-		List<Img> images = convertToImgList(newImgNames, board);
-		imgRepository.saveAll(images);
+		saveBoardImages(board);
 		return board.getId();
 	}
 
 	@Transactional
-	public Long createBoardAsGuest(BoardCreateRequest request) {
-		//게시글 저장
-		Boards board = BoardMapper.toBoard(request);
-		boardRepository.save(board);
-		//이미지 저장
+	public void updateBoard(Long id, BoardUpdateRequest request, String writerName) {
+		Boards board = boardRepository.getById(id);
+		validateUserOrGuest(board, writerName, request.password());
+		board.updateBoard(request.content(), request.title());
+		updateImg(board, request);
+	}
+
+	@Transactional
+	public void deleteBoard(Long id, String writerName, String password) {
+		Boards board = boardRepository.getById(id);
+		validateUserOrGuest(board, writerName, password);
+		board.deleteBoard(DELETED_BY_MEMBER.getMessage(), clock);
+		deleteBoardImages(board);
+	}
+
+	@Transactional(readOnly = true)
+	public PageInfo<BoardGetAllResponse> getAllBoards(String pageToken, int size) {
+		if (pageToken == null) {
+			return boardRepository.findBoardsWithoutPageToken(size);
+		} else {
+			return boardRepository.findBoardsWithPageToken(pageToken, size);
+		}
+	}
+
+	@Transactional(readOnly = true)
+	public BoardGetOneResponse getOneBoard(Long id) {
+		Boards boards = boardRepository.getById(id);
+		return BoardMapper.toDto(boards);
+	}
+
+	private Boards createBoardEntity(BoardCreateRequest request, Users user) {
+		if (user == null)
+			return BoardMapper.toBoard(request);
+		return BoardMapper.toBoard(request, user);
+	}
+
+	private void saveBoardImages(Boards board) {
 		List<String> newImgNames = getImgNamesByContent(board.getContent());
 		List<Img> images = convertToImgList(newImgNames, board);
 		imgRepository.saveAll(images);
-		return board.getId();
-	}
-
-	@Transactional
-	public void updateBoardAsUser(Long id, BoardUpdateRequest request, String writerName) {
-		//게시글 업데이트
-		Boards board = boardRepository.getById(id);
-		if (board.getWriterType() == USER && !board.getWriterName().equals(writerName))
-			throw new NotWriterException();
-		board.updateBoard(request.content(), request.title());
-
-		//이미지 업데이트
-		updateImg(board, request);
-	}
-
-	@Transactional
-	public void updateBoardAsGuest(Long id, BoardUpdateRequest request) {
-		//게시글 업데이트
-		Boards board = boardRepository.getById(id);
-		if (board.getWriterType() == GUEST && !board.getPassword().equals(request.password()))
-			throw new WrongPasswordException();
-		board.updateBoard(request.content(), request.title());
-
-		//이미지 업데이트
-		updateImg(board, request);
 	}
 
 	private void updateImg(Boards board, BoardUpdateRequest request) {
@@ -104,62 +107,37 @@ public class BoardService {
 		imgRepository.saveAll(images);
 	}
 
-	@Transactional
-	public void deleteBoardAsUser(Long id, String writerName) {
-		//게시글 삭제
-		Boards board = boardRepository.getById(id);
-		if (!board.getWriterName().equals(writerName))
-			throw new NotWriterException();
-		board.deleteBoard(DELETED_BY_MEMBER.getMessage(), clock);
-
-		//이미지 삭제
-		List<String> existingImgNames = imgRepository.getFileNamesByBoardId(board.getId());
-		imgRepository.deleteByFileNames(existingImgNames);
-	}
-
-	@Transactional
-	public void deleteBoardAsGuest(Long id, BoardDeleteRequest request) {
-		//게시글 삭제
-		Boards board = boardRepository.getById(id);
-		if (!board.getPassword().equals(request.password()))
-			throw new WrongPasswordException();
-		board.deleteBoard(DELETED_BY_MEMBER.getMessage(), clock);
-
-		//이미지 삭제
-		List<String> existingImgNames = imgRepository.getFileNamesByBoardId(board.getId());
-		imgRepository.deleteByFileNames(existingImgNames);
-	}
-
-	@Transactional(readOnly = true)
-	public PageInfo<BoardGetAllResponse> getAllBoards(String pageToken, int size) {
-		if (pageToken == null) {
-			return boardRepository.findBoardsWithoutPageToken(size);
-		} else {
-			return boardRepository.findBoardsWithPageToken(pageToken, size);
-		}
-	}
-
-	@Transactional(readOnly = true)
-	public BoardGetOneResponse getOneBoard(Long id) {
-		Boards boards = boardRepository.getById(id);
-		return BoardMapper.toDto(boards);
-	}
-
 	private List<String> getImgNamesByContent(String content) {
 		List<String> imgUrls = ImageUtils.extractImgUrls(content);
 
-		return imgUrls.stream()
-			.filter(s3Service::validateUrl)
-			.map(url -> url.substring(url.lastIndexOf('/') + 1))
-			.toList();
+		boolean allValid = imgUrls.stream().allMatch(s3Service::validateUrl);
+		if (!allValid) {
+			throw new NotFoundImgException();
+		}
+
+		return imgUrls.stream().map(url -> url.substring(url.lastIndexOf('/') + 1)).toList();
+	}
+
+	private void validateUserOrGuest(Boards board, String writerName, String password) {
+		if (writerName == null) { // GUEST
+			if (board.getWriterType() == GUEST && !board.getPassword().equals(password)) {
+				throw new WrongPasswordException();
+			}
+		} else { // USER
+			if (board.getWriterType() == USER && !board.getWriterName().equals(writerName)) {
+				throw new NotWriterException();
+			}
+		}
+	}
+
+	private void deleteBoardImages(Boards board) {
+		List<String> existingImgNames = imgRepository.getFileNamesByBoardId(board.getId());
+		imgRepository.deleteByFileNames(existingImgNames);
 	}
 
 	private List<Img> convertToImgList(List<String> newImgNames, Boards board) {
 		return newImgNames.stream()
-			.map(fileName -> Img.builder()
-				.fileName(fileName)
-				.board(board)
-				.build())
+			.map(fileName -> Img.builder().fileName(fileName).board(board).build())
 			.collect(Collectors.toList());
 	}
 }
