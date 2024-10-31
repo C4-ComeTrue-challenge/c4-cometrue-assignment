@@ -79,8 +79,10 @@ public class Boards extends BaseTimeEntity {
 	}
 
 	public void updateBoard(String content, String title) {
-		this.content = content;
-		this.title = title;
+		if (content != null)
+			this.content = content;
+		if (title != null)
+			this.title = title;
 	}
 
 	public void deleteBoard(String deletionReason, Clock clock) {
