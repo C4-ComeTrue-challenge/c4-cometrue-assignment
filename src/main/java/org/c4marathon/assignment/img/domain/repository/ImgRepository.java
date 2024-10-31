@@ -3,8 +3,8 @@ package org.c4marathon.assignment.img.domain.repository;
 import java.util.List;
 
 import org.c4marathon.assignment.board.domain.Boards;
-import org.c4marathon.assignment.board.exception.NotFoundImgException;
 import org.c4marathon.assignment.img.domain.Img;
+import org.c4marathon.assignment.img.exception.NotFoundImgException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
