@@ -9,10 +9,13 @@ public record BoardCreateRequest(
 	String title,
 
 	@NotBlank
+	@Size(max = 65535)
 	String content,
 
+	@Size(max = 20)
 	String writerName,
 
+	@Size(max = 20)
 	String password
 ) {
 }
