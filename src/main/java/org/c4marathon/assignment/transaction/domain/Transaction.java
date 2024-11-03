@@ -1,25 +1,23 @@
 package org.c4marathon.assignment.transaction.domain;
 
-import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
 
-import org.c4marathon.assignment.account.domain.Account;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import org.c4marathon.assignment.account.domain.Balance;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,52 +33,55 @@ public class Transaction {
     @Column(name = "transaction_id")
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "account_id")
-    @JsonIgnore
-    private Account account;
-
+    @NotNull
     @Column(nullable = false)
     private Long fromAccountId;
 
+    @NotNull
     @Column(nullable = false, length = 20)
     private String fromNickname;
 
+    @NotNull
     @Column(nullable = false)
     private Long toAccountId;
 
+    @NotNull
     @Column(nullable = false, length = 20)
     private String toNickname;
 
+    @NotNull
     @Column(nullable = false)
-    private Long money;
+    private Long amount;
 
+    @NotNull
     @Column(nullable = false)
-    private Balance balance;
+    private Long balance;
 
+    @Size(max = 50)
+    @Column(name = "memo", length = 50)
+    private String memo;
+
+    @NotNull
     @CreatedDate
-    @Column(updatable = false)
+    @Column(name = "transaction_date", updatable = false)
     private LocalDateTime transactionDate;
 
+    @Builder
     private Transaction(
-            final Account account,
-            final Long fromAccountId, final String fromNickname,
-            final Long toAccountId, final String toNickname,
-            final Long money, final Balance balance) {
-        this.account = account;
+            final Long fromAccountId,
+            final String fromNickname,
+            final Long toAccountId,
+            final String toNickname,
+            final Long amount,
+            final Long balance,
+            final String memo) {
         this.fromAccountId = fromAccountId;
         this.fromNickname = fromNickname;
         this.toAccountId = toAccountId;
         this.toNickname = toNickname;
-        this.money = money;
+        this.amount = amount;
         this.balance = balance;
+        this.memo = memo;
     }
 
-    public static Transaction of(
-            Account account,
-            Long fromAccountId, String fromNickname,
-            Long toAccountId, String toNickname,
-            Long money, Balance balance) {
-        return new Transaction(account, fromAccountId, fromNickname, toAccountId, toNickname, money, balance);
-    }
 }

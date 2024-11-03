@@ -1,10 +1,13 @@
 package org.c4marathon.assignment.account.service;
 
+import static java.util.Comparator.comparing;
 import static org.c4marathon.assignment.global.exception.exceptioncode.ExceptionCode.ACCOUNT_NOT_FOUND;
 import static org.c4marathon.assignment.global.utils.PageUtil.SMALL_PAGE_SIZE;
 import static org.c4marathon.assignment.member.domain.MemberAuthority.CUSTOMER;
 import static org.c4marathon.assignment.member.domain.MemberAuthority.MERCHANT;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 import org.c4marathon.assignment.account.domain.Account;
@@ -25,27 +28,27 @@ import lombok.RequiredArgsConstructor;
 public class CommonAccountService {
 
     private final AccountRepository accountRepository;
-    private final TransactionQueryRepository accountQueryRepository;
+    private final TransactionQueryRepository transactionQueryRepository;
 
     @Transactional
-    public AccountResponse showAccountInfo(MemberAuthority authority, Long memberAuthId, Long transactionCursorId) {
+    public AccountResponse showAccountInfo(MemberAuthority authority, Long memberAuthId, LocalDateTime cursorDate) {
 
-        Account account = accountRepository.findAccountByAuthorityAndMemberAuthId(authority, memberAuthId)
-                                           .orElseThrow(() -> new AccountException(ACCOUNT_NOT_FOUND));
-        List<TransactionDto> transactions = accountQueryRepository
-                                            .getTransactions(account.getId(), transactionCursorId);
+        Account account = getAccountBy(authority, memberAuthId);
+        List<TransactionDto> transactions = transactionQueryRepository.getTransactionsByAccountIdAndTransactionDate(account.getId(), cursorDate);
+
         Boolean hasNext = transactions.size() > SMALL_PAGE_SIZE;
         Integer size = hasNext ? SMALL_PAGE_SIZE : transactions.size();
-        Long transactionCursor = hasNext ? transactions.get(SMALL_PAGE_SIZE - 1).transactionId() : null;
-
-        return new AccountResponse(hasNext, size, transactionCursor,
+        LocalDateTime transactionDateCursor = hasNext ? transactions.get(SMALL_PAGE_SIZE - 1).transactionDate() : null;
+        if (hasNext) {
+            transactions.remove(SMALL_PAGE_SIZE);
+        }
+        return new AccountResponse(hasNext, size, transactionDateCursor,
                                    account.getNickname(), account.getBalance().getBalance(), transactions);
     }
 
     @Transactional
     public Account findAccountByAuthorityAndMemberAuthId(MemberAuthority authority, Long memberAuthId) {
-        return accountRepository.findAccountByAuthorityAndMemberAuthId(authority, memberAuthId)
-                                .orElseThrow(() -> new AccountException(ACCOUNT_NOT_FOUND));
+        return getAccountBy(authority, memberAuthId);
     }
 
     @Transactional
@@ -56,5 +59,10 @@ public class CommonAccountService {
     @Transactional
     public void createCustomerAccount(String nickname, Balance money, Long customerId) {
         accountRepository.save(Account.of(nickname, money, CUSTOMER, customerId));
+    }
+
+    private Account getAccountBy(MemberAuthority authority, Long memberAuthId) {
+        return accountRepository.findAccountByAuthorityAndMemberAuthId(authority, memberAuthId)
+                                .orElseThrow(() -> new AccountException(ACCOUNT_NOT_FOUND));
     }
 }

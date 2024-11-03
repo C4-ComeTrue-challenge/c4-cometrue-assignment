@@ -29,7 +29,10 @@ dependencies {
     implementation 'org.apache.commons:commons-collections4:4.4'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    
+
+    // validation 관련 설정
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
     // Spring Security 설정
     implementation 'org.springframework.boot:spring-boot-starter-security'
     testImplementation 'org.springframework.security:spring-security-test'

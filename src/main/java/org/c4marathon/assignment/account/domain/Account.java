@@ -58,9 +58,6 @@ public class Account {
     @Column(name = "member_auth_id", nullable = false)
     private Long memberAuthId;
 
-    @OneToMany(mappedBy = "account", fetch = LAZY)
-    private List<Transaction> transactions = new ArrayList<>();
-
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;

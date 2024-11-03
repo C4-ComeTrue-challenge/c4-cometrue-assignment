@@ -15,7 +15,6 @@ public class OrderFacadeService {
 
     private final OrderService orderService;
     private final OrderProductService orderProductService;
-    private final TransactionService transactionService;
 
     @Transactional
     public void buyProduct(OrderDto dto) {
@@ -24,6 +23,6 @@ public class OrderFacadeService {
 
         orderService.createOrder(dto.customerId(), dto.productId(), dto.quantity());
         product.decreaseStock(dto.quantity());
-        transactionService.payForProduct(dto.customerId(), dto.merchantId(), totalPrice);
+        // transactionService.payForProduct(dto.customerId(), dto.merchantId(), totalPrice);
     }
 }

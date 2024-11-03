@@ -26,60 +26,6 @@ public class TransactionService {
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
 
-    @Transactional
-    public void doTransaction(Long fromAccountId, Long toAccountId, Long money) {
-        Account fromAccount = accountRepository.findById(fromAccountId).orElseThrow(()
-                                                            -> new AccountException(ExceptionCode.ACCOUNT_NOT_FOUND));
-        Account toAccount = accountRepository.findById(toAccountId).orElseThrow(()
-                                                            -> new AccountException(ExceptionCode.ACCOUNT_NOT_FOUND));
-
-        Balance fromBalance = fromAccount.getBalance();
-        fromBalance.withdraw(money);
-        Balance toBalance = toAccount.getBalance();
-        toBalance.deposit(money);
-
-        Transaction fromTransaction = Transaction.of(fromAccount, fromAccountId, fromAccount.getNickname(),
-                                                      toAccountId, toAccount.getNickname(),
-                                                      money, fromBalance);
-        Transaction toTransaction = Transaction.of(toAccount, fromAccountId, fromAccount.getNickname(),
-                                                   toAccountId, toAccount.getNickname(),
-                                                   money, toBalance);
-
-        transactionRepository.save(fromTransaction);
-        transactionRepository.save(toTransaction);
-    }
-
-    @Transactional
-    public void payForProduct(Long customerId, Long merchantId, Long money) {
-        Account fromAccount = accountRepository.findAccountByAuthorityAndMemberAuthId(CUSTOMER, customerId)
-                .orElseThrow(() -> new AccountException(ExceptionCode.ACCOUNT_NOT_FOUND));
-        Account toAccount = accountRepository.findAccountByAuthorityAndMemberAuthId(MERCHANT, merchantId)
-                .orElseThrow(() -> new AccountException(ExceptionCode.ACCOUNT_NOT_FOUND));
-        Account operatorAccount = accountRepository.findById(OPERATOR_ACCOUNT_ID)
-                .orElseThrow(() -> new AccountException(ExceptionCode.ACCOUNT_NOT_FOUND));
-
-        Long commissionPrice = commissionPrice(money);
-        Balance fromBalance = fromAccount.getBalance();
-        fromBalance.withdraw(money);
-        Balance toBalance = toAccount.getBalance();
-        toBalance.deposit(money - commissionPrice);
-        Balance operatorBalance = operatorAccount.getBalance();
-        operatorBalance.deposit(commissionPrice);
-
-        Transaction fromTransaction = Transaction.of(fromAccount, customerId, fromAccount.getNickname(),
-                merchantId, toAccount.getNickname(),
-                money, fromBalance);
-        Transaction toTransaction = Transaction.of(toAccount, customerId, fromAccount.getNickname(),
-                merchantId, toAccount.getNickname(),
-                money - commissionPrice, toBalance);
-        Transaction operatorTransaction = Transaction.of(operatorAccount, merchantId, toAccount.getNickname(),
-                OPERATOR_ACCOUNT_ID, operatorAccount.getNickname(),
-                commissionPrice, operatorBalance);
-
-        transactionRepository.save(fromTransaction);
-        transactionRepository.save(toTransaction);
-        transactionRepository.save(operatorTransaction);
-    }
 
     private Long commissionPrice(Long money) {
         BigDecimal principal = new BigDecimal(money);

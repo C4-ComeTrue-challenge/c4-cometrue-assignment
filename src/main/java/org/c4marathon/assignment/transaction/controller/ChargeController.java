@@ -28,14 +28,8 @@ public class ChargeController {
             @RequestBody final ChargeRequest chargeRequest,
             @AuthMember AuthMemberDto authMember
     ) {
-        Account account = getAccount(authMember);
-        chargeService.chargeCash(account.getId(), chargeRequest.money());
+        chargeService.chargeCustomerCash(chargeRequest.customerAccountId(), chargeRequest.money());
         return ResponseEntity.ok().build();
-    }
-
-    private Account getAccount(AuthMemberDto authMember) {
-        MemberAuthority authority = authMember.getAuthority();
-        return commonAccountService.findAccountByAuthorityAndMemberAuthId(authority, authMember.memberId());
     }
 
 }
