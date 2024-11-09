@@ -33,7 +33,8 @@ public class Merchant {
     @Column(name = "merchant_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Getter
+    @Column(nullable = false, updatable = false)
     private Long memberId;
 
     @Column(nullable = false, unique = true, length = 20)

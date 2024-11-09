@@ -22,7 +22,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    protected Long registerMerchantUser(String nickname, String password) {
+    public Long registerMerchantUser(String nickname, String password) {
         Member member = memberRepository.save(Member.merchant(nickname, passwordEncoder.encode(password)));
         Merchant merchant = merchantRepository.save(Merchant.of(member.getId(), nickname));
         member.addMerchant(merchant.getId());
@@ -30,7 +30,7 @@ public class MemberService {
     }
 
     @Transactional
-    protected Long registerCustomerUser(String nickname, String password) {
+    public Long registerCustomerUser(String nickname, String password) {
         Member member = memberRepository.save(Member.customer(nickname, passwordEncoder.encode(password)));
         Customer customer = customerRepository.save(Customer.of(member.getId(), nickname));
         member.addCustomer(customer.getId());
