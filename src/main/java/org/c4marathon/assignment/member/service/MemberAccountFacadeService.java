@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class MemberFacadeService {
+public class MemberAccountFacadeService {
 
     private final MemberService memberService;
     private final CommonAccountService accountService;

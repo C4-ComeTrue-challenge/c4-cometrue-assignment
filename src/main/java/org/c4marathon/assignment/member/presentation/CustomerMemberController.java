@@ -3,7 +3,7 @@ package org.c4marathon.assignment.member.presentation;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import org.c4marathon.assignment.member.dto.request.CreateMemberRequest;
-import org.c4marathon.assignment.member.service.MemberFacadeService;
+import org.c4marathon.assignment.member.service.MemberAccountFacadeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CustomerMemberController {
 
-    private final MemberFacadeService memberFacadeService;
+    private final MemberAccountFacadeService memberFacadeService;
 
     @PostMapping
     private ResponseEntity<Void> createMember(
