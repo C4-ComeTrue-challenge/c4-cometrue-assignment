@@ -68,7 +68,7 @@ class AccountFacadeServiceTest {
                 = accountRepository.findAccountByAuthorityAndMemberAuthId(MERCHANT, findMerchant.getId()).get();
         assertThat(findAccount).extracting("nickname", "authority", "memberAuthId")
                                 .containsExactly("test", MERCHANT, findMerchant.getId());
-        assertThat(findAccount.getBalance().getBalance()).isEqualTo(0L);
+        assertThat(findAccount.getTotalBalance()).isEqualTo(0L);
     }
 
     @DisplayName("구매자 고객은 회원 등록과 동시에 계좌를 한 번에 만들 수 있다.")
@@ -91,6 +91,6 @@ class AccountFacadeServiceTest {
                 = accountRepository.findAccountByAuthorityAndMemberAuthId(CUSTOMER, findCustomer.getId()).get();
         assertThat(findAccount).extracting("nickname", "authority", "memberAuthId")
                 .containsExactly("test", CUSTOMER, findCustomer.getId());
-        assertThat(findAccount.getBalance().getBalance()).isEqualTo(0L);
+        assertThat(findAccount.getTotalBalance()).isEqualTo(0L);
     }
 }

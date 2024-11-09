@@ -43,7 +43,7 @@ public class CommonAccountService {
             transactions.remove(SMALL_PAGE_SIZE);
         }
         return new AccountResponse(hasNext, size, transactionDateCursor,
-                                   account.getNickname(), account.getBalance().getBalance(), transactions);
+                                   account.getNickname(), account.getTotalBalance(), transactions);
     }
 
     @Transactional

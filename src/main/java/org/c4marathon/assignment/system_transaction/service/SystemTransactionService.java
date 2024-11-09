@@ -13,14 +13,14 @@ public class SystemTransactionService {
     private final SystemTransactionRepository systemTransactionRepository;
 
     @Transactional
-    public void saveChargeTransaction(Long customerAccountId) {
-        var systemTransaction = SystemTransaction.charge(customerAccountId);
+    public void saveChargeTransaction(Long customerAccountId, Long amount) {
+        var systemTransaction = SystemTransaction.charge(customerAccountId, amount);
         systemTransactionRepository.save(systemTransaction);
     }
 
     @Transactional
-    public void saveBillingTransaction(Long customerAccountId, Long merchantAccountId) {
-        var systemTransaction = SystemTransaction.billing(customerAccountId, merchantAccountId);
+    public void saveBillingTransaction(Long customerAccountId, Long merchantAccountId, Long amount) {
+        var systemTransaction = SystemTransaction.billing(customerAccountId, merchantAccountId, amount);
         systemTransactionRepository.save(systemTransaction);
     }
 }

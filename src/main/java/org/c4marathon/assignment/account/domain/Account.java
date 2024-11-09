@@ -51,6 +51,7 @@ public class Account {
     @Embedded
     private Balance balance;
 
+    @Getter
     @Column(nullable = false, length = 10)
     @Enumerated(STRING)
     private MemberAuthority authority;
@@ -77,6 +78,10 @@ public class Account {
 
     public static Account of(String nickname, Balance balance, MemberAuthority authority, Long memberAuthId) {
         return new Account(nickname, balance, authority, memberAuthId);
+    }
+
+    public Long getTotalBalance() {
+        return balance.getBalance();
     }
 
 }

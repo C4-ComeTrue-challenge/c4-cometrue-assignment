@@ -2,6 +2,7 @@ package org.c4marathon.assignment.system_transaction.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -23,9 +24,12 @@ import static org.c4marathon.assignment.system_transaction.domain.TransactionSta
  * from의 대상 : Customer
  * to의 대상 : Merchant
  */
+@Getter
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 public class SystemTransaction {
+
+    private static final Long ADMINISTRATOR_ACCOUNT_ID = 0L;
 
     @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "system_transcation_id")
@@ -37,26 +41,29 @@ public class SystemTransaction {
     @Column(name = "to_account_id", nullable = false)
     private Long toAccountId;
 
+    @Column(name = "amount", nullable = false)
+    private Long amount;
+
     @Enumerated(STRING)
     @Column(name = "transaction_status", nullable = false, length = 10)
     private TransactionStatus status;
 
-    @NotNull
     @CreatedDate
     @Column(name = "transaction_date", updatable = false)
     private LocalDateTime transactionDate;
 
-    private SystemTransaction(Long fromAccountId, Long toAccountId, TransactionStatus status) {
+    private SystemTransaction(Long fromAccountId, Long toAccountId, Long amount, TransactionStatus status) {
         this.fromAccountId = fromAccountId;
         this.toAccountId = toAccountId;
+        this.amount = amount;
         this.status = status;
     }
 
-    public static SystemTransaction charge(Long toAccountId) {
-        return new SystemTransaction(0L, toAccountId, COMPLETED);
+    public static SystemTransaction charge(Long toAccountId, Long amount) {
+        return new SystemTransaction(ADMINISTRATOR_ACCOUNT_ID, toAccountId, amount, COMPLETED);
     }
 
-    public static SystemTransaction billing(Long fromAccountId, Long toAccountId) {
-        return new SystemTransaction(fromAccountId, toAccountId, UNCOMPLETED);
+    public static SystemTransaction billing(Long fromAccountId, Long toAccountId, Long amount) {
+        return new SystemTransaction(fromAccountId, toAccountId, amount, UNCOMPLETED);
     }
 }

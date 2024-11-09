@@ -60,7 +60,6 @@ public class Transaction {
     @Column(name = "memo", length = 50)
     private String memo;
 
-    @NotNull
     @CreatedDate
     @Column(name = "transaction_date", updatable = false)
     private LocalDateTime transactionDate;
