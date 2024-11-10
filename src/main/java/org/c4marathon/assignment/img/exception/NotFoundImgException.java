@@ -1,4 +1,4 @@
-package org.c4marathon.assignment.board.exception;
+package org.c4marathon.assignment.img.exception;
 
 import static org.c4marathon.assignment.global.exception.ErrorCode.*;
 

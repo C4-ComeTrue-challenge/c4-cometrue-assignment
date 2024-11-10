@@ -12,10 +12,10 @@ import org.c4marathon.assignment.board.dto.BoardDeleteRequest;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
 import org.c4marathon.assignment.board.dto.BoardGetOneResponse;
 import org.c4marathon.assignment.board.dto.BoardUpdateRequest;
-import org.c4marathon.assignment.board.dto.PageInfo;
 import org.c4marathon.assignment.board.service.BoardService;
 import org.c4marathon.assignment.config.CommonControllerTest;
 import org.c4marathon.assignment.global.config.SessionConfig;
+import org.c4marathon.assignment.global.dto.PageInfo;
 import org.c4marathon.assignment.user.domain.Users;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,7 +48,7 @@ class BoardControllerTest extends CommonControllerTest {
 				.content(objectMapper.writeValueAsString(createRequest)))
 			.andExpect(status().isCreated());
 
-		Mockito.verify(boardService, Mockito.times(1)).createBoardAsUser(any(BoardCreateRequest.class), eq(mockUser));
+		Mockito.verify(boardService, Mockito.times(1)).createBoard(any(BoardCreateRequest.class), eq(mockUser));
 	}
 
 	@Test
@@ -63,7 +63,7 @@ class BoardControllerTest extends CommonControllerTest {
 				.content(objectMapper.writeValueAsString(createRequest)))
 			.andExpect(status().isBadRequest());
 
-		Mockito.verify(boardService, Mockito.times(0)).createBoardAsGuest(any(BoardCreateRequest.class));
+		Mockito.verify(boardService, Mockito.times(0)).createBoard(any(BoardCreateRequest.class), eq(null));
 	}
 
 	@Test
@@ -75,11 +75,11 @@ class BoardControllerTest extends CommonControllerTest {
 			new BoardGetAllResponse(2L, "Title 2", "Content 2", "Writer 2", LocalDateTime.now(), LocalDateTime.now())
 		);
 		PageInfo<BoardGetAllResponse> mockPageInfo = new PageInfo<>("nextPageToken", boardResponses, true);
-		
+
 		Mockito.when(boardService.getAllBoards(anyString(), anyInt())).thenReturn(mockPageInfo);
 
 		// When & Then: GET 요청을 보내고 응답을 검증합니다.
-		mockMvc.perform(get("/api/board/all")
+		mockMvc.perform(get("/api/board")
 				.param("pageToken", "nextPageToken")
 				.param("count", "10"))
 			.andExpect(jsonPath("$.data.size()").value(2))  // 게시글 목록이 2개인지 확인
@@ -124,7 +124,7 @@ class BoardControllerTest extends CommonControllerTest {
 			.andExpect(status().isCreated());
 
 		Mockito.verify(boardService, Mockito.times(1))
-			.updateBoardAsUser(anyLong(), any(BoardUpdateRequest.class), eq(mockUser.getNickname()));
+			.updateBoard(anyLong(), any(BoardUpdateRequest.class), eq(mockUser.getNickname()));
 	}
 
 	@Test
@@ -139,7 +139,7 @@ class BoardControllerTest extends CommonControllerTest {
 				.content(objectMapper.writeValueAsString(updateRequest)))
 			.andExpect(status().isBadRequest());
 
-		Mockito.verify(boardService, Mockito.times(0)).updateBoardAsGuest(anyLong(), any(BoardUpdateRequest.class));
+		Mockito.verify(boardService, Mockito.times(0)).updateBoard(anyLong(), any(BoardUpdateRequest.class), eq(null));
 	}
 
 	@Test
@@ -157,7 +157,7 @@ class BoardControllerTest extends CommonControllerTest {
 				.content(objectMapper.writeValueAsString(deleteRequest)))
 			.andExpect(status().isCreated());
 
-		Mockito.verify(boardService, Mockito.times(1)).deleteBoardAsUser(anyLong(), eq(mockUser.getNickname()));
+		Mockito.verify(boardService, Mockito.times(1)).deleteBoard(anyLong(), eq(mockUser.getNickname()), eq(null));
 	}
 
 	@Test
@@ -172,6 +172,6 @@ class BoardControllerTest extends CommonControllerTest {
 				.content(objectMapper.writeValueAsString(deleteRequest)))
 			.andExpect(status().isBadRequest());
 
-		Mockito.verify(boardService, Mockito.times(0)).deleteBoardAsGuest(anyLong(), any(BoardDeleteRequest.class));
+		Mockito.verify(boardService, Mockito.times(0)).deleteBoard(anyLong(), anyString(), eq(null));
 	}
 }

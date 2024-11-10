@@ -20,7 +20,8 @@ public enum ErrorCode {
 	NOT_WRITER_ERROR("AU0005", HttpStatus.UNAUTHORIZED, "권한이 없습니다"),
 
 	NOT_FOUND_BOARD_ERROR("B0001", HttpStatus.NOT_FOUND, "해당하는 게시글이 없습니다."),
-	NOT_FOUND_IMG_ERROR("B0002", HttpStatus.NOT_FOUND, "유효하지 않는 img url이 있습니다");
+	NOT_FOUND_IMG_ERROR("IMG0001", HttpStatus.NOT_FOUND, "유효하지 않는 img url이 있습니다"),
+	NOT_FOUND_COMMENT_ERROR("C0001", HttpStatus.NOT_FOUND, "해당하는 댓글이 없습니다.");
 
 	private final String errorCode;
 	private final HttpStatus httpStatus;

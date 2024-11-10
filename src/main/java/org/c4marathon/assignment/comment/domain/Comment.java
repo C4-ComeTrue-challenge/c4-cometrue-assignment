@@ -1,4 +1,4 @@
-package org.c4marathon.assignment.board.domain;
+package org.c4marathon.assignment.comment.domain;
 
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
@@ -6,6 +6,8 @@ import static lombok.AccessLevel.*;
 import java.time.Clock;
 import java.time.LocalDateTime;
 
+import org.c4marathon.assignment.board.domain.Boards;
+import org.c4marathon.assignment.board.domain.WriterType;
 import org.c4marathon.assignment.global.BaseTimeEntity;
 import org.c4marathon.assignment.user.domain.Users;
 
@@ -25,17 +27,17 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class Boards extends BaseTimeEntity {
+public class Comment extends BaseTimeEntity {
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "board_id")
+	@Column(name = "comment_id")
 	private Long id;
 
-	@Column(nullable = false, columnDefinition = "TEXT")
+	@Column(nullable = false, length = 1000)
 	private String content;
 
-	@Column(nullable = false, length = 100)
-	private String title;
+	private String path;
 
 	@Column(nullable = false, length = 50)
 	private String writerName;
@@ -51,6 +53,10 @@ public class Boards extends BaseTimeEntity {
 	@JoinColumn(name = "user_id")
 	private Users users;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "parent_id")
+	private Comment parentComment;
+
 	private boolean isDeleted;
 
 	@Column(length = 30)
@@ -58,17 +64,18 @@ public class Boards extends BaseTimeEntity {
 
 	private LocalDateTime deletedDate;
 
-	public boolean isWrittenByUser() {
-		return this.users != null;
-	}
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "board_id")
+	private Boards board;
 
 	@Builder
-	public Boards(String title, String content, String writerName, String password, Users users,
-		WriterType writerType) {
-		this.title = title;
+	public Comment(String content, String path, Boards board, Comment parent, Users users, String password,
+		String writerName, WriterType writerType) {
 		this.content = content;
+		this.path = path;
 		this.writerType = writerType;
-
+		this.board = board;
+		parentComment = parent;
 		if (users != null) {
 			this.users = users;
 			this.writerName = users.getNickname();
@@ -78,14 +85,11 @@ public class Boards extends BaseTimeEntity {
 		}
 	}
 
-	public void updateBoard(String content, String title) {
-		if (content != null)
-			this.content = content;
-		if (title != null)
-			this.title = title;
+	public void updateComment(String content) {
+		this.content = content;
 	}
 
-	public void deleteBoard(String deletionReason, Clock clock) {
+	public void deleteComment(String deletionReason, Clock clock) {
 		this.isDeleted = true;
 		this.deletionReason = deletionReason;
 		this.deletedDate = LocalDateTime.now(clock);

@@ -60,7 +60,8 @@ class ImgRepositoryTest {
 			.title("Test Title 2")
 			.content("Test Content 2")
 			.writerName("Test Writer")
-			.writerType(WriterType.USER)
+			.password("1234")
+			.writerType(WriterType.GUEST)
 			.build());
 
 		Img img1 = Img.builder().fileName("boardImage1.jpg").board(board).build();
@@ -106,14 +107,16 @@ class ImgRepositoryTest {
 			.title("Test Title 1")
 			.content("Test Content 1")
 			.writerName("Test Writer")
-			.writerType(WriterType.USER)
+			.password("1234")
+			.writerType(WriterType.GUEST)
 			.build());
 
 		Boards board2 = boardRepository.save(Boards.builder()
 			.title("Test Title 2")
 			.content("Test Content 2")
 			.writerName("Test Writer")
-			.writerType(WriterType.USER)
+			.password("1234")
+			.writerType(WriterType.GUEST)
 			.build());
 
 		String fileName1 = "bulkUpdateBoardImage1.jpg";

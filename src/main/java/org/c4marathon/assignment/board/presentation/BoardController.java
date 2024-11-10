@@ -5,9 +5,9 @@ import org.c4marathon.assignment.board.dto.BoardDeleteRequest;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
 import org.c4marathon.assignment.board.dto.BoardGetOneResponse;
 import org.c4marathon.assignment.board.dto.BoardUpdateRequest;
-import org.c4marathon.assignment.board.dto.PageInfo;
 import org.c4marathon.assignment.board.service.BoardService;
 import org.c4marathon.assignment.global.annotation.LoginUser;
+import org.c4marathon.assignment.global.dto.PageInfo;
 import org.c4marathon.assignment.user.domain.Users;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,15 +42,15 @@ public class BoardController {
 			if (request.writerName() == null || request.password() == null) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 			}
-			boardService.createBoardAsGuest(request);
+			boardService.createBoard(request, null);
 		} else {
-			boardService.createBoardAsUser(request, loginUser);
+			boardService.createBoard(request, loginUser);
 		}
 
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@GetMapping("/all")
+	@GetMapping
 	public ResponseEntity<PageInfo<BoardGetAllResponse>> getAllBoards(
 		@RequestParam(required = false) String pageToken,
 		@RequestParam @Positive @Max(100) int count
@@ -77,9 +77,9 @@ public class BoardController {
 			if (request.password() == null) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 			}
-			boardService.updateBoardAsGuest(id, request);
+			boardService.updateBoard(id, request, null);
 		} else {
-			boardService.updateBoardAsUser(id, request, loginUser.getNickname());
+			boardService.updateBoard(id, request, loginUser.getNickname());
 		}
 
 		return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -95,9 +95,9 @@ public class BoardController {
 			if (request.password() == null) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 			}
-			boardService.deleteBoardAsGuest(id, request);
+			boardService.deleteBoard(id, null, request.password());
 		} else {
-			boardService.deleteBoardAsUser(id, loginUser.getNickname());
+			boardService.deleteBoard(id, loginUser.getNickname(), null);
 		}
 
 		return ResponseEntity.status(HttpStatus.CREATED).build();

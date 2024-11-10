@@ -1,21 +1,18 @@
-package org.c4marathon.assignment.board.dto;
+package org.c4marathon.assignment.comment.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public record BoardCreateRequest(
+public record CommentCreateRequest(
 	@NotBlank
-	@Size(max = 100)
-	String title,
-
-	@NotBlank
-	@Size(max = 65535)
+	@Size(max = 1000)
 	String content,
 
-	@Size(max = 50)
+	@Size(max = 20)
 	String writerName,
 
 	@Size(max = 20)
 	String password
+
 ) {
 }

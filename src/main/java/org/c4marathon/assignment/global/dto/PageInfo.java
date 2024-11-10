@@ -1,4 +1,4 @@
-package org.c4marathon.assignment.board.dto;
+package org.c4marathon.assignment.global.dto;
 
 import java.util.List;
 import java.util.function.Function;

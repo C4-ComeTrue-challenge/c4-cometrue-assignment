@@ -9,8 +9,8 @@ import java.util.List;
 import org.c4marathon.assignment.board.domain.Boards;
 import org.c4marathon.assignment.board.domain.WriterType;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
-import org.c4marathon.assignment.board.dto.PageInfo;
 import org.c4marathon.assignment.board.exception.NotFoundBoardException;
+import org.c4marathon.assignment.global.dto.PageInfo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,9 +39,11 @@ class BoardRepositoryTest {
 				.title("Test Title " + i)
 				.content("Test Content " + i)
 				.writerName("Test Writer " + i)
-				.writerType(WriterType.USER)
+				.password("1234")
+				.writerType(WriterType.GUEST)
 				.build();
 			boards.add(board);
+			System.out.println("Created board with writerName: " + board.getWriterName()); // 디버그 로그 추가
 		}
 		boardJpaRepository.saveAllAndFlush(boards);
 	}
@@ -111,7 +113,8 @@ class BoardRepositoryTest {
 			.title("Test Title")
 			.content("Test Content")
 			.writerName("Test Writer")
-			.writerType(WriterType.USER)
+			.password("1234")
+			.writerType(WriterType.GUEST)
 			.build();
 		Boards savedBoard = boardRepository.save(board);  // 게시글 저장
 
@@ -145,7 +148,8 @@ class BoardRepositoryTest {
 			.title("New Title")
 			.content("New Content")
 			.writerName("New Writer")
-			.writerType(WriterType.USER)
+			.password("1234")
+			.writerType(WriterType.GUEST)
 			.build();
 
 		// When

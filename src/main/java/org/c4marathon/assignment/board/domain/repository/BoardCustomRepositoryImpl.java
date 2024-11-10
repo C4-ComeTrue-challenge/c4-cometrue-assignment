@@ -39,9 +39,9 @@ public class BoardCustomRepositoryImpl implements BoardCustomRepository {
 					boards.id, boards.title, boards.content,
 					boards.writerName, boards.createdDate, boards.lastModifiedDate))
 			.from(boards)
-			.where(boards.createdDate.lt(createdDate)
-				.or(boards.createdDate.eq(createdDate).and(boards.id.gt(id)))
-				.and(boards.isDeleted.eq(false)))
+			.where(boards.isDeleted.eq(false)
+				.and(boards.createdDate.lt(createdDate))
+				.or(boards.createdDate.eq(createdDate).and(boards.id.gt(id))))
 			.orderBy(boards.createdDate.desc(), boards.id.asc())
 			.limit(limit)
 			.fetch();
