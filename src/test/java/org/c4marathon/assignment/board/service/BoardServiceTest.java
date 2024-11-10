@@ -19,8 +19,8 @@ import org.c4marathon.assignment.board.dto.BoardDeleteRequest;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
 import org.c4marathon.assignment.board.dto.BoardGetOneResponse;
 import org.c4marathon.assignment.board.dto.BoardUpdateRequest;
-import org.c4marathon.assignment.board.dto.PageInfo;
 import org.c4marathon.assignment.board.exception.NotFoundBoardException;
+import org.c4marathon.assignment.global.dto.PageInfo;
 import org.c4marathon.assignment.img.domain.repository.ImgJpaRepository;
 import org.c4marathon.assignment.img.domain.repository.ImgRepository;
 import org.c4marathon.assignment.img.service.S3Service;
@@ -101,7 +101,7 @@ class BoardServiceTest {
 		// When
 		String contentWithImages = "<p>Test content</p><img src=\"http://validbucket.s3.amazonaws.com/image1.jpg\"/>";
 		BoardCreateRequest request = new BoardCreateRequest("Test Title", contentWithImages, null, null);
-		Long boardId = boardService.createBoardAsUser(request, user);
+		Long boardId = boardService.createBoard(request, user);
 
 		// Then
 		Boards savedBoard = boardRepository.getById(boardId);
@@ -124,7 +124,7 @@ class BoardServiceTest {
 		String contentWithImages = "<p>Test content</p><img src=\"http://validbucket.s3.amazonaws.com/image1.jpg\"/>";
 		BoardCreateRequest request = new BoardCreateRequest("Guest Title", contentWithImages, guestWriterName,
 			guestPassword);
-		Long boardId = boardService.createBoardAsGuest(request);
+		Long boardId = boardService.createBoard(request, null);
 
 		// Then
 		Boards savedBoard = boardRepository.getById(boardId);
@@ -146,12 +146,12 @@ class BoardServiceTest {
 		when(s3Service.validateUrl("http://validbucket.s3.amazonaws.com/image2.jpg")).thenReturn(true);
 
 		BoardCreateRequest createRequest = new BoardCreateRequest("Old Title", oldContent, null, null);
-		Long boardId = boardService.createBoardAsUser(createRequest, user);
+		Long boardId = boardService.createBoard(createRequest, user);
 
 		// When
 		String updatedContent = "<p>Updated content</p><img src=\"http://validbucket.s3.amazonaws.com/image2.jpg\"/>";
 		BoardUpdateRequest updateRequest = new BoardUpdateRequest("Updated Title", updatedContent, null);
-		boardService.updateBoardAsUser(boardId, updateRequest, user.getNickname());
+		boardService.updateBoard(boardId, updateRequest, user.getNickname());
 
 		// Then
 		Boards updatedBoard = boardRepository.getById(boardId);
@@ -172,12 +172,12 @@ class BoardServiceTest {
 		when(s3Service.validateUrl("http://validbucket.s3.amazonaws.com/image2.jpg")).thenReturn(true);
 
 		BoardCreateRequest createRequest = new BoardCreateRequest("Old Title", oldContent, "writerName", "password");
-		Long boardId = boardService.createBoardAsGuest(createRequest);
+		Long boardId = boardService.createBoard(createRequest, null);
 
 		// When
 		String updatedContent = "<p>Updated content</p><img src=\"http://validbucket.s3.amazonaws.com/image2.jpg\"/>";
 		BoardUpdateRequest updateRequest = new BoardUpdateRequest("Updated Title", updatedContent, "password");
-		boardService.updateBoardAsGuest(boardId, updateRequest);
+		boardService.updateBoard(boardId, updateRequest, null);
 
 		// Then
 		Boards updatedBoard = boardRepository.getById(boardId);
@@ -217,8 +217,10 @@ class BoardServiceTest {
 		// Given
 		Users user = createUser();
 		String contentWithImage = "<p>Test content</p><img src=\"http://validbucket.s3.amazonaws.com/image1.jpg\"/>";
+		when(s3Service.validateUrl("http://validbucket.s3.amazonaws.com/image1.jpg")).thenReturn(true);
+
 		BoardCreateRequest createRequest = new BoardCreateRequest("Test Title", contentWithImage, null, null);
-		Long boardId = boardService.createBoardAsUser(createRequest, user);
+		Long boardId = boardService.createBoard(createRequest, user);
 
 		LocalDateTime fixedTime = LocalDateTime.of(2024, 10, 19, 12, 0);
 		Instant fixedInstant = fixedTime.toInstant(ZoneOffset.UTC);
@@ -226,7 +228,7 @@ class BoardServiceTest {
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
 
 		// When
-		boardService.deleteBoardAsUser(boardId, user.getNickname());
+		boardService.deleteBoard(boardId, user.getNickname(), null);
 
 		// Then
 		List<String> deletedImages = imgRepository.getFileNamesByBoardId(boardId);
@@ -240,18 +242,21 @@ class BoardServiceTest {
 	void deleteBoardAsGuestSuccess() {
 		// Given
 		String contentWithImage = "<p>Test content</p><img src=\"http://validbucket.s3.amazonaws.com/image1.jpg\"/>";
+		when(s3Service.validateUrl("http://validbucket.s3.amazonaws.com/image1.jpg")).thenReturn(true);
+
 		BoardCreateRequest createRequest = new BoardCreateRequest("Test Title", contentWithImage, "writerName",
 			"password");
-		Long boardId = boardService.createBoardAsGuest(createRequest);
+		Long boardId = boardService.createBoard(createRequest, null);
 
 		LocalDateTime fixedTime = LocalDateTime.of(2024, 10, 19, 12, 0);
 		Instant fixedInstant = fixedTime.toInstant(ZoneOffset.UTC);
 		when(clock.instant()).thenReturn(fixedInstant);
 		when(clock.getZone()).thenReturn(ZoneOffset.UTC);
+		when(s3Service.validateUrl(anyString())).thenReturn(true);
 
 		// When
 		BoardDeleteRequest deleteRequest = new BoardDeleteRequest("password");
-		boardService.deleteBoardAsGuest(boardId, deleteRequest);
+		boardService.deleteBoard(boardId, null, deleteRequest.password());
 
 		// Then
 		List<String> deletedImages = imgRepository.getFileNamesByBoardId(boardId);
