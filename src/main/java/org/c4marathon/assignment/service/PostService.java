@@ -67,15 +67,7 @@ public class PostService {
 
         // 일반 게시글 조회
         Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "postId"));
-        List<Post> posts;
-
-        if (lastPostId == null) {
-            // 첫 페이지일 경우, 최신 게시글부터 가져오기
-            posts = postRepository.findTopPostsByBoardId(boardId, pageable);
-        } else {
-            // lastPostId 이후의 게시글 가져오기
-            posts = postRepository.findNextPostsByBoardId(boardId, lastPostId, pageable);
-        }
+        List<Post> posts = postRepository.findPostsByBoardIdAndLastPostId(boardId, lastPostId, pageable);
 
         result.addAll(posts.stream().map(PostResponse::new).toList());
 
