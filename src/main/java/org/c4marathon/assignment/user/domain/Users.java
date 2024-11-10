@@ -27,7 +27,7 @@ public class Users extends BaseTimeEntity implements Serializable {
 	@Column(name = "user_id")
 	private Long id;
 
-	@Column(nullable = false, unique = true, length = 20)
+	@Column(nullable = false, unique = true, length = 50)
 	private String nickname;
 
 	@Column(nullable = false, unique = true, length = 20)

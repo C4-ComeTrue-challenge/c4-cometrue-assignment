@@ -12,7 +12,7 @@ public record BoardCreateRequest(
 	@Size(max = 65535)
 	String content,
 
-	@Size(max = 20)
+	@Size(max = 50)
 	String writerName,
 
 	@Size(max = 20)

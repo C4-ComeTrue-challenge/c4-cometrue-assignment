@@ -59,7 +59,8 @@ public class UserService {
 		if (userRepository.existByEmail(request.email())) {
 			throw new DuplicatedEmailException();
 		}
-		if (userRepository.existByNickname(request.nickname())) {
+		String nickName = request.nickname().trim();
+		if (userRepository.existByNickname(nickName)) {
 			throw new DuplicatedNicknameException();
 		}
 	}
