@@ -3,10 +3,10 @@ package org.c4marathon.assignment.comment.domain.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.c4marathon.assignment.board.dto.PageInfo;
 import org.c4marathon.assignment.comment.domain.Comment;
 import org.c4marathon.assignment.comment.dto.CommentGetAllResponse;
 import org.c4marathon.assignment.comment.exception.NotFoundCommentException;
+import org.c4marathon.assignment.global.dto.PageInfo;
 import org.c4marathon.assignment.global.utils.PageTokenUtils;
 import org.springframework.stereotype.Repository;
 
@@ -18,8 +18,8 @@ public class CommentRepository {
 
 	private final CommentJpaRepository commentJpaRepository;
 
-	public void save(Comment comment) {
-		commentJpaRepository.save(comment);
+	public Comment save(Comment comment) {
+		return commentJpaRepository.save(comment);
 	}
 
 	public Comment getById(Long id) {
@@ -30,7 +30,7 @@ public class CommentRepository {
 	public PageInfo<CommentGetAllResponse> findCommentsWithoutPageToken(long boardId, int size) {
 		List<CommentGetAllResponse> data = commentJpaRepository.findComments(boardId, size + 1);
 
-		return PageInfo.of(data, size, CommentGetAllResponse::createdDate, CommentGetAllResponse::id);
+		return PageInfo.of(data, size, CommentGetAllResponse::createdDate, CommentGetAllResponse::commentId);
 	}
 
 	public PageInfo<CommentGetAllResponse> findCommentsWithPageToken(long boardId, String pageToken, int size) {
@@ -42,6 +42,6 @@ public class CommentRepository {
 		List<CommentGetAllResponse> data = commentJpaRepository.findCommentsWithPageToken(boardId, createdDate, path,
 			size + 1);
 
-		return PageInfo.of(data, size, CommentGetAllResponse::createdDate, CommentGetAllResponse::id);
+		return PageInfo.of(data, size, CommentGetAllResponse::createdDate, CommentGetAllResponse::commentId);
 	}
 }

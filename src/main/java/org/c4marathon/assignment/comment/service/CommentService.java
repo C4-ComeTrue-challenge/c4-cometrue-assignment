@@ -7,12 +7,12 @@ import java.time.Clock;
 
 import org.c4marathon.assignment.board.domain.Boards;
 import org.c4marathon.assignment.board.domain.repository.BoardRepository;
-import org.c4marathon.assignment.board.dto.PageInfo;
 import org.c4marathon.assignment.comment.domain.Comment;
 import org.c4marathon.assignment.comment.domain.repository.CommentRepository;
 import org.c4marathon.assignment.comment.dto.CommentCreateRequest;
 import org.c4marathon.assignment.comment.dto.CommentGetAllResponse;
 import org.c4marathon.assignment.comment.service.mapper.CommentMapper;
+import org.c4marathon.assignment.global.dto.PageInfo;
 import org.c4marathon.assignment.user.domain.Users;
 import org.c4marathon.assignment.user.exception.NotWriterException;
 import org.c4marathon.assignment.user.exception.WrongPasswordException;

@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.c4marathon.assignment.board.domain.Boards;
 import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
-import org.c4marathon.assignment.board.dto.PageInfo;
 import org.c4marathon.assignment.board.exception.NotFoundBoardException;
+import org.c4marathon.assignment.global.dto.PageInfo;
 import org.c4marathon.assignment.global.utils.PageTokenUtils;
 import org.springframework.stereotype.Repository;
 

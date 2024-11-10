@@ -1,12 +1,11 @@
 package org.c4marathon.assignment.comment.presentation;
 
 import org.c4marathon.assignment.board.dto.BoardDeleteRequest;
-import org.c4marathon.assignment.board.dto.BoardGetAllResponse;
-import org.c4marathon.assignment.board.dto.PageInfo;
 import org.c4marathon.assignment.comment.dto.CommentCreateRequest;
 import org.c4marathon.assignment.comment.dto.CommentGetAllResponse;
 import org.c4marathon.assignment.comment.service.CommentService;
 import org.c4marathon.assignment.global.annotation.LoginUser;
+import org.c4marathon.assignment.global.dto.PageInfo;
 import org.c4marathon.assignment.user.domain.Users;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,12 +64,12 @@ public class CommentController {
 	}
 
 	@GetMapping
-	public ResponseEntity<PageInfo<BoardGetAllResponse>> getAllComments(
+	public ResponseEntity<PageInfo<CommentGetAllResponse>> getAllComments(
 		@PathVariable Long boardId,
 		@RequestParam(required = false) String pageToken,
 		@RequestParam @Positive @Max(100) int count
 	) {
 		PageInfo<CommentGetAllResponse> response = commentService.getAllComments(boardId, pageToken, count);
-		return ResponseEntity.ok(null);
+		return ResponseEntity.ok(response);
 	}
 }

@@ -39,7 +39,7 @@ public class Comment extends BaseTimeEntity {
 
 	private String path;
 
-	@Column(nullable = false, length = 20)
+	@Column(nullable = false, length = 50)
 	private String writerName;
 
 	@Column

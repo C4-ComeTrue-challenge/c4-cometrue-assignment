@@ -1,14 +1,14 @@
 package org.c4marathon.assignment.comment.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 public record CommentGetAllResponse(
-	Long id,
+	Long commentId,
 	String content,
 	String writerName,
 	LocalDateTime createdDate,
 	LocalDateTime lastModifiedDate,
-	List<CommentGetAllResponse> childComment
+	Long parentId,
+	String path
 ) {
 }
