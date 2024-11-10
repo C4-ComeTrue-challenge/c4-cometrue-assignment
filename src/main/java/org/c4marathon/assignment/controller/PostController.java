@@ -40,12 +40,14 @@ public class PostController {
         return ResponseEntity.ok("게시글 작성 성공");
     }
 
-    // 게시글 전체 조회
+    // 게시글 전체 조회 (공지사항 포함)
     @GetMapping
-    public ResponseEntity<?> getAllPosts(@RequestParam(value = "lastPostId", required = false) Long lastPostId,
-                                         @RequestParam(value = "size", defaultValue = "5") int size) {
-        List<PostResponse> posts = postService.getAllPosts(lastPostId, size);
-        return ResponseEntity.ok(posts);
+    public ResponseEntity<?> getAllPosts(
+            @RequestParam(value = "lastPostId", required = false) Long lastPostId,
+            @RequestParam(value = "size", defaultValue = "5") int size,
+            @RequestParam(value = "boardId") Long boardId) {
+        List<Object> postsAndNotices = postService.getAllPostsAndNotices(boardId, lastPostId, size);
+        return ResponseEntity.ok(postsAndNotices);
     }
 
     // 게시글 단건 조회

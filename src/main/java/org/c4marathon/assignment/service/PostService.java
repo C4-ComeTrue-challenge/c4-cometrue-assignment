@@ -3,16 +3,17 @@ package org.c4marathon.assignment.service;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.c4marathon.assignment.domain.Comment;
-import org.c4marathon.assignment.domain.Member;
-import org.c4marathon.assignment.domain.Post;
+import org.c4marathon.assignment.domain.*;
 import org.c4marathon.assignment.domain.request.PostRequest;
 import org.c4marathon.assignment.domain.response.CommentResponse;
+import org.c4marathon.assignment.domain.response.NoticeResponse;
 import org.c4marathon.assignment.domain.response.PostResponse;
 import org.c4marathon.assignment.exception.PasswordNotFoundException;
 import org.c4marathon.assignment.exception.PostNotFoundException;
 import org.c4marathon.assignment.exception.UnauthorizedException;
+import org.c4marathon.assignment.repository.BoardRepository;
 import org.c4marathon.assignment.repository.CommentRepository;
+import org.c4marathon.assignment.repository.NoticeRepository;
 import org.c4marathon.assignment.repository.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +31,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PostService {
     private final PostRepository postRepository;
+    private final NoticeRepository noticeRepository;
+    private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
 
     // 게시글 작성
@@ -40,31 +44,42 @@ public class PostService {
             throw new PasswordNotFoundException("비회원은 비밀번호를 입력해주세요");
         }
 
-        String contentWithImages = insertImagesIntoContent(postRequest.getContent(), postRequest.getImageUrls());
+        // 게시판 확인
+        Board board = boardRepository.findById(postRequest.getBoardId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시판이 존재하지 않습니다."));
 
         Post post = Post.builder()
                 .title(postRequest.getTitle())
-                .content(contentWithImages)
+                .content(postRequest.getContent())
                 .member(member)  // 로그인한 회원과 연관관계 설정
                 .password(password) // 비로그인 회원의 비밀번호 설정
                 .build();
         postRepository.save(post);
     }
 
-    // No-Offset 방식으로 게시글 전체 조회
     @Transactional(readOnly = true)
-    public List<PostResponse> getAllPosts(Long lastPostId, int size) {
-        List<Post> posts;
+    public List<Object> getAllPostsAndNotices(Long boardId, Long lastPostId, int size) {
+
+        // 공지사항 조회 (최대 3개, Pageable 사용)
+        Pageable noticePageable = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "createdDate"));
+        List<Notice> notices = noticeRepository.findTopNoticesByBoardId(boardId, noticePageable);
+        List<Object> result = new ArrayList<>(notices.stream().map(NoticeResponse::new).toList());
+
+        // 일반 게시글 조회
         Pageable pageable = PageRequest.of(0, size, Sort.by(Sort.Direction.DESC, "postId"));
+        List<Post> posts;
 
         if (lastPostId == null) {
             // 첫 페이지일 경우, 최신 게시글부터 가져오기
-            posts = postRepository.findTopNPosts(pageable);
+            posts = postRepository.findTopPostsByBoardId(boardId, pageable);
         } else {
             // lastPostId 이후의 게시글 가져오기
-            posts = postRepository.findNextPosts(lastPostId, pageable);
+            posts = postRepository.findNextPostsByBoardId(boardId, lastPostId, pageable);
         }
-        return posts.stream().map(PostResponse::new).collect(Collectors.toList());
+
+        result.addAll(posts.stream().map(PostResponse::new).toList());
+
+        return result;
     }
 
     // 게시글 단건 조회

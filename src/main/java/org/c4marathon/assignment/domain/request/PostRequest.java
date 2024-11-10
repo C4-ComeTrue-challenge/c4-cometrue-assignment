@@ -10,10 +10,12 @@ public class PostRequest {
     private String content;
     private String password;
     private List<String> imageUrls;
+    private Long boardId; // 게시판 ID
 
-    public PostRequest(String title, String content, String password) {
+    public PostRequest(String title, String content, String password,Long boardId) {
         this.title = title;
         this.content = content;
         this.password = password;
+        this.boardId = boardId;
     }
 }
