@@ -30,8 +30,8 @@ public class MerchantProductController {
             @AuthMember AuthMemberDto authMember
     ) {
         authMember.checkMerchant();
-        Merchant merchant = merchantService.findMerchantById(authMember.memberId());
-        productService.addProduct(merchant,
+
+        productService.addProduct(authMember.memberId(),
                                   request.productName(),
                                   request.description(),
                                   request.price(),

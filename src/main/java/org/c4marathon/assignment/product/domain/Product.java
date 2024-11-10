@@ -6,6 +6,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
 
+import lombok.Builder;
 import org.c4marathon.assignment.member.domain.Merchant;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -40,6 +41,7 @@ public class Product {
     @Column(name = "product_id")
     private Long id;
 
+    @Getter
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "merchant_id")
     @JsonIgnore
@@ -62,6 +64,7 @@ public class Product {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
+    @Builder
     private Product(final Merchant merchant,
                     final String productName,
                     final String description,
